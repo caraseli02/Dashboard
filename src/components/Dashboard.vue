@@ -1,7 +1,10 @@
 <template>
   <section>
-    <h1 class="text-center mb-4 font-bold text-lg">Dashboard</h1>
-    <article>
+    <h1 class="ml-4 w-24 font-bold text-lg border-blue-700 border-b-4">
+      Asistencia
+    </h1>
+    <button @click="markAsist">Mark Asist</button>
+    <!-- <article>
       <p class="bg-blue-100 p-5 border border-blue-200 rounded text-blue-500">
         This is the dashboard area which is secured via the router. A user must
         have an account and be logged in to view this page.
@@ -28,12 +31,15 @@
           </button>
         </p>
       </div>
-    </article>
+    </article> -->
   </section>
 </template>
 
 <script>
-import firebase from "firebase";
+import { firebase } from "@firebase/app";
+import "@firebase/firestore";
+import "@firebase/auth";
+
 // You would obiusly use this component to show secure dashboard information.
 // As it stands it is just a simple Vue page with nothing intersting to show.
 
@@ -61,8 +67,22 @@ export default {
         .then(() => {
           this.emailSending = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.emailSending = false;
+          this.error = error.message;
+        });
+    },
+    async markAsist() {
+      await firebase
+        .firestore()
+        .collection("attendance")
+        .add({
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => {
+          console.log("Enviado");
+        })
+        .catch((error) => {
           this.error = error.message;
         });
     },

@@ -1,6 +1,11 @@
 import Vue from "vue";
 import App from "./App.vue";
-import firebase from "firebase";
+// Firebase App (the core Firebase SDK) is always required and
+// must be listed before other Firebase SDKs
+import { firebase } from "@firebase/app";
+import "@firebase/firestore";
+import "@firebase/auth";
+
 import VueRouter from "vue-router";
 import { store } from "./store/store";
 import { routes } from "./router/routes";
@@ -9,17 +14,25 @@ import "@/assets/css/main.css";
 // Firebase config - this is provided when you create your app
 // Swap out these settings for your project settings
 var firebaseConfig = {
-  apiKey: "AIzaSyCxfKEMCvc-rtExZTsJQKPr4mbXkmQYkJY",
-  authDomain: "vue-auth-demo-637b2.firebaseapp.com",
-  databaseURL: "https://vue-auth-demo-637b2.firebaseio.com",
-  projectId: "vue-auth-demo-637b2",
-  storageBucket: "vue-auth-demo-637b2.appspot.com",
-  messagingSenderId: "624803255895",
-  appId: "1:624803255895:web:c4f09775fe732e8f3b7512",
+  apiKey: "AIzaSyAdhtu6PnQs80oem0zmBxNxMwYDQW_hl8Y",
+  authDomain: "apimosa-930ed.firebaseapp.com",
+  databaseURL: "https://apimosa-930ed.firebaseio.com",
+  projectId: "apimosa-930ed",
+  storageBucket: "apimosa-930ed.appspot.com",
+  messagingSenderId: "534638874660",
+  appId: "1:534638874660:web:8656465847f9b575c7c8b1",
 };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+
+// Export types that exists in Firestore
+// This is not always necessary, but it's used in other examples
+const { TimeStamp, GeoPoint } = firebase.firestore;
+export { TimeStamp, GeoPoint };
+
+// if using Firebase JS SDK < 5.8.0
+// db.settings({ timestampsInSnapshots: true });
 
 // Set-up and use the Vue Router
 // Pass in your routes and then

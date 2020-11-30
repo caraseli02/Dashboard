@@ -1,6 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import firebase from "firebase";
+import { firebase } from "@firebase/app";
+import "@firebase/firestore";
+import "@firebase/auth";
+
+import auth from "./auth";
 
 Vue.use(Vuex);
 
@@ -20,5 +24,8 @@ export const store = new Vuex.Store({
     setUser: context => {
       context.commit("SET_USER");
     },
+  },
+  modules: {
+    auth,
   },
 });
