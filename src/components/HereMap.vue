@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       platform: null,
-      apikey: "bjiwIP4HwZAUtZg_qn7-Ojf3dhBGxWaWNgCWFaYLeEY",
+      apikey: process.env.VUE_APP_HERE_MAP_API_KEY,
       // You can get the API KEY from developer.here.com
     };
   },

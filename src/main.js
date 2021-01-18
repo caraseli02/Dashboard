@@ -23,13 +23,13 @@ import dragVerify from "vue-drag-verify";
 
 export const db = firebase
   .initializeApp({
-    apiKey: "AIzaSyAdhtu6PnQs80oem0zmBxNxMwYDQW_hl8Y",
-    authDomain: "apimosa-930ed.firebaseapp.com",
-    databaseURL: "https://apimosa-930ed.firebaseio.com",
-    projectId: "apimosa-930ed",
-    storageBucket: "apimosa-930ed.appspot.com",
-    messagingSenderId: "534638874660",
-    appId: "1:534638874660:web:8656465847f9b575c7c8b1",
+    apiKey: process.env.VUE_APP_API_KEY,
+    authDomain: process.env.VUE_APP_AUTH_DOMAIN,
+    databaseURL: process.env.VUE_APP_DATABASE_URL,
+    projectId: process.env.VUE_APP_PROJECT_ID,
+    storageBucket: process.env.VUE_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.VUE_APP_MESSAGING_SENDER_ID,
+    appId: process.env.VUE_APP_APP_ID,
   })
   .firestore();
 
