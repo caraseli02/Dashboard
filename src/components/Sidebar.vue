@@ -44,7 +44,7 @@
           alt="Logo"
           class="h-auto w-32 mx-auto"
         />
-        {{ user.displayName }}
+        {{ user.email }}
       </span>
       <!-- Links -->
       <section class="grid grid-cols-auto gap-8 col-span-2 ml-4 mt-4">
@@ -246,13 +246,13 @@ export default {
     },
   },
   mounted() {
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", e => {
       if (e.keyCode == 27 && this.isOpen) this.isOpen = false;
     });
   },
   computed: {
     user() {
-      return this.$store.getters.getUser;
+      return this.$store.getters["auth/getUser"];
     },
   },
 };

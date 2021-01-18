@@ -1,11 +1,12 @@
 import { firebase } from "@firebase/app";
 import "@firebase/firestore";
 import "@firebase/auth";
-import Home from "@/components/Home";
+import Home from "@/pages/Home";
 import SignIn from "@/components/SignIn";
 import SignUp from "@/components/SignUp";
 import Error404 from "@/components/Error404";
-import Dashboard from "@/components/Dashboard";
+import Dashboard from "@/pages/Dashboard";
+import Calendar from "@/pages/Calendar";
 import ForgotPassword from "@/components/ForgotPassword";
 
 // This is where you add all your site routes
@@ -62,6 +63,14 @@ export const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: Dashboard,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/calendar",
+    name: "calendar",
+    component: Calendar,
     meta: {
       requiresAuth: true,
     },

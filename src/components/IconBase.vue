@@ -3,9 +3,10 @@
     xmlns="http://www.w3.org/2000/svg"
     :width="width"
     :height="height"
-    viewBox="0 0 18 18"
+    viewBox="0 0 20 20"
     :aria-labelledby="iconName"
     role="presentation"
+    class="pr-1"
   >
     <title :id="iconName" lang="en">{{ iconName }} icon</title>
     <g :fill="iconColor">
@@ -23,11 +24,11 @@ export default {
     },
     width: {
       type: [Number, String],
-      default: 38,
+      default: 34,
     },
     height: {
       type: [Number, String],
-      default: 36,
+      default: 26,
     },
     iconColor: {
       type: String,

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white flex">
+  <div class="min-h-screen bg-transparent">
     <div
       class="flex-1 flex flex-col md:flex-row justify-center pb-12 md:px-16 p-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
     >
@@ -9,17 +9,17 @@
         alt=""
       />
       <div
-        class="mx-auto w-full max-w-sm flex-1 z-10 transform -translate-y-20 md:translate-y-0 bg-gradient-to-b from-white to-transparent self-center"
+        class="mx-auto w-full max-w-sm flex-1 z-10 transform -translate-y-20 glass-light p-2 self-center"
       >
         <div>
           <h2 class="text-3xl leading-9 font-extrabold text-gray-900">
             Easistent
           </h2>
-          <p class="mt-2 text-sm leading-5 text-gray-600 max-w">
+          <p class="mt-2 text-sm leading-5 text-gray-900 max-w">
             Para entrar,
             <a
               href="#"
-              class="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
+              class="font-medium text-indigo-800 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
             >
               intrudoce tus datos.
             </a>
@@ -39,7 +39,7 @@
               <div>
                 <label
                   for="email"
-                  class="block text-sm font-medium leading-5 text-gray-700"
+                  class="block text-sm font-medium leading-5 text-gray-900"
                 >
                   Email address
                 </label>
@@ -58,7 +58,7 @@
               <div class="mt-6">
                 <label
                   for="password"
-                  class="block text-sm font-medium leading-5 text-gray-700"
+                  class="block text-sm font-medium leading-5 text-gray-900"
                 >
                   Password
                 </label>
@@ -91,7 +91,7 @@
                 <div class="text-sm leading-5 mt-2">
                   <a
                     href="#"
-                    class="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
+                    class="font-medium text-indigo-900 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
                   >
                     Olvidaste contraseña?
                   </a>
@@ -103,7 +103,7 @@
                   <button
                     type="submit"
                     @click="signIn"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
+                    class="w-full flex justify-center py-2 px-4 border text-lg border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
                   >
                     Entrar
                   </button>
@@ -146,7 +146,7 @@ export default {
         .then(() => {
           this.$router.replace("dashboard");
         })
-        .catch((error) => {
+        .catch(error => {
           this.error = error.message;
         });
     },
