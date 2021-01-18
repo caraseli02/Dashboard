@@ -119,6 +119,10 @@ export const store = new Vuex.Store({
     showMapAction(context) {
       context.commit("SHOW_MAP");
     },
+    // bindAsist: firestoreAction(({ bindFirestoreRef }) => {
+    //   // return the promise returned by `bindFirestoreRef`
+    //   return bindFirestoreRef("attendance", db.collection("attendance"));
+    // }),
     bindAsist: firestoreAction(({ state, bindFirestoreRef }, time) => {
       // return the promise returned by `bindFirestoreRef`
       return bindFirestoreRef(

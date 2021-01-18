@@ -1,5 +1,5 @@
 <template>
-  <article v-if="geolocation.lat && geolocation.lng">
+  <article v-if="(geolocation.lat && geolocation.lng) || 1 === 1">
     <!-- Month selector  -->
     <section class="w-full glass-light h-12 mb-4 px-2 flex justify-between">
       <button v-if="selectedMes > 0" @click="prevMonth()">
@@ -122,7 +122,7 @@
       </ul>
     </section>
   </article>
-  <section v-else class="flex flex-col justify-center items-center">
+  <!-- <section v-else class="flex flex-col justify-center items-center">
     <button v-if="loadingMap" type="button" class="mx-auto text-sm" disabled>
       <svg class="animate-spin h-4 w-4 mx-auto" viewBox="0 0 24 24">
         <path
@@ -154,11 +154,11 @@
         ></a
       >
     </div>
-  </section>
+  </section> -->
 </template>
 
 <script>
-import Alerts from "@/components/utils/Alerts.vue";
+// import Alerts from "@/components/utils/Alerts.vue";
 import { mapState, mapActions, mapGetters } from "vuex";
 import IconBase from "../components/IconBase.vue";
 import IconArrowLeft from "../components/icons/IconArrowLeft.vue";
@@ -167,13 +167,14 @@ import IconTemp from "../components/icons/IconTemp.vue";
 import dragVerify from "vue-drag-verify";
 
 export default {
+  name: "calendar",
   components: {
     IconBase,
     IconArrowLeft,
     IconArrowRight,
     IconTemp,
     dragVerify,
-    Alerts,
+    // Alerts,
   },
   data() {
     return {
@@ -219,7 +220,6 @@ export default {
       temperature: 36.6,
     };
   },
-  name: "calendar",
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
@@ -321,39 +321,63 @@ export default {
       // GET CURRENT YEAR
       let time = new Object();
       time["year"] = new Date().toISOString().split("T")[0].slice(0, 4);
+      console.log("Inicio", time);
       // Month Transform
       if (newValue < 10) {
-        time["start"] = `0${newValue + 1}`;
-        time["end"] = `0${newValue + 2}`;
-        //Get Time in milliseconds
         time["start"] = new Date(
-          `"${time["year"]}/${time["start"]}"`
+          `${time["year"]}-0${newValue + 1}-01T00:00:00.000+01:00`
         ).getTime();
         time["end"] =
-          new Date(`"${time["year"]}/${time["end"]}"`).getTime() - 1;
-      } else if (newValue === 11) {
-        time["start"] = `${newValue + 1}`;
-        time["end"] = `${newValue + 1}`;
-        //Get Time in milliseconds
-        time["start"] = new Date(
-          `"${time["year"]}/${time["start"]}"`
-        ).getTime();
-        time["end"] =
-          new Date(`"${time["year"]}/${time["end"]}"`).getTime() + 2.678e9;
-      } else {
-        time["start"] = `${newValue + 1}`;
-        time["end"] = `${newValue + 2}`;
-        //Get Time in milliseconds
-        time["start"] = new Date(
-          `"${time["year"]}/${time["start"]}"`
-        ).getTime();
-        time["end"] =
-          new Date(`"${time["year"]}/${time["end"]}"`).getTime() - 1;
-      }
+          new Date(
+            `${time["year"]}-0${newValue + 2}-01T00:00:00.000+01:00`
+          ).getTime() - 1;
 
-      this.$store.dispatch("bindAsist", time).then(() => {
-        console.log(`new Value: ${newValue}`);
-      });
+        // console.log("Asign VAriables", time);
+
+        //Get Time in milliseconds
+        // time["start"] = new Date(
+        //   `"${time["year"]}-${time["start"]}"`
+        // ).getTime();
+        // console.log("time start", time["start"]);
+        // time["end"] =
+        //   new Date(`"${time["year"]}-${time["end"]}"`).getTime() - 1;
+
+        // console.log("time end", time["start"]);
+      } else if (newValue === 11) {
+        time["start"] = new Date(
+          `${time["year"]}-0${newValue + 1}-01T00:00:00.000+01:00`
+        ).getTime();
+        time["end"] =
+          new Date(
+            `${time["year"]}-0${newValue + 2}-01T00:00:00.000+01:00`
+          ).getTime() + 2.678e9;
+        //Get Time in milliseconds
+        // time["start"] = new Date(
+        //   `"${time["year"]}/${time["start"]}"`
+        // ).getTime();
+        // time["end"] =
+        //   new Date(`"${time["year"]}/${time["end"]}"`).getTime() + 2.678e9;
+      } else {
+        time["start"] = new Date(
+          `${time["year"]}-0${newValue + 1}-01T00:00:00.000+01:00`
+        ).getTime();
+        time["end"] =
+          new Date(
+            `${time["year"]}-0${newValue + 2}-01T00:00:00.000+01:00`
+          ).getTime() - 1;
+        //Get Time in milliseconds
+        // time["start"] = new Date(
+        //   `"${time["year"]}/${time["start"]}"`
+        // ).getTime();
+        // time["end"] =
+        //   new Date(`"${time["year"]}/${time["end"]}"`).getTime() - 1;
+        // console.log("Else", time);
+      }
+      if (time) {
+        this.$store.dispatch("bindAsist", time).then(() => {
+          console.log(`new Value: ${newValue}`);
+        });
+      }
     },
   },
   async mounted() {

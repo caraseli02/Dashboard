@@ -43,24 +43,6 @@ export default {
     ...mapActions([
       "currentLocation", // -> this['some/nested/module/bar']()
     ]),
-    async showSuccess() {
-      await this.showNotification({
-        notificationMessage: "I am success",
-        notificationType: "success",
-      });
-      console.log(
-        "this will continue after succcess notification is dismissed"
-      );
-    },
-    async showError() {
-      await this.showNotification({
-        notificationMessage: "I am error",
-        notificationType: "error",
-      });
-      console.log(
-        "this will continue after succcess notification is dismissed"
-      );
-    },
   },
   created() {
     // when the app is created run the set user method
