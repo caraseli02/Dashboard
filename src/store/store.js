@@ -4,15 +4,19 @@ import { db } from "../main";
 import "@firebase/auth";
 import { vuexfireMutations, firestoreAction } from "vuexfire";
 import { v4 as uuidv4 } from "uuid";
+//ALERTS
+import VueSimpleAlert from "vue-simple-alert";
 
 import auth from "./auth";
 import notifi from "./notifi";
 
 Vue.use(Vuex);
+Vue.use(VueSimpleAlert);
 
 export const store = new Vuex.Store({
   state: {
     showMap: false,
+    showSidebar: false,
     attendance: [],
     checkDay: null,
     weekAttned: null,
@@ -39,6 +43,9 @@ export const store = new Vuex.Store({
     ...vuexfireMutations,
     TOGGLE_LOADING(state, payload) {
       state.loadingMap = !!payload;
+    },
+    TOGGLE_SIDEBAR(state) {
+      state.showSidebar = !state.showSidebar;
     },
     CHANGE_GEOLOCATION(state, payload) {
       state.geolocation = payload;
@@ -118,6 +125,9 @@ export const store = new Vuex.Store({
     },
     showMapAction(context) {
       context.commit("SHOW_MAP");
+    },
+    toggleSidebar(context) {
+      context.commit("TOGGLE_SIDEBAR");
     },
     // bindAsist: firestoreAction(({ bindFirestoreRef }) => {
     //   // return the promise returned by `bindFirestoreRef`

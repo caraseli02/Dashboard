@@ -1,5 +1,6 @@
 <template>
   <footer
+    v-if="user"
     class="w-full flex justify-around items-center h-20 rounded-none border-none fixed bottom-0 z-10 rounded-t-lg glass-light"
   >
     <span

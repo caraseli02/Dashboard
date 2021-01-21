@@ -1,5 +1,5 @@
 <template>
-  <article v-if="(geolocation.lat && geolocation.lng) || 1 === 1">
+  <article v-if="geolocation.lat && geolocation.lng">
     <!-- Month selector  -->
     <section class="w-full glass-light h-12 mb-4 px-2 flex justify-between">
       <button v-if="selectedMes > 0" @click="prevMonth()">
@@ -7,13 +7,21 @@
           <icon-arrow-left />
         </icon-base>
       </button>
-      <button v-if="selectedMes > 0" @click="selectedMes = selectedMes - 1">
+      <button
+        class="text-lg bg-gray-400 rounded-lg m-1 w-24"
+        v-if="selectedMes > 0"
+        @click="selectedMes = selectedMes - 1"
+      >
         {{ meses[selectedMes - 1].slice(0, 3) }}
       </button>
-      <button class="text-lg glass-light w-24">
+      <button class="text-lg bg-gray-200 shadow-lg rounded-lg m-1 w-24">
         {{ meses[selectedMes] }}
       </button>
-      <button v-if="selectedMes < 11" @click="selectedMes = selectedMes + 1">
+      <button
+        class="text-lg bg-gray-400 rounded-lg m-1 w-24"
+        v-if="selectedMes < 11"
+        @click="selectedMes = selectedMes + 1"
+      >
         {{ meses[selectedMes + 1].slice(0, 3) }}
       </button>
       <button v-if="selectedMes < 11" @click="nextMonth()">
@@ -117,12 +125,15 @@
         <li
           class="flex flex-col ml-2 justify-center items-center text-purple-800 rounded-full my-4"
         >
-          {{ attend.data.temperature }}<icon-base><icon-temp /></icon-base>
+          {{ attend.data.temperature
+          }}<icon-base>
+            <icon-temp />
+          </icon-base>
         </li>
       </ul>
     </section>
   </article>
-  <!-- <section v-else class="flex flex-col justify-center items-center">
+  <section v-else class="flex flex-col justify-center items-center">
     <button v-if="loadingMap" type="button" class="mx-auto text-sm" disabled>
       <svg class="animate-spin h-4 w-4 mx-auto" viewBox="0 0 24 24">
         <path
@@ -154,7 +165,7 @@
         ></a
       >
     </div>
-  </section> -->
+  </section>
 </template>
 
 <script>
@@ -208,6 +219,7 @@ export default {
         "Diciembre",
       ],
       days: [
+        "domingo",
         "lunes",
         "martes",
         "miércoles",
@@ -277,12 +289,14 @@ export default {
     },
     saveLeaveTime(value) {
       if (value) {
-        if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
-          value["data"]["gpsLocLeave"] = this.geolocation;
-          console.log(value);
-        }
-        value["data"]["leaveTime"] = this.today;
-        this.changeAttendance(value);
+        this.$confirm("Apuntar Salida?").then(() => {
+          if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
+            value["data"]["gpsLocLeave"] = this.geolocation;
+            console.log(value);
+          }
+          value["data"]["leaveTime"] = this.today;
+          this.changeAttendance(value);
+        });
       }
     },
     async swipeHandler() {
@@ -331,18 +345,6 @@ export default {
           new Date(
             `${time["year"]}-0${newValue + 2}-01T00:00:00.000+01:00`
           ).getTime() - 1;
-
-        // console.log("Asign VAriables", time);
-
-        //Get Time in milliseconds
-        // time["start"] = new Date(
-        //   `"${time["year"]}-${time["start"]}"`
-        // ).getTime();
-        // console.log("time start", time["start"]);
-        // time["end"] =
-        //   new Date(`"${time["year"]}-${time["end"]}"`).getTime() - 1;
-
-        // console.log("time end", time["start"]);
       } else if (newValue === 11) {
         time["start"] = new Date(
           `${time["year"]}-0${newValue + 1}-01T00:00:00.000+01:00`
@@ -351,12 +353,6 @@ export default {
           new Date(
             `${time["year"]}-0${newValue + 2}-01T00:00:00.000+01:00`
           ).getTime() + 2.678e9;
-        //Get Time in milliseconds
-        // time["start"] = new Date(
-        //   `"${time["year"]}/${time["start"]}"`
-        // ).getTime();
-        // time["end"] =
-        //   new Date(`"${time["year"]}/${time["end"]}"`).getTime() + 2.678e9;
       } else {
         time["start"] = new Date(
           `${time["year"]}-0${newValue + 1}-01T00:00:00.000+01:00`
@@ -365,13 +361,6 @@ export default {
           new Date(
             `${time["year"]}-0${newValue + 2}-01T00:00:00.000+01:00`
           ).getTime() - 1;
-        //Get Time in milliseconds
-        // time["start"] = new Date(
-        //   `"${time["year"]}/${time["start"]}"`
-        // ).getTime();
-        // time["end"] =
-        //   new Date(`"${time["year"]}/${time["end"]}"`).getTime() - 1;
-        // console.log("Else", time);
       }
       if (time) {
         this.$store.dispatch("bindAsist", time).then(() => {

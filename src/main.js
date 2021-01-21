@@ -21,6 +21,9 @@ Settings.defaultLocale = "es";
 // Drag Confirm Library
 import dragVerify from "vue-drag-verify";
 
+//ALERTS
+import VueSimpleAlert from "vue-simple-alert";
+
 export const db = firebase
   .initializeApp({
     apiKey: process.env.VUE_APP_API_KEY,
@@ -43,8 +46,9 @@ export { TimeStamp, GeoPoint };
 // Set the mode to use history
 // removes # from the URL
 Vue.use(VueRouter);
-Vue.use(Datetime);
 Vue.use(dragVerify);
+Vue.use(Datetime);
+Vue.use(VueSimpleAlert);
 
 const router = new VueRouter({
   routes: routes,

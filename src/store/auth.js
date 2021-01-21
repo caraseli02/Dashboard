@@ -1,9 +1,11 @@
 import { firebase } from "@firebase/app";
 import "@firebase/firestore";
 import "@firebase/auth";
+import { data } from "./firebase-errors.json";
 
 const state = {
   user: null,
+  Errors: data,
 };
 
 const mutations = {
@@ -19,15 +21,18 @@ const actions = {
   setUser: context => {
     context.commit("SET_USER");
   },
-  async signUpAction(_, payload) {
+  async signUpAction({ dispatch }, payload) {
     await firebase
       .auth()
       .createUserWithEmailAndPassword(payload.email, payload.password)
       .then(() => {
         const user = firebase.auth().currentUser;
         const actionCodeSettings = {
-          url: `${process.env.VUE_APP_HOST_NAME}/sign-in/?email=${user.email}`,
+          url: `${process.env.VUE_APP_HOST_NAME}sign-in/?email=${user.email}`,
         };
+        user.updateProfile({
+          displayName: payload.name,
+        });
         user.sendEmailVerification(actionCodeSettings);
         firebase
           .firestore()
@@ -35,10 +40,23 @@ const actions = {
           .doc(user.uid)
           .set({
             email: user.email,
+            name: payload.name,
+            dni: payload.dni,
           });
+      })
+      .catch(error => {
+        console.log(error);
+        dispatch(
+          "notifi/showNotification",
+          {
+            notificationMessage: data[error.code],
+            notificationType: "warning",
+          },
+          { root: true }
+        );
       });
   },
-  async signInAction(_, payload) {
+  async signInAction({ dispatch }, payload) {
     await firebase
       .auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
@@ -47,6 +65,27 @@ const actions = {
         window.localStorage.setItem("displayName", res.user.displayName);
         window.localStorage.setItem("email", res.user.email);
         window.localStorage.setItem("picture", res.user.photoURL);
+      })
+      .catch(error => {
+        dispatch(
+          "notifi/showNotification",
+          {
+            notificationMessage: data[error.code],
+            notificationType: "warning",
+          },
+          { root: true }
+        );
+      });
+  },
+  signOut() {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        window.localStorage.removeItem("uid");
+        window.localStorage.removeItem("displayName");
+        window.localStorage.removeItem("email");
+        window.localStorage.removeItem("picture");
       });
   },
 };

@@ -1,6 +1,6 @@
 const state = {
-  notificationMessage: "",
-  notificationType: "",
+  notificationMessage: null,
+  notificationType: null,
 };
 const getters = {
   notificationMessage: state => state.notificationMessage,
@@ -24,7 +24,7 @@ const actions = {
           notificationType: "",
         });
         resolve();
-      }, 5000);
+      }, 3000);
     });
   },
   clearNotification({ commit }) {
