@@ -24,6 +24,8 @@ import dragVerify from "vue-drag-verify";
 //ALERTS
 import VueSimpleAlert from "vue-simple-alert";
 
+import "./registerServiceWorker";
+
 export const db = firebase
   .initializeApp({
     apiKey: process.env.VUE_APP_API_KEY,

@@ -1,4 +1,4 @@
-<template >
+<template>
   <div v-if="user">
     <transition
       enter-class="opacity-0"
@@ -102,7 +102,7 @@ export default {
     },
   },
   mounted() {
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", e => {
       if (e.keyCode == 27 && this.isOpen) this.toggleSidebar;
     });
   },
@@ -118,7 +118,7 @@ export default {
     ...mapActions(["toggleSidebar"]),
     ...mapActions("auth", ["signOut"]),
     async closeSession() {
-      await this.toggleSidebar()
+      await this.toggleSidebar();
       await this.signOut().then(() => {
         this.$router.replace("sign-in");
       });

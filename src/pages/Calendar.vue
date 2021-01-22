@@ -235,11 +235,11 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      checkDay: (state) => state.checkDay,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
+      attendList: state => state.attendance,
+      checkDay: state => state.checkDay,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
     }),
     ...mapGetters(["checkCalendarToday"]),
     timeNow() {
@@ -331,10 +331,13 @@ export default {
     },
   },
   watch: {
-    selectedMes: function (newValue) {
+    selectedMes: function(newValue) {
       // GET CURRENT YEAR
       let time = new Object();
-      time["year"] = new Date().toISOString().split("T")[0].slice(0, 4);
+      time["year"] = new Date()
+        .toISOString()
+        .split("T")[0]
+        .slice(0, 4);
       console.log("Inicio", time);
       // Month Transform
       if (newValue < 10) {

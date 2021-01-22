@@ -1,8 +1,8 @@
 {
-  "name": "vue-auth-demo",
-  "author": "Gareth Redfern <garethr@hey.com>",
+  "name": "apimosa-app",
   "version": "0.1.0",
   "private": true,
+  "author": "Vladislav Caraseli <vladwebapp@gmail.com>",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "firebase": "^7.24.0",
     "luxon": "^1.25.0",
+    "register-service-worker": "^1.7.1",
     "uuid": "^8.3.2",
     "vue": "^2.6.11",
     "vue-datetime": "^1.0.0-beta.14",
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-pwa": "^4.5.10",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
@@ -37,12 +39,6 @@
     "prettier": "^1.19.1",
     "tailwindcss": "^1.7.6",
     "vue-template-compiler": "^2.6.11"
-  },
-  "prettier": {
-    "trailingComma": "es5",
-    "tabWidth": 2,
-    "semi": true,
-    "singleQuote": false
   },
   "eslintConfig": {
     "root": true,
@@ -58,6 +54,12 @@
       "parser": "babel-eslint"
     },
     "rules": {}
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": false
   },
   "browserslist": [
     "> 1%",
