@@ -75,7 +75,7 @@ export default {
         {
           iconName: "data",
           component: IconData,
-          path: "/data",
+          path: "/datos",
           name: "Datos",
         },
         {

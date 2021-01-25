@@ -2,8 +2,19 @@
   <header class="glass-light">
     <div class="mx-auto flex justify-center items-center">
       <nav class="flex items-center justify-between md:justify-between w-full">
-        <section class="flex justify-between items-center p-3">
+        <div v-if="user" @click="toggleSidebar" class="flex items-center ml-2">
           <button
+            class="flex justify-center items-center p-3 rounded-lg"
+            :class="showSidebar ? 'bg-gray-300' : 'glass-gray'"
+            aria-label="Open Menu"
+          >
+            <icon-base icon-name="profile">
+              <icon-profile />
+            </icon-base>
+          </button>
+        </div>
+        <section class="flex justify-between items-center p-3">
+          <!-- <button
             v-if="!loadingMap"
             class="ml-2 flex justify-center items-center p-2"
             @click="showMapAction"
@@ -15,7 +26,7 @@
               <icon-maps />
             </icon-base>
             Mapa
-          </button>
+          </button> -->
           <button
             v-if="loadingMap"
             type="button"
@@ -39,9 +50,7 @@
           <span
             v-if="showMap"
             @click="showMapAction"
-            class="text-center text-gray-900 
-          bg-gradient-to-r from-red-400 via-pink-500 to-red-500 
-          font-bold rounded-r-lg p-2"
+            class="text-center text-gray-900 bg-gradient-to-r from-red-400 via-pink-500 to-red-500 font-bold rounded-r-lg p-2"
           >
             x
           </span>
@@ -65,17 +74,6 @@
           >
           <!-- Side Bar -->
         </section>
-        <div v-if="user" @click="toggleSidebar" class="flex items-center">
-          <button
-            class="flex justify-center items-center p-3 rounded-lg"
-            :class="showSidebar ? 'bg-gray-300' : 'glass-gray'"
-            aria-label="Open Menu"
-          >
-            <icon-base icon-name="profile">
-              <icon-profile />
-            </icon-base>
-          </button>
-        </div>
         <button
           @click="closeSession"
           class="flex justify-center items-center p-3 rounded-lg glass-gray mr-2"
@@ -94,19 +92,19 @@
 
 <script>
 import IconBase from "./IconBase.vue";
-import IconMaps from "./icons/IconMaps.vue";
+// import IconMaps from "./icons/IconMaps.vue";
 import IconProfile from "./icons/IconProfile.vue";
 import IconArrowRight from "./icons/IconArrowRight.vue";
 import { mapGetters, mapActions, mapState } from "vuex";
 
 export default {
-  components: { IconBase, IconMaps, IconArrowRight, IconProfile },
+  components: { IconBase, IconArrowRight, IconProfile },
   computed: {
     ...mapGetters("auth", ["getUser"]),
     ...mapState({
-      showMap: state => state.showMap,
-      showSidebar: state => state.showSidebar,
-      loadingMap: state => state.loadingMap,
+      showMap: (state) => state.showMap,
+      showSidebar: (state) => state.showSidebar,
+      loadingMap: (state) => state.loadingMap,
     }),
     user() {
       return this.$store.getters["auth/getUser"];

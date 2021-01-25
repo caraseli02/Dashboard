@@ -1,18 +1,17 @@
 <template>
   <div
-    class="flex flex-col justify-around items-center mt-10 glass-light"
+    class="flex flex-col justify-around items-center"
     id="map"
   >
     <!--In the following div the HERE Map will render-->
     <div id="mapContainer" class="h-64 w-full rounded-lg" ref="hereMap"></div>
-    <button class="my-3 mx-auto w-full">
+    <!-- <button class="my-3 mx-auto w-full">
       <span
-        class="bg-gradient-to-r from-red-600 via-pink-500 to-red-700 hover:bg-green-400 text-white py-2 px-4 text-lg rounded
-      "
+        class="bg-gradient-to-r from-red-600 via-pink-500 to-red-700 hover:bg-green-400 text-white py-2 px-4 text-lg rounded"
         @click="showMapAction"
         >Cerrar</span
       >
-    </button>
+    </button> -->
   </div>
 </template>
 
@@ -22,12 +21,14 @@ export default {
   name: "HereMap",
   props: {
     center: Object,
+    attendance: Array,
     // center object { lat: 40.730610, lng: -73.935242 }
   },
   data() {
     return {
       platform: null,
       apikey: process.env.VUE_APP_HERE_MAP_API_KEY,
+      ui: null,
       // You can get the API KEY from developer.here.com
     };
   },
@@ -42,6 +43,62 @@ export default {
 
   methods: {
     ...mapActions(["showMapAction"]),
+    addMarkerToGroup(group, coordinate, html) {
+      const H = window.H;
+      var marker = new H.map.Marker(coordinate);
+      // add custom data to the marker
+      marker.setData(html);
+      group.addObject(marker);
+    },
+    addInfoBubble(map) {
+      const H = window.H;
+      var group = new H.map.Group();
+      var self = this;
+
+      map.addObject(group);
+
+      // add 'tap' event listener, that opens info bubble, to the group
+      group.addEventListener(
+        "tap",
+        function (evt) {
+          // event target is the marker itself, group is a parent event target
+          // for all objects that it contains
+          var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+            // read custom data
+            content: evt.target.getData(),
+          });
+          // show info bubble
+          self.ui.addBubble(bubble);
+        },
+        false
+      );
+      if (this.attendance) {
+        this.attendance.forEach(({ data }) => {
+          if (data.gpsLoc) {
+            this.addMarkerToGroup(
+              group,
+              { lat: data.gpsLoc.lat, lng: data.gpsLoc.lng },
+              `<div > 
+              Entrada
+              <br>${data.enterTime.slice(5, 10)}
+              <br>${data.enterTime.slice(11, 16)}<br>
+              </div>`
+            );
+          }
+          if (data.gpsLocLeave) {
+            this.addMarkerToGroup(
+              group,
+              { lat: data.gpsLoc.lat, lng: data.gpsLoc.lng },
+              `<div >
+              Salida 
+              <br>${data.leaveTime.slice(0, 11)}<br>
+              <br>${data.leaveTime.slice(14, 16)}<br>
+              </div>`
+            );
+          }
+        });
+      }
+    },
     initializeHereMap() {
       // rendering map
 
@@ -52,7 +109,7 @@ export default {
 
       // Instantiate (and display) a map object:
       var map = new H.Map(mapContainer, maptypes.vector.normal.map, {
-        zoom: 19,
+        zoom: 15,
         center: this.center,
         // center object { lat: 40.730610, lng: -73.935242 }
       });
@@ -63,8 +120,10 @@ export default {
       new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 
       // add UI
-      H.ui.UI.createDefault(map, maptypes);
+      this.ui = H.ui.UI.createDefault(map, maptypes);
       // End rendering the initial map
+
+      this.addInfoBubble(map);
     },
   },
 };
@@ -72,9 +131,9 @@ export default {
 
 <style scoped>
 #map {
-  height: 60vh;
+  height: 50vh;
   width: 100vw;
-  margin: 10vh auto;
+  margin: 0 auto;
   min-width: 360px;
   text-align: center;
 }

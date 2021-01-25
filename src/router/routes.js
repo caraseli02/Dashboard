@@ -7,6 +7,7 @@ import SignUp from "@/components/SignUp";
 import Error404 from "@/components/Error404";
 import Dashboard from "@/pages/Dashboard";
 import Calendar from "@/pages/Calendar";
+import Datos from "@/pages/Datos";
 import ForgotPassword from "@/components/ForgotPassword";
 
 // This is where you add all your site routes
@@ -71,6 +72,14 @@ export const routes = [
     path: "/calendar",
     name: "calendar",
     component: Calendar,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/datos",
+    name: "datos",
+    component: Datos,
     meta: {
       requiresAuth: true,
     },

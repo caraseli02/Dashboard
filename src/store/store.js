@@ -23,6 +23,7 @@ export const store = new Vuex.Store({
     loadingMap: false,
     geolocation: {},
     d: new Date(),
+    users: null,
   },
 
   getters: {
@@ -147,18 +148,34 @@ export const store = new Vuex.Store({
           .limit(3)
       );
     }),
-    bindLastAsist: firestoreAction(({ state, bindFirestoreRef }, time) => {
+    getAsist: firestoreAction(({ state, bindFirestoreRef }, time) => {
+      // return the promise returned by `bindFirestoreRef`
+      return bindFirestoreRef(
+        "attendance",
+        db
+          .collection("attendance")
+          .where("delete_flag", "==", "N")
+          .where("author", "==", state.auth.user.uid)
+          .where("curentTime", ">=", time.start)
+          .where("curentTime", "<=", time.end - 1)
+          .orderBy("curentTime", "asc")
+      );
+    }),
+    bindLastAsist: firestoreAction(({ bindFirestoreRef }, time) => {
       // return the promise returned by `bindFirestoreRef`
       return bindFirestoreRef(
         "checkDay",
         db
           .collection("attendance")
           .where("delete_flag", "==", "N")
-          .where("author", "==", state.auth.user.uid)
           .where("curentTime", ">=", time)
           .where("curentTime", "<=", time + 86399400)
           .limit(1)
       );
+    }),
+    getUsers: firestoreAction(({ bindFirestoreRef }) => {
+      // return the promise returned by `bindFirestoreRef`
+      return bindFirestoreRef("users", db.collection("attendanceUsers"));
     }),
     deleteAsist: firestoreAction((context, asistId) => {
       db.collection("attendance")

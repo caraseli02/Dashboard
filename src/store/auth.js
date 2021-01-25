@@ -42,6 +42,7 @@ const actions = {
             email: user.email,
             name: payload.name,
             dni: payload.dni,
+            enable: false,
           });
       })
       .catch(error => {
