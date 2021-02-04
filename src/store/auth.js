@@ -34,6 +34,10 @@ const actions = {
           displayName: payload.name,
         });
         user.sendEmailVerification(actionCodeSettings);
+        window.localStorage.setItem("uid", user.uid);
+        window.localStorage.setItem("displayName", user.displayName);
+        window.localStorage.setItem("email", user.email);
+        window.localStorage.setItem("picture", user.photoURL);
         firebase
           .firestore()
           .collection("attendanceUsers")
@@ -42,7 +46,6 @@ const actions = {
             email: user.email,
             name: payload.name,
             dni: payload.dni,
-            enable: false,
           });
       })
       .catch(error => {

@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-transparent">
     <div
-      class="flex-1 flex flex-col md:flex-row justify-center pb-12 md:px-16 p-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
+      class="flex-1 flex flex-col md:flex-row justify-center pb-4 md:px-16 p-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
     >
       <img
         class="h-full w-full md:w-2/3 contain z-0"
@@ -15,15 +15,9 @@
           <h2 class="text-3xl leading-9 font-extrabold text-gray-900">
             APIMOSA APP
           </h2>
-          <p class="mt-2 text-sm leading-5 text-gray-900 max-w">
-            Para entrar,
-            <a
-              href="#"
-              class="font-medium text-indigo-800 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
-            >
-              intrudoce tus datos.
-            </a>
-          </p>
+          <span class="mt-2 text-lg leading-5 text-gray-700 max-w">
+            Inicia sesión
+          </span>
         </div>
         <!-- <transition name="fade">
           <p
@@ -93,7 +87,7 @@
                     href="#"
                     class="font-medium text-indigo-900 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
                   >
-                    Olvidaste contraseña?
+                    ¿Has olvidado tu contraseña?
                   </a>
                 </div>
               </div>
@@ -103,9 +97,9 @@
                   <button
                     type="submit"
                     @click="signIn"
-                    class="w-full flex justify-center py-2 px-4 border text-lg border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent text-lg font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
                   >
-                    Entrar
+                    Inicia sesión
                   </button>
                 </span>
               </div>
@@ -114,13 +108,17 @@
         </div>
       </div>
     </div>
-    <!-- <div class="hidden lg:block relative w-0 flex-1">
-      <img
-        class="absolute inset-0 h-full w-full object-cover"
-        src="@/assets/img/asistSvg.svg"
-        alt=""
-      />
-    </div> -->
+    <div
+      class="glass-light rounded-none text-gray-800 w-full h-20 text-lg flex justify-center items-center"
+    >
+      ¿No tienes cuenta?
+      <router-link
+        class="bg-gray-200 shadow-lg p-3 rounded-lg ml-4 font-bold text-xl "
+        to="/sign-up"
+      >
+        Regístrate
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -151,7 +149,7 @@ export default {
           if (this.notificationMessage) {
             return;
           }
-          this.$router.replace("calendar");
+          this.$router.replace("dashboard");
         })
         .catch(error => {
           console.log(error);

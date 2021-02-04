@@ -24,6 +24,8 @@ export const store = new Vuex.Store({
     geolocation: {},
     d: new Date(),
     users: null,
+    selectedMonth: null,
+    selectedTime: null,
   },
 
   getters: {
@@ -44,6 +46,12 @@ export const store = new Vuex.Store({
     ...vuexfireMutations,
     TOGGLE_LOADING(state, payload) {
       state.loadingMap = !!payload;
+    },
+    SET_MONTH(state, payload) {
+      state.selectedMonth = payload;
+    },
+    SET_MONTH_LIMITES(state, payload) {
+      state.selectedTime = payload;
     },
     TOGGLE_SIDEBAR(state) {
       state.showSidebar = !state.showSidebar;
@@ -66,6 +74,7 @@ export const store = new Vuex.Store({
           delete_flag: "N",
           updatedAt: state.d,
           id: id,
+          activeSession: true,
         })
         .then(() => {
           console.log("Enviado");
@@ -79,6 +88,7 @@ export const store = new Vuex.Store({
       return await docRef
         .update({
           data: userData.data,
+          activeSession: userData.activeSession,
           updatedAt: state.d,
         })
         .then(() => {
@@ -135,39 +145,69 @@ export const store = new Vuex.Store({
     //   return bindFirestoreRef("attendance", db.collection("attendance"));
     // }),
     bindAsist: firestoreAction(({ state, bindFirestoreRef }, time) => {
-      // return the promise returned by `bindFirestoreRef`
-      return bindFirestoreRef(
-        "attendance",
-        db
-          .collection("attendance")
-          .where("delete_flag", "==", "N")
-          .where("author", "==", state.auth.user.uid)
-          .where("curentTime", ">=", time.start)
-          .where("curentTime", "<=", time.end - 1)
-          .orderBy("curentTime", "desc")
-          .limit(3)
-      );
+      // action to display attendance where leaveTime dosn´t exist
+      // only for pass Month
+      if (new Date(time.end).getMonth() < state.d.getMonth()) {
+        return bindFirestoreRef(
+          "attendance",
+          db
+            .collection("attendance")
+            .where("delete_flag", "==", "N")
+            .where("activeSession", "==", true)
+            .where("author", "==", state.auth.user.uid)
+            .where("curentTime", ">=", time.start)
+            .where("curentTime", "<=", time.end - 1)
+        );
+      }
+      // action to get data of actual Month
+      else {
+        return bindFirestoreRef(
+          "attendance",
+          db
+            .collection("attendance")
+            .where("delete_flag", "==", "N")
+            .where("author", "==", state.auth.user.uid)
+            .where("curentTime", ">=", time.start)
+            .where("curentTime", "<=", time.end - 1)
+            .orderBy("curentTime", "desc")
+            .limit(1)
+        );
+      }
     }),
-    getAsist: firestoreAction(({ state, bindFirestoreRef }, time) => {
+    getAsist: firestoreAction(({ state, bindFirestoreRef }, data) => {
       // return the promise returned by `bindFirestoreRef`
-      return bindFirestoreRef(
-        "attendance",
-        db
-          .collection("attendance")
-          .where("delete_flag", "==", "N")
-          .where("author", "==", state.auth.user.uid)
-          .where("curentTime", ">=", time.start)
-          .where("curentTime", "<=", time.end - 1)
-          .orderBy("curentTime", "asc")
-      );
+      if (data.user === state.auth.user.email) {
+        return bindFirestoreRef(
+          "attendance",
+          db
+            .collection("attendance")
+            .where("delete_flag", "==", "N")
+            .where("author", "==", state.auth.user.uid)
+            .where("curentTime", ">=", data.time.start)
+            .where("curentTime", "<=", data.time.end - 1)
+            .orderBy("curentTime", "asc")
+        );
+      } else {
+        return bindFirestoreRef(
+          "attendance",
+          db
+            .collection("attendance")
+            .where("delete_flag", "==", "N")
+            .where("data.email", "==", data.user)
+            .where("curentTime", ">=", data.time.start)
+            .where("curentTime", "<=", data.time.end - 1)
+            .orderBy("curentTime", "asc")
+        );
+      }
     }),
-    bindLastAsist: firestoreAction(({ bindFirestoreRef }, time) => {
+    bindLastAsist: firestoreAction(({ state, bindFirestoreRef }, time) => {
       // return the promise returned by `bindFirestoreRef`
       return bindFirestoreRef(
         "checkDay",
         db
           .collection("attendance")
           .where("delete_flag", "==", "N")
+          .where("author", "==", state.auth.user.uid)
           .where("curentTime", ">=", time)
           .where("curentTime", "<=", time + 86399400)
           .limit(1)
@@ -187,6 +227,12 @@ export const store = new Vuex.Store({
     },
     changeAttendance(context, userData) {
       context.commit("CHANGE_ATTENDANCE", { userData });
+    },
+    selectMonth(context, userData) {
+      context.commit("SET_MONTH", userData);
+    },
+    selectMonthLimites(context, userData) {
+      context.commit("SET_MONTH_LIMITES", userData);
     },
   },
 

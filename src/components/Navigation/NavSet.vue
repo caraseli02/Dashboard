@@ -1,5 +1,5 @@
 <template>
-  <footer
+  <section
     v-if="user"
     class="w-full flex justify-around items-center h-20 rounded-none border-none fixed bottom-0 z-10 rounded-t-lg glass-light"
   >
@@ -27,17 +27,17 @@
         </icon-base> </router-link
       >{{ $route.path === link.path ? link.name : "" }}
     </span>
-  </footer>
+  </section>
 </template>
 
 <script>
-import IconBase from "./IconBase.vue";
-import IconHome from "./icons/IconHome.vue";
-import IconCalendar from "./icons/IconCalendar.vue";
-import IconData from "./icons/IconData.vue";
-import IconTime from "./icons/IconTime.vue";
-import IconContact from "./icons/IconContact.vue";
-import IconProfile from "./icons/IconProfile.vue";
+import IconBase from "@/components/IconBase.vue";
+import IconHome from "@/components/icons/IconHome.vue";
+import IconCalendar from "@/components/icons/IconCalendar.vue";
+import IconData from "@/components/icons/IconData.vue";
+import IconTime from "@/components/icons/IconTime.vue";
+import IconContact from "@/components/icons/IconContact.vue";
+import IconProfile from "@/components/icons/IconProfile.vue";
 
 export default {
   name: "Footer",
@@ -61,16 +61,16 @@ export default {
           name: "Inicio",
         },
         {
-          iconName: "time",
-          component: IconTime,
-          path: "/dashboard",
-          name: "Asistencia",
-        },
-        {
           iconName: "calendar",
           component: IconCalendar,
           path: "/calendar",
           name: "Calendar",
+        },
+        {
+          iconName: "time",
+          component: IconTime,
+          path: "/dashboard",
+          name: "Asistencia",
         },
         {
           iconName: "data",

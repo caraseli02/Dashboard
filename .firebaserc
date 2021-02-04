@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "apimosa-930ed"
+    "default": "apimosa-930ed",
+    "dev": "apimosa-930ed"
   }
 }

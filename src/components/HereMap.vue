@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="flex flex-col justify-around items-center"
-    id="map"
-  >
+  <div class="flex flex-col justify-around items-center" id="map">
     <!--In the following div the HERE Map will render-->
     <div id="mapContainer" class="h-64 w-full rounded-lg" ref="hereMap"></div>
     <!-- <button class="my-3 mx-auto w-full">
@@ -29,8 +26,15 @@ export default {
       platform: null,
       apikey: process.env.VUE_APP_HERE_MAP_API_KEY,
       ui: null,
+      map: null,
       // You can get the API KEY from developer.here.com
     };
+  },
+  watch: {
+    attendance: function() {
+      this.addInfoBubble(this.map);
+      // watch it
+    },
   },
   async mounted() {
     // Initialize the platform object:
@@ -50,17 +54,18 @@ export default {
       marker.setData(html);
       group.addObject(marker);
     },
-    addInfoBubble(map) {
+    async addInfoBubble(map) {
       const H = window.H;
       var group = new H.map.Group();
       var self = this;
 
+      map.getObjects().forEach(bub => map.removeObject(bub));
       map.addObject(group);
 
       // add 'tap' event listener, that opens info bubble, to the group
       group.addEventListener(
         "tap",
-        function (evt) {
+        function(evt) {
           // event target is the marker itself, group is a parent event target
           // for all objects that it contains
           var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
@@ -88,16 +93,19 @@ export default {
           if (data.gpsLocLeave) {
             this.addMarkerToGroup(
               group,
-              { lat: data.gpsLoc.lat, lng: data.gpsLoc.lng },
+              { lat: data.gpsLocLeave.lat, lng: data.gpsLocLeave.lng },
               `<div >
               Salida 
-              <br>${data.leaveTime.slice(0, 11)}<br>
-              <br>${data.leaveTime.slice(14, 16)}<br>
+              <br>${data.leaveTime.slice(5, 10)}
+              <br>${data.leaveTime.slice(11, 16)}<br>
               </div>`
             );
           }
         });
       }
+    },
+    removeInfoBubble() {
+      this.ui.getBubbles().forEach(bub => this.ui.removeBubble(bub));
     },
     initializeHereMap() {
       // rendering map
@@ -109,21 +117,19 @@ export default {
 
       // Instantiate (and display) a map object:
       var map = new H.Map(mapContainer, maptypes.vector.normal.map, {
-        zoom: 15,
+        zoom: 10,
         center: this.center,
         // center object { lat: 40.730610, lng: -73.935242 }
       });
-
+      this.map = map;
       addEventListener("resize", () => map.getViewPort().resize());
 
       // add behavior control
       new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 
       // add UI
-      this.ui = H.ui.UI.createDefault(map, maptypes);
+      this.ui = H.ui.UI.createDefault(map, maptypes, "es-ES");
       // End rendering the initial map
-
-      this.addInfoBubble(map);
     },
   },
 };

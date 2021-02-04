@@ -91,10 +91,10 @@
 </template>
 
 <script>
-import IconBase from "./IconBase.vue";
+import IconBase from "@/components/IconBase.vue";
 // import IconMaps from "./icons/IconMaps.vue";
-import IconProfile from "./icons/IconProfile.vue";
-import IconArrowRight from "./icons/IconArrowRight.vue";
+import IconProfile from "@/components/icons/IconProfile.vue";
+import IconArrowRight from "@/components/icons/IconArrowRight.vue";
 import { mapGetters, mapActions, mapState } from "vuex";
 
 export default {
@@ -102,9 +102,9 @@ export default {
   computed: {
     ...mapGetters("auth", ["getUser"]),
     ...mapState({
-      showMap: (state) => state.showMap,
-      showSidebar: (state) => state.showSidebar,
-      loadingMap: (state) => state.loadingMap,
+      showMap: state => state.showMap,
+      showSidebar: state => state.showSidebar,
+      loadingMap: state => state.loadingMap,
     }),
     user() {
       return this.$store.getters["auth/getUser"];

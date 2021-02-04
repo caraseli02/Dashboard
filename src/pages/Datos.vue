@@ -1,55 +1,98 @@
 <template>
   <article v-if="geolocation.lat && geolocation.lng">
     <!-- Month selector  -->
-    <section class="w-full glass-light h-12 px-2 flex justify-between">
-      <button v-if="selectedMes > 0" @click="prevMonth()">
-        <icon-base>
-          <icon-arrow-left />
-        </icon-base>
-      </button>
-      <button
-        class="text-lg bg-gray-400 rounded-lg m-1 w-24"
-        v-if="selectedMes > 0"
-        @click="selectedMes = selectedMes - 1"
-      >
-        {{ meses[selectedMes - 1].slice(0, 3) }}
-      </button>
-      <button class="text-lg bg-gray-200 shadow-lg rounded-lg m-1 w-24">
-        {{ meses[selectedMes] }}
-      </button>
-      <button
-        class="text-lg bg-gray-400 rounded-lg m-1 w-24"
-        v-if="selectedMes < 11"
-        @click="selectedMes = selectedMes + 1"
-      >
-        {{ meses[selectedMes + 1].slice(0, 3) }}
-      </button>
-      <button v-if="selectedMes < 11" @click="nextMonth()">
-        <icon-base>
-          <icon-arrow-right />
-        </icon-base>
-      </button>
+    <monthSelector :pasedUser="selectedUser" :getAsistFunc="true" />
+    <section
+      v-if="users.length > 1"
+      class="flex justify-between items-center p-4 overflow-hidden"
+    >
+      <div class="w-1/2 px-3 mb-6 md:mb-0">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-state"
+        >
+          Centro
+        </label>
+        <div class="relative">
+          <select
+            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            id="grid-state"
+          >
+            <option>PMI</option>
+            <option>VLC</option>
+            <option>SVQ</option>
+          </select>
+          <div
+            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+          >
+            <svg
+              class="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="w-1/2 px-3 mb-6 md:mb-0 overflow-hidden">
+        <label
+          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          for="grid-state"
+        >
+          Empleado
+        </label>
+        <div class="relative">
+          <select
+            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            id="grid-state"
+            v-model="selectedUser"
+          >
+            <option disabled>Seleccionar</option>
+            <option v-for="(user, index) in users" :key="index">
+              {{ user.email }}
+            </option>
+          </select>
+          <div
+            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+          >
+            <svg
+              class="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
     </section>
     <!-- Attendence Display -->
     <section
-      class="grid grid-flow-col auto-cols-max gap-1 glass-light py-2 overflow-x-scroll"
+      class="grid grid-flow-col auto-cols-max py-2 overflow-x-scroll mt-2 ml-4"
     >
       <ul
         v-for="(attend, index) in attendList"
         :key="index"
-        class="w-24 h-auto grid grid-flow-row auto-rows-max glass-red"
+        class="w-24 grid grid-flow-row grid-rows-6 glass-light"
       >
         <li
           v-if="attend.data"
-          class="w-20 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-gray-400 rounded-b-lg"
+          class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-gray-400 rounded-lg"
         >
           <span
-            class="text-gray-900 rounded-t-lg text-base bg-blue-500 w-full text-center"
+            class="text-gray-900 rounded-t-lg text-base bg-blue-500 w-full h-full text-center"
             >{{ getDayName(attend.data.enterTime).slice(0, 3) }}</span
           >
           {{ attend.data.enterTime.slice(8, 10) }}
         </li>
-        <li class="mx-auto flex justify-around items-center p-1 my-1">
+        <li
+          class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
+        >
           <span class="text-green-700 text-2xl">&#8595;</span>
           <span class="text-xl text-green-800">
             {{ attend.data.enterTime.slice(11, 16) }}</span
@@ -57,26 +100,50 @@
         </li>
         <li
           v-if="attend.data.leaveTime"
-          class="mx-auto flex justify-around items-center p-1"
+          class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
         >
           <span class="text-xl text-red-800">
             {{ attend.data.leaveTime.slice(11, 16) }}</span
           >
           <span class="text-red-700 text-2xl">&#8593;</span>
         </li>
-        <li v-else class="mx-auto flex justify-around items-center">
-          <button @click="saveLeaveTime(attend)" class="text-xl text-red-800">
-            ??:??
-          </button>
+        <li
+          v-else
+          class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
+        >
+          <button class="text-xl text-red-800">--:--</button>
           <span class="text-red-700 text-2xl">&#8593;</span>
         </li>
-        <li
-          class="flex mr-2 justify-center items-center text-purple-800 rounded-full my-2"
-        >
+        <li class="flex justify-center items-center text-purple-800">
           <icon-base>
             <icon-temp />
           </icon-base>
           {{ attend.data.temperature }}
+        </li>
+        <!-- Attendence Messages -->
+        <li
+          @click="showInfoMsg(attend.data.msg)"
+          class="h-full flex justify-center items-center text-purple-800"
+        >
+          <icon-base
+            v-if="attend.data.msg"
+            class="mx-4 self-center bg-green-300 rounded-lg w-full p-1 h-8"
+          >
+            <icon-contact />
+          </icon-base>
+          <span class="text-xs mx-4 text-center" v-else>No tiene Mensajes</span>
+        </li>
+        <li
+          @click="showChangeMsg(attend.data.enterChange)"
+          class="h-full flex justify-center items-center text-purple-800"
+        >
+          <div
+            v-if="attend.data.enterChange"
+            class="mx-4 self-center bg-yellow-300 rounded-lg w-full p-2"
+          >
+            <i class="gg-sync mx-auto"></i>
+          </div>
+          <span class="text-xs mx-4 text-center" v-else>No tiene Cambios</span>
         </li>
       </ul>
     </section>
@@ -123,39 +190,25 @@
 // import Alerts from "@/components/utils/Alerts.vue";
 import { mapState, mapActions, mapGetters } from "vuex";
 import IconBase from "../components/IconBase.vue";
-import IconArrowLeft from "../components/icons/IconArrowLeft.vue";
-import IconArrowRight from "../components/icons/IconArrowRight.vue";
+import IconContact from "../components/icons/IconContact.vue";
 import IconTemp from "../components/icons/IconTemp.vue";
 import HereMap from "@/components/HereMap.vue";
+import monthSelector from "@/components/utils/monthSelector.vue";
 
 export default {
   props: {},
-  name: "calendar",
+  name: "Datos",
   components: {
     IconBase,
-    IconArrowLeft,
-    IconArrowRight,
+    monthSelector,
     IconTemp,
     HereMap,
+    IconContact,
     // Alerts,
   },
   data() {
     return {
       selectedMes: null,
-      meses: [
-        "Enero",
-        "Febrero",
-        "Marzo",
-        "Abril",
-        "Mayo",
-        "Junio",
-        "Julio",
-        "Agosto",
-        "Septiembre",
-        "Octubre",
-        "Noviembre",
-        "Diciembre",
-      ],
       days: [
         "domingo",
         "lunes",
@@ -167,7 +220,7 @@ export default {
         "domingo",
       ],
       today: null,
-      temperature: 36.6,
+      selectedUser: null,
     };
   },
   computed: {
@@ -178,19 +231,35 @@ export default {
       geolocation: (state) => state.geolocation,
       loadingMap: (state) => state.loadingMap,
       users: (state) => state.users,
+      selectedTime: (state) => state.selectedTime,
     }),
+    ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
   },
   methods: {
     ...mapActions([
-      "bindLastAsist",
-      "setAttendance",
       "changeAttendance",
-      "deleteAsist",
       "currentLocation",
       "getAsist",
       "getUsers",
     ]),
+    showInfoMsg(msg) {
+      this.$alert(msg);
+    },
+    showChangeMsg(data) {
+      this.$fire({
+        title: `
+        <ul>
+          <li>Cambiado de Entrada</li>
+          <li>Antes : ${data.oldValue}</li>
+          <li>Ahora : ${data.newValue}</li>
+          <li>Fecha de Cambiado : ${data.changeTime}</li>
+        </ul>
+        `,
+        text: `${data.msg}`,
+        type: "info",
+      });
+    },
     deepEqual(object1, object2) {
       function isObject(object) {
         return object != null && typeof object === "object";
@@ -216,18 +285,6 @@ export default {
       }
       return false;
     },
-    saveLeaveTime(value) {
-      if (value) {
-        this.$confirm("Apuntar Salida?").then(() => {
-          if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
-            value["data"]["gpsLocLeave"] = this.geolocation;
-            console.log(value);
-          }
-          value["data"]["leaveTime"] = this.today;
-          this.changeAttendance(value);
-        });
-      }
-    },
     nextMonth() {
       if (this.selectedMes > 12) {
         this.selectedMes = 0;
@@ -247,42 +304,13 @@ export default {
     },
   },
   watch: {
-    selectedMes: function (newValue) {
-      // GET CURRENT YEAR
-      let time = new Object();
-      time["year"] = new Date().toISOString().split("T")[0].slice(0, 4);
-      console.log("Inicio", time);
-      // Month Transform
-      if (newValue < 10) {
-        time["start"] = new Date(
-          `${time["year"]}-0${newValue + 1}-01T00:00:00.000+01:00`
-        ).getTime();
-        time["end"] =
-          new Date(
-            `${time["year"]}-0${newValue + 2}-01T00:00:00.000+01:00`
-          ).getTime() - 1;
-      } else if (newValue === 11) {
-        time["start"] = new Date(
-          `${time["year"]}-0${newValue + 1}-01T00:00:00.000+01:00`
-        ).getTime();
-        time["end"] =
-          new Date(
-            `${time["year"]}-0${newValue + 2}-01T00:00:00.000+01:00`
-          ).getTime() + 2.678e9;
-      } else {
-        time["start"] = new Date(
-          `${time["year"]}-0${newValue + 1}-01T00:00:00.000+01:00`
-        ).getTime();
-        time["end"] =
-          new Date(
-            `${time["year"]}-0${newValue + 2}-01T00:00:00.000+01:00`
-          ).getTime() - 1;
-      }
-      if (time) {
-        this.getAsist(time).then(() => {
-          console.log(`new Value: ${newValue}`);
-        });
-      }
+    selectedUser: function (newValue) {
+      const data = {
+        user: newValue,
+        time: this.selectedTime,
+        uid: this.user.uid,
+      };
+      this.getAsist(data);
     },
   },
   async mounted() {
