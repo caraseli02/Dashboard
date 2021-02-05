@@ -172,12 +172,12 @@
               <span class="text-lg font-light mb-1">Entrada</span>
               {{ dateExist[0]["data"]["enterTime"].slice(11, 16) }}
             </li>
-            <li class="w-full ">
+            <li class="w-full">
               <button
                 v-if="
                   enterModal &&
-                    userData.enterTime.slice(11, 16) !==
-                      dateExist[0]['data']['enterTime'].slice(11, 16)
+                  userData.enterTime.slice(11, 16) !==
+                    dateExist[0]['data']['enterTime'].slice(11, 16)
                 "
                 class="bg-blue-500 hover:bg-blue-400 text-sm text-white py-2 px-4 w-full rounded-b-lg"
                 @click="changeEnterTime(dateExist)"
@@ -194,7 +194,7 @@
               <span class="text-lg font-light mb-1">Salida</span>
               {{ leaveTime ? leaveTime.slice(11, 16) : "-- / --" }}
             </li>
-            <li class="w-full ">
+            <li class="w-full">
               <button
                 class="bg-green-500 hover:bg-green-400 text-sm text-white py-2 px-4 rounded-b-lg w-full"
                 v-if="enterModal"
@@ -287,7 +287,7 @@ export default {
         email: localStorage.getItem("email"),
         uid: localStorage.getItem("uid"),
         gpsLoc: {},
-        dttm: new Date(),
+        dttm: new Date().toLocaleString(),
         enterTime: null,
         temperature: 36.6,
       },
@@ -313,35 +313,43 @@ export default {
         }
       },
     },
-    // leaveTime: function(val) {
-    //   if (val) {
-    //     this.extraHors = 0;
-    //     const enter = new Date(this.userData.enterTime);
-    //     const leave = new Date(val);
+    leaveTime: function (val) {
+      if (val) {
+        this.extraHors = 0;
+        let enter = null;
+        if (this.dateExist[0]) {
+          enter = this.dateExist[0].data.enterTime.replace('Z', '')
+          enter = new Date(enter);
+          console.log(enter);
+        } else {
+          enter = new Date(this.userData.enterTime);
+          console.log(enter);
+        }
+        const leave = new Date(val);
 
-    //     this.workedHors =
-    //       (new Date(leave).getTime() - new Date(enter).getTime()) / 60000;
-    //     if (this.workedHors > 480) {
-    //       this.extraHors = this.timeConvert(
-    //         this.diff_minutes(enter, leave) - 480
-    //       );
-    //       this.userData["extraHors"] = this.extraHors;
-    //     }
-    //     if (Math.sign(this.workedHors)) {
-    //       this.workedHors = this.timeConvert(this.workedHors);
-    //       this.userData["workedHors"] = this.workedHors;
-    //     }
-    //     this.userData["leaveTime"] = this.leaveTime;
-    //   }
-    // },
+        this.workedHors =
+          (new Date(leave).getTime() - new Date(enter).getTime()) / 60000;
+        if (this.workedHors > 500) {
+          this.extraHors = this.timeConvert(
+            this.diff_minutes(enter, leave) - 480
+          );
+          this.userData["extraHors"] = this.extraHors;
+        }
+        if (Math.sign(this.workedHors)) {
+          this.workedHors = this.timeConvert(this.workedHors);
+          this.userData["workedHors"] = this.workedHors;
+        }
+        this.userData["leaveTime"] = this.leaveTime;
+      }
+    },
   },
   components: { datetime: Datetime, dragVerify, Alerts },
   // components: { IconBase, IconMaps, datetime: Datetime },
   computed: {
     ...mapState({
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      d: state => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      d: (state) => state.d,
     }),
     dateExist() {
       return this.$store.state.checkDay;
@@ -378,7 +386,7 @@ export default {
         this.$prompt(
           `Motivo del cambio?
              La nueva hora: ${this.userData.enterTime.slice(11, 16)}`
-        ).then(text => {
+        ).then((text) => {
           value[0]["data"]["enterChange"] = {
             oldValue: value[0]["data"]["enterTime"].slice(11, 16),
             newValue: this.userData.enterTime.slice(11, 16),
@@ -415,7 +423,6 @@ export default {
       return rhours + " h " + rminutes + " m ";
     },
     diff_minutes(dt2, dt1) {
-      dt2 = new Date();
       var diff = (dt2.getTime() - dt1.getTime()) / 1000;
       diff /= 60;
       return Math.abs(Math.round(diff));
@@ -454,7 +461,7 @@ export default {
     convertToAsist() {
       this.asistList = new Set();
 
-      this.$store.state.attendance.forEach(element => {
+      this.$store.state.attendance.forEach((element) => {
         let monthNr = new Date(
           element["createdAt"]["seconds"] * 1000
         ).getMonth();
@@ -480,11 +487,11 @@ export default {
     }
     // get position
     await navigator.geolocation.getCurrentPosition(
-      pos => {
+      (pos) => {
         this.userData.gpsLoc.lat = pos.coords.latitude;
         this.userData.gpsLoc.lng = pos.coords.longitude;
       },
-      err => {
+      (err) => {
         this.gettingLocation = false;
         this.errorStr = err.message;
       }

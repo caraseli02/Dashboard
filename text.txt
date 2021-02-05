@@ -93,14 +93,6 @@
         </li>
         <li
           class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
-        >
-          <span class="text-green-700 text-2xl">&#8595;</span>
-          <span class="text-xl text-green-800">
-            {{ attend.data.enterTime.slice(11, 16) }}</span
-          >
-        </li>
-        <!-- <li
-          class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
           @click="
             showInfoMsg(`Apuntado a las ${attend.data.dttm.slice(11, 17)}`)
           "
@@ -124,7 +116,7 @@
           >
             {{ attend.data.enterTime.slice(11, 16) }}</span
           >
-        </li> -->
+        </li>
         <li
           v-if="attend.data.leaveTime"
           class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"

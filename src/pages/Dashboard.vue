@@ -183,7 +183,7 @@ import dragVerify from "vue-drag-verify";
 import monthSelector from "@/components/utils/monthSelector.vue";
 
 export default {
-  name: "calendar",
+  name: "Dashboard",
   components: {
     Options,
     IconBase,
@@ -283,9 +283,9 @@ export default {
     saveLeaveTime(value) {
       if (value) {
         this.$confirm(`Apuntar Salida a las ${this.timeNow}?`).then(() => {
-          // if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
-          //   value["data"]["gpsLocLeave"] = this.geolocation;
-          // }
+          if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
+            value["data"]["gpsLocLeave"] = this.geolocation;
+          }
           value["activeSession"] = false;
           value["data"]["leaveTime"] = this.today;
           this.changeAttendance(value);

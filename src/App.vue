@@ -3,6 +3,23 @@
     <Header />
     <Alerts />
     <Sidebar />
+    <div v-if="updateExists" class="alert-banner w-full fixed top-0">
+      <input type="checkbox" class="hidden" id="banneralert" />
+
+      <label
+        class="close cursor-pointer flex items-center justify-between w-full p-2 bg-red-500 shadow text-white"
+        title="close"
+        for="banneralert"
+      >
+        Instalar version reciente?
+        <button
+          @click="refreshApp"
+          class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        >
+          OK
+        </button>
+      </label>
+    </div>
     <HereMap class="z-20 absolute" v-if="showMap" :center="geolocation" />
     <main class="container mx-auto py-5">
       <transition name="fade" mode="out-in">
@@ -20,11 +37,14 @@ import { mapActions, mapState } from "vuex";
 import Footer from "./components/Navigation/Footer.vue";
 import Header from "./components/Navigation/Header.vue";
 import Sidebar from "./components/Sidebar.vue";
+import update from "./mixins/update";
 
 export default {
   data() {
     return {};
   },
+  name: "App",
+  mixins: [update],
   components: {
     Header,
     Footer,
@@ -43,6 +63,13 @@ export default {
     ...mapActions([
       "currentLocation", // -> this['some/nested/module/bar']()
     ]),
+  },
+  mounted() {
+    if (this.updateExists) {
+      this.$confirm("Instalar version reciente?").then(() => {
+        this.refreshApp;
+      });
+    }
   },
   created() {
     // when the app is created run the set user method
