@@ -122,8 +122,8 @@
       <p
         v-if="
           attendList[0] &&
-            'msg' in attendList[0].data &&
-            d.getMonth() === selectedMes
+          'msg' in attendList[0].data &&
+          d.getMonth() === selectedMes
         "
         class="w-screen glass-light h-auto p-3 flex justify-start items-start overflow-y-auto"
       >
@@ -183,6 +183,27 @@ import dragVerify from "vue-drag-verify";
 import monthSelector from "@/components/utils/monthSelector.vue";
 
 export default {
+  // watch: {
+  //   attendList: function (newValue) {
+  //     if (newValue.length > 0) {
+  //       const enter = newValue[0].data.enterTime;
+  //       const leave = newValue[0].data.leaveTime;
+  //       console.log(enter, leave);
+  //       this.workedHors =
+  //         (new Date(leave.replace("Z", "")).getTime() -
+  //           new Date(enter.replace("Z", "")).getTime()) /
+  //         60000;
+  //       if (this.workedHors > 500) {
+  //         this.extraHors = this.timeConvert(
+  //           this.diff_minutes(enter, leave) - 480
+  //         );
+  //       }
+  //       if (Math.sign(this.workedHors)) {
+  //         this.workedHors = this.timeConvert(this.workedHors);
+  //       }
+  //     }
+  //   },
+  // },
   name: "Dashboard",
   components: {
     Options,
@@ -222,17 +243,19 @@ export default {
       today: null,
       temperature: 36.6,
       tempList: [],
+      workedHors: null,
+      extraHors: null,
     };
   },
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      checkDay: state => state.checkDay,
-      d: state => state.d,
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      selectedMes: state => state.selectedMonth,
+      attendList: (state) => state.attendance,
+      checkDay: (state) => state.checkDay,
+      d: (state) => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      selectedMes: (state) => state.selectedMonth,
     }),
     ...mapGetters(["checkCalendarToday"]),
     timeNow() {
@@ -245,6 +268,33 @@ export default {
         hours = `0${hours}`;
       }
       return `${hours} : ${minutes} `;
+    },
+    timeInfo: {
+      // getter
+      get: function () {
+        return {
+          workedHors: this.workedHors,
+          extraHors: this.extraHors,
+        };
+      },
+      // setter
+      set: function () {
+        const enter = this.attendList[0].data.leaveTime;
+        const leave = this.attendList[0].data.enterTime;
+        this.workedHors =
+          (new Date(leave).getTime() - new Date(enter).getTime()) / 60000;
+        if (this.workedHors > 500) {
+          this.extraHors = this.timeConvert(
+            this.diff_minutes(enter, leave) - 480
+          );
+          this.userData["extraHors"] = this.extraHors;
+        }
+        if (Math.sign(this.workedHors)) {
+          this.workedHors = this.timeConvert(this.workedHors);
+          this.userData["workedHors"] = this.workedHors;
+        }
+        this.userData["leaveTime"] = this.leaveTime;
+      },
     },
   },
   methods: {
@@ -309,6 +359,19 @@ export default {
       var d = new Date(dateString);
       var dayName = this.days[d.getDay()];
       return dayName;
+    },
+    timeConvert(n) {
+      var num = n;
+      var hours = num / 60;
+      var rhours = Math.floor(hours);
+      var minutes = (hours - rhours) * 60;
+      var rminutes = Math.round(minutes);
+      return rhours + " h " + rminutes + " m ";
+    },
+    diff_minutes(dt2, dt1) {
+      var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+      diff /= 60;
+      return Math.abs(Math.round(diff));
     },
   },
   async mounted() {

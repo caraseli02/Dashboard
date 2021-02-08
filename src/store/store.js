@@ -185,7 +185,7 @@ export const store = new Vuex.Store({
             .where("author", "==", state.auth.user.uid)
             .where("curentTime", ">=", data.time.start)
             .where("curentTime", "<=", data.time.end - 1)
-            .orderBy("curentTime", "asc")
+            .orderBy("curentTime", "desc")
         );
       } else {
         return bindFirestoreRef(
@@ -196,7 +196,7 @@ export const store = new Vuex.Store({
             .where("data.email", "==", data.user)
             .where("curentTime", ">=", data.time.start)
             .where("curentTime", "<=", data.time.end - 1)
-            .orderBy("curentTime", "asc")
+            .orderBy("curentTime", "desc")
         );
       }
     }),

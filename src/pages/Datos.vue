@@ -4,7 +4,7 @@
     <monthSelector :pasedUser="selectedUser" :getAsistFunc="true" />
     <!-- User Selector if login like admin -->
     <section
-      v-if="userList"
+      v-if="users.length > 1"
       class="flex justify-between items-center p-4 overflow-hidden"
     >
       <div class="w-1/2 px-3 mb-6 md:mb-0">
@@ -91,15 +91,17 @@
           >
           {{ attend.data.enterTime.slice(8, 10) }}
         </li>
-        <li
+        <!-- <li
           class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
         >
           <span class="text-green-700 text-2xl">&#8595;</span>
           <span class="text-xl text-green-800">
-            {{ attend.data.enterTime.slice(11, 16) }}</span
+            {{
+              checkEnterCreated(attend.data.enterTime, attend.data.dttm)
+            }}</span
           >
-        </li>
-        <!-- <li
+        </li> -->
+        <li
           class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
           @click="
             showInfoMsg(`Apuntado a las ${attend.data.dttm.slice(11, 17)}`)
@@ -107,8 +109,7 @@
         >
           <span class="text-green-700 text-2xl mr-1">
             {{
-              parseInt(attend.data.enterTime.slice(11, 13)) ===
-              parseInt(attend.data.dttm.slice(11, 14))
+              checkEnterCreated(attend.data.enterTime, attend.data.dttm)
                 ? `&#8595;`
                 : `&#8800;`
             }}
@@ -116,15 +117,14 @@
           <span
             class="text-xl"
             :class="
-              parseInt(attend.data.enterTime.slice(11, 13)) ===
-              parseInt(attend.data.dttm.slice(11, 14))
+              checkEnterCreated(attend.data.enterTime, attend.data.dttm)
                 ? 'text-green-800'
                 : 'text-orange-700 font-bold'
             "
           >
             {{ attend.data.enterTime.slice(11, 16) }}</span
           >
-        </li> -->
+        </li>
         <li
           v-if="attend.data.leaveTime"
           class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
@@ -262,9 +262,6 @@ export default {
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
-    userList() {
-      return this.users.length > 1;
-    },
   },
   methods: {
     ...mapActions([
@@ -273,6 +270,16 @@ export default {
       "getAsist",
       "getUsers",
     ]),
+    checkEnterCreated: (val1, val2) => {
+      if (val1 && val2) {
+        console.log(val1, val2);
+        try {
+          return parseInt(val1.slice(11, 13)) === parseInt(val2.slice(11, 14));
+        } catch (error) {
+          return false;
+        }
+      }
+    },
     showInfoMsg(msg) {
       this.$alert(msg);
     },

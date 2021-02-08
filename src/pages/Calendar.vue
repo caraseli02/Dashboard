@@ -313,35 +313,35 @@ export default {
         }
       },
     },
-    leaveTime: function (val) {
-      if (val) {
-        this.extraHors = 0;
-        let enter = null;
-        if (this.dateExist[0]) {
-          enter = this.dateExist[0].data.enterTime.replace('Z', '')
-          enter = new Date(enter);
-          console.log(enter);
-        } else {
-          enter = new Date(this.userData.enterTime);
-          console.log(enter);
-        }
-        const leave = new Date(val);
+    // leaveTime: function (val) {
+    //   if (val) {
+    //     this.extraHors = 0;
+    //     let enter = null;
+    //     if (this.dateExist[0]) {
+    //       enter = this.dateExist[0].data.enterTime.replace('Z', '')
+    //       enter = new Date(enter);
+    //       console.log(enter);
+    //     } else {
+    //       enter = new Date(this.userData.enterTime);
+    //       console.log(enter);
+    //     }
+    //     const leave = new Date(val);
 
-        this.workedHors =
-          (new Date(leave).getTime() - new Date(enter).getTime()) / 60000;
-        if (this.workedHors > 500) {
-          this.extraHors = this.timeConvert(
-            this.diff_minutes(enter, leave) - 480
-          );
-          this.userData["extraHors"] = this.extraHors;
-        }
-        if (Math.sign(this.workedHors)) {
-          this.workedHors = this.timeConvert(this.workedHors);
-          this.userData["workedHors"] = this.workedHors;
-        }
-        this.userData["leaveTime"] = this.leaveTime;
-      }
-    },
+    //     this.workedHors =
+    //       (new Date(leave).getTime() - new Date(enter).getTime()) / 60000;
+    //     if (this.workedHors > 500) {
+    //       this.extraHors = this.timeConvert(
+    //         this.diff_minutes(enter, leave) - 480
+    //       );
+    //       this.userData["extraHors"] = this.extraHors;
+    //     }
+    //     if (Math.sign(this.workedHors)) {
+    //       this.workedHors = this.timeConvert(this.workedHors);
+    //       this.userData["workedHors"] = this.workedHors;
+    //     }
+    //     this.userData["leaveTime"] = this.leaveTime;
+    //   }
+    // },
   },
   components: { datetime: Datetime, dragVerify, Alerts },
   // components: { IconBase, IconMaps, datetime: Datetime },
