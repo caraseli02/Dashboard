@@ -332,7 +332,7 @@ export default {
     },
     saveLeaveTime(value) {
       if (value) {
-        this.$confirm(`Apuntar Salida a las ${this.timeNow}?`).then(() => {
+        this.$confirm(`Apuntar Salida?`).then(() => {
           if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
             value["data"]["gpsLocLeave"] = this.geolocation;
           }
@@ -347,7 +347,7 @@ export default {
         email: localStorage.getItem("email"),
         uid: localStorage.getItem("uid"),
         gpsLoc: this.$store.state.geolocation,
-        dttm: new Date().toLocaleString(),
+        dttm: new Date(),
         enterTime: this.today,
         temperature: this.temperature,
       });

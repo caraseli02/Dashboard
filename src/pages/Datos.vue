@@ -83,7 +83,8 @@
       >
         <li
           v-if="attend.data"
-          class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-gray-400 rounded-lg"
+          class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-green-400 rounded-lg"
+          @click="deleteAttendData(attend.id)"
         >
           <span
             class="text-gray-900 rounded-t-lg text-base bg-blue-500 w-full h-full text-center"
@@ -101,45 +102,35 @@
             }}</span
           >
         </li> -->
-        <li
-          class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
-          @click="
-            showInfoMsg(`Apuntado a las ${attend.data.dttm.slice(11, 17)}`)
-          "
-        >
-          <span class="text-green-700 text-2xl mr-1">
-            {{
-              checkEnterCreated(attend.data.enterTime, attend.data.dttm)
-                ? `&#8595;`
-                : `&#8800;`
-            }}
-          </span>
-          <span
-            class="text-xl"
-            :class="
-              checkEnterCreated(attend.data.enterTime, attend.data.dttm)
-                ? 'text-green-800'
-                : 'text-orange-700 font-bold'
-            "
-          >
+        <li class="mx-auto h-full flex justify-center items-center p-1">
+          <span class="text-green-700 text-2xl mr-1"> &#8595; </span>
+          <span class="text-xl text-green-800">
             {{ attend.data.enterTime.slice(11, 16) }}</span
           >
         </li>
+        <!-- v-if="checkEnterCreated(attend.createdAt, attend.curentTime) !== 0" -->
         <li
-          v-if="attend.data.leaveTime"
-          class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
+          class="w-full flex justify-center items-center text-gray-800 text-base text-center rounded-lg"
         >
-          <span class="text-xl text-red-800">
+          <span class="h-16 pt-2 px-1">{{
+            checkEnterCreated(attend.createdAt, attend.curentTime)
+          }}</span>
+        </li>
+        <li
+          class="mx-auto h-full flex justify-center items-center p-1 border-t-2 border-gray-600"
+        >
+          <span v-if="attend.data.leaveTime" class="text-xl text-red-800">
             {{ attend.data.leaveTime.slice(11, 16) }}</span
           >
+          <button v-else class="text-xl text-red-800">--:--</button>
           <span class="text-red-700 text-2xl">&#8593;</span>
         </li>
         <li
-          v-else
           class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
         >
-          <button class="text-xl text-red-800">--:--</button>
-          <span class="text-red-700 text-2xl">&#8593;</span>
+          <span class="text-red-900 text-base text-center">
+            {{ checkLeaveUpdate(attend.closedAt, attend.data.leaveTime) }}
+          </span>
         </li>
         <li class="flex justify-center items-center text-purple-800">
           <icon-base>
@@ -269,15 +260,60 @@ export default {
       "currentLocation",
       "getAsist",
       "getUsers",
+      "deleteAsist",
     ]),
+    deleteAttendData(val) {
+      this.$confirm("Borar assistencia?").then(() => {
+        this.deleteAsist(val);
+      });
+    },
     checkEnterCreated: (val1, val2) => {
       if (val1 && val2) {
-        console.log(val1, val2);
-        try {
-          return parseInt(val1.slice(11, 13)) === parseInt(val2.slice(11, 14));
-        } catch (error) {
-          return false;
+        const created = new Date(val1.seconds * 1000);
+        const inserted = new Date(val2);
+        const diffMs = created - inserted; // milliseconds between now & Christmas
+        const diffDays = Math.floor(diffMs / 86400000); // days
+        const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+        const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+        // console.log(
+        //   diffDays + " days, " + diffHrs + " hours, " + diffMins + " diff =)"
+        // );
+        if (diffDays > 0) {
+          return created.toString().slice(7, 21);
         }
+        if (diffMins > 30 || diffHrs > 1) {
+          if (diffHrs > 1) {
+            return `Retraso de ${diffHrs} Horas`;
+          }
+          return `Retraso de ${diffMins} Minutes`;
+        }
+        return "--/--";
+      }
+    },
+    checkLeaveUpdate: (updatedAt, leaveTime) => {
+      if (updatedAt && leaveTime) {
+        const leave = new Date(leaveTime.replace("Z", ""));
+        const updated = new Date(updatedAt.seconds * 1000);
+
+        const diffMs = leave - updated;
+        // milliseconds between now & Christmas
+        const diffDays = Math.floor(diffMs / 86400000); // days
+        const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+        const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+        // console.log(
+        //   leave.toString().slice(7, 21),
+        //   updated.toString().slice(7, 21)
+        // );
+        if (diffDays < 0) {
+          return updated.toString().slice(7, 21);
+        }
+        if (diffMins > 30 || diffHrs > 0.5) {
+          if (diffHrs > 0.5) {
+            return `Antes con ${diffHrs} Horas`;
+          }
+          return `Antes con ${diffMins} Minutes`;
+        }
+        return "Puntual";
       }
     },
     showInfoMsg(msg) {

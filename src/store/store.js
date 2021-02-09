@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { db } from "../main";
+import { firebase } from "@firebase/app";
 import "@firebase/auth";
 import { vuexfireMutations, firestoreAction } from "vuexfire";
 import { v4 as uuidv4 } from "uuid";
@@ -67,12 +68,12 @@ export const store = new Vuex.Store({
       const docRef = db.collection("attendance").doc(id);
       return await docRef
         .set({
-          createdAt: state.d,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           curentTime: new Date(userData.enterTime).getTime(),
           data: userData,
           author: state.auth.user.uid,
           delete_flag: "N",
-          updatedAt: state.d,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           id: id,
           activeSession: true,
         })
@@ -85,18 +86,19 @@ export const store = new Vuex.Store({
     },
     async CHANGE_ATTENDANCE(state, { userData }) {
       const docRef = db.collection("attendance").doc(userData.id);
-      return await docRef
-        .update({
+      if (userData.data.leaveTime) {
+        return await docRef.update({
           data: userData.data,
           activeSession: userData.activeSession,
-          updatedAt: state.d,
-        })
-        .then(() => {
-          console.log("user updated");
-        })
-        .catch(error => {
-          this.error = error.message;
+          closedAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
+      } else {
+        return await docRef.update({
+          data: userData.data,
+          activeSession: userData.activeSession,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      }
     },
   },
 

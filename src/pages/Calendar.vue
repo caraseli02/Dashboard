@@ -287,7 +287,7 @@ export default {
         email: localStorage.getItem("email"),
         uid: localStorage.getItem("uid"),
         gpsLoc: {},
-        dttm: new Date().toLocaleString(),
+        dttm: new Date(),
         enterTime: null,
         temperature: 36.6,
       },
