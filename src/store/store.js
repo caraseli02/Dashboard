@@ -162,6 +162,8 @@ export const store = new Vuex.Store({
             .where("author", "==", state.auth.user.uid)
             .where("curentTime", ">=", time.start)
             .where("curentTime", "<=", time.end - 1)
+            .orderBy("curentTime", "desc")
+            .limit(1)
         );
       }
       // action to get data of actual Month

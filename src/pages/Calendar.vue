@@ -176,8 +176,8 @@
               <button
                 v-if="
                   enterModal &&
-                    userData.enterTime.slice(11, 16) !==
-                      dateExist[0]['data']['enterTime'].slice(11, 16)
+                  userData.enterTime.slice(11, 16) !==
+                    dateExist[0]['data']['enterTime'].slice(11, 16)
                 "
                 class="bg-blue-500 hover:bg-blue-400 text-sm text-white py-2 px-4 w-full rounded-b-lg"
                 @click="changeEnterTime(dateExist)"
@@ -310,9 +310,9 @@ export default {
   // components: { IconBase, IconMaps, datetime: Datetime },
   computed: {
     ...mapState({
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      d: state => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      d: (state) => state.d,
     }),
     dateExist() {
       return this.$store.state.checkDay;
@@ -344,7 +344,9 @@ export default {
       await this.currentLocation();
       if (this.geolocation.lat && this.geolocation.lng) {
         (this.userData.gpsLoc = this.geolocation),
-          await this.setAttendance(this.userData);
+          await this.setAttendance(this.userData).then(() => {
+            window.localStorage.setItem("enterTime", this.userData.enterTime);
+          });
       }
       // this.enterModal = false;
       // this.$router.replace("calendar");
@@ -356,7 +358,7 @@ export default {
         this.$prompt(
           `Motivo del cambio?
              La nueva hora: ${this.userData.enterTime.slice(11, 16)}`
-        ).then(text => {
+        ).then((text) => {
           value[0]["data"]["enterChange"] = {
             oldValue: value[0]["data"]["enterTime"].slice(11, 16),
             newValue: this.userData.enterTime.slice(11, 16),
@@ -375,6 +377,7 @@ export default {
       await this.currentLocation();
       if (value[0]) {
         value[0]["data"]["leaveTime"] = this.leaveTime;
+        value[0]["activeSession"] = false;
         // value[0]["data"]["extraHors"] = this.extraHors;
         // value[0]["data"]["workedHors"] = this.workedHors;
         if (this.geolocation.lat && this.geolocation.lng) {
@@ -419,25 +422,10 @@ export default {
     //       this.error = error.message;
     //     });
     // },
-    // async markAsist() {
-    //   await firebase
-    //     .firestore()
-    //     .collection("attendance")
-    //     .add({
-    //       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    //       data: this.userData,
-    //     })
-    //     .then(() => {
-    //       console.log("Enviado");
-    //     })
-    //     .catch((error) => {
-    //       this.error = error.message;
-    //     });
-    // },
     convertToAsist() {
       this.asistList = new Set();
 
-      this.$store.state.attendance.forEach(element => {
+      this.$store.state.attendance.forEach((element) => {
         let monthNr = new Date(
           element["createdAt"]["seconds"] * 1000
         ).getMonth();
@@ -452,7 +440,7 @@ export default {
     },
     // ...mapActions(["createAsist"]),
   },
-  async created() {
+  created() {
     for (var i = 355; i <= 375; i++) {
       this.tempList.push(i / 10);
     }

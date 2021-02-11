@@ -53,10 +53,7 @@
           </drag-verify>
         </li>
       </ul>
-      <h3
-        v-if="d.getMonth() === selectedMes"
-        class="text-xl font-bold ml-2 text-gray-800"
-      >
+      <h3 v-if="actualMonthCheck" class="text-xl font-bold ml-2 text-gray-800">
         TU ÚLTIMA OPERACIÓN:
       </h3>
       <h3
@@ -67,11 +64,10 @@
           attendList[0] ? "Sesión sin cerrar" : "No tienes sesiónes sin cerrar"
         }}
       </h3>
-
       <ul
         v-for="(attend, index) in attendList"
         :key="index"
-        class="glass-light w-screen h-32 grid grid-flow-col auto-cols-max classControl"
+        class="glass-light w-screen h-32 grid grid-flow-col auto-cols-max"
       >
         <li
           v-if="attend.data"
@@ -99,14 +95,27 @@
             &#8593;{{ attend.data.leaveTime.slice(11, 16) }}</span
           >
         </li>
-        <li v-else class="flex justify-center items-center">
+        <li class="flex justify-center items-center h-full w-full z-50">
           <button
+            v-if="actualMonthCheck && !attend.data.leaveTime"
             @click="saveLeaveTime(attend)"
             class="block text-gray-900 font-bold my-3 mx-auto py-2 px-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 rounded-lg"
           >
             Apuntar<br />
             Salida<br />
           </button>
+          <datetime
+            v-model="datetimeTheming"
+            class="top-0"
+            v-if="!actualMonthCheck && !attend.data.leaveTime"
+            input-class="block text-gray-900 font-bold w-32 my-3 mx-auto py-2 px-4 bg-white rounded-lg text-center "
+            type="datetime"
+            value-zone="local"
+            zone="local"
+            placeholder="Salida"
+            :min-datetime="attend.data.enterTime"
+            :max-datetime="addDayToTime(attend.data.enterTime)"
+          ></datetime>
         </li>
         <li
           v-if="attend.data.temperature"
@@ -119,8 +128,8 @@
         </li>
       </ul>
       <ul
-        v-if="workedTime"
-        class="glass-light w-screen h-24 grid grid-flow-col auto-cols-max classControl"
+        v-if="workedTime && actualMonthCheck"
+        class="glass-light w-screen h-24 grid grid-flow-col auto-cols-max"
       >
         <li
           class="w-full mx-auto flex flex-col justify-around text-lg items-center p-4"
@@ -137,11 +146,7 @@
         </li>
       </ul>
       <p
-        v-if="
-          attendList[0] &&
-            'msg' in attendList[0].data &&
-            d.getMonth() === selectedMes
-        "
+        v-if="attendList[0] && 'msg' in attendList[0].data && actualMonthCheck"
         class="w-screen glass-light h-auto p-3 flex justify-start items-start overflow-y-auto"
       >
         <icon-base class="mx-4 self-center bg-green-200 rounded-lg pl-1">
@@ -151,7 +156,7 @@
           {{ attendList[0].data.msg }}
         </span>
       </p>
-      <Options v-if="!checkCalendarToday && d.getMonth() === selectedMes" />
+      <Options v-if="!checkCalendarToday && actualMonthCheck" />
     </section>
   </article>
 </template>
@@ -165,6 +170,7 @@ import IconTemp from "../components/icons/IconTemp.vue";
 import IconContact from "../components/icons/IconContact.vue";
 import dragVerify from "vue-drag-verify";
 import monthSelector from "@/components/utils/monthSelector.vue";
+import { Datetime } from "vue-datetime";
 
 export default {
   name: "Dashboard",
@@ -175,10 +181,12 @@ export default {
     IconTemp,
     dragVerify,
     monthSelector,
+    Datetime,
     // Alerts,
   },
   data() {
     return {
+      datetimeTheming: null,
       swiper: {
         width: 300,
         text: "Apuntar Entrada",
@@ -211,26 +219,29 @@ export default {
     };
   },
   watch: {
-    attendList: function(newValue) {
+    attendList: function (newValue) {
       if (newValue.length > 0 && newValue[0].data.leaveTime) {
         let enter = new Date(String(newValue[0].data.enterTime).slice(0, 16));
         let leave = new Date(String(newValue[0].data.leaveTime).slice(0, 16));
-
-        console.log(enter, leave);
         const workedMin = (leave.getTime() - enter.getTime()) / 60000;
-        if (enter.getDay() === 5) {
+        if (
+          enter.getDay() === 5 &&
+          enter.getMonth() === new Date().getMonth()
+        ) {
           if (workedMin > 440) {
             this.extraHors = this.timeConvert(
               this.diff_minutes(enter, leave) - 420
             );
           }
         }
-        if (enter.getDay() !== 5) {
+        if (
+          enter.getDay() !== 5 &&
+          enter.getMonth() === new Date().getMonth()
+        ) {
           if (workedMin > 500) {
             this.extraHors = this.timeConvert(
               this.diff_minutes(enter, leave) - 480
             );
-            console.log(enter, leave);
           }
         }
         if (Math.sign(workedMin)) {
@@ -238,16 +249,28 @@ export default {
         }
       }
     },
+    datetimeTheming: async function (newValue) {
+      if (newValue.length > 0) {
+        newValue = newValue.slice(0, 16);
+        this.$confirm(`Salida: ${newValue.replace("T", " ")}`).then(() => {
+          let attend = this.attendList[0];
+          attend["activeSession"] = false;
+          attend["data"]["leaveTime"] = newValue;
+          this.changeAttendance(attend);
+          console.log(attend);
+        });
+      }
+    },
   },
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      checkDay: state => state.checkDay,
-      d: state => state.d,
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      selectedMes: state => state.selectedMonth,
+      attendList: (state) => state.attendance,
+      checkDay: (state) => state.checkDay,
+      d: (state) => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      selectedMes: (state) => state.selectedMonth,
     }),
     ...mapGetters(["checkCalendarToday"]),
     timeNow() {
@@ -260,6 +283,9 @@ export default {
         hours = `0${hours}`;
       }
       return `${hours} : ${minutes} `;
+    },
+    actualMonthCheck() {
+      return this.d.getMonth() === this.selectedMes;
     },
   },
   methods: {
@@ -297,17 +323,19 @@ export default {
       return false;
     },
     async saveLeaveTime(value) {
-      await this.clearLocation();
-      await this.currentLocation();
-      if (value) {
-        this.$confirm(`Apuntar Salida?`).then(() => {
-          if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
-            value["data"]["gpsLocLeave"] = this.geolocation;
-          }
-          value["activeSession"] = false;
-          value["data"]["leaveTime"] = this.today;
-          this.changeAttendance(value);
-        });
+      if (this.actualMonthCheck) {
+        await this.clearLocation();
+        await this.currentLocation();
+        if (value) {
+          this.$confirm(`Apuntar Salida?`).then(() => {
+            if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
+              value["data"]["gpsLocLeave"] = this.geolocation;
+            }
+            value["activeSession"] = false;
+            value["data"]["leaveTime"] = this.today;
+            this.changeAttendance(value);
+          });
+        }
       }
     },
     async swipeHandler() {
@@ -344,6 +372,11 @@ export default {
       diff /= 60;
       return Math.abs(Math.round(diff));
     },
+    addDayToTime(date) {
+      return new Date(
+        new Date(date).getTime() + 60 * 60 * 24 * 1000
+      ).toISOString();
+    },
   },
   mounted() {
     var date = new Date(); // Or the date you'd like converted.
@@ -358,6 +391,18 @@ export default {
 </script>
 
 <style scoped>
+.theme-orange .vdatetime-popup__header,
+.theme-orange .vdatetime-calendar__month__day--selected > span > span,
+.theme-orange .vdatetime-calendar__month__day--selected:hover > span > span {
+  background: #ff9800;
+}
+
+.theme-orange .vdatetime-year-picker__item--selected,
+.theme-orange .vdatetime-time-picker__item--selected,
+.theme-orange .vdatetime-popup__actions__button {
+  color: #ff9800;
+}
+
 .swipAnimation {
   animation: slidein 5s infinite;
 }
