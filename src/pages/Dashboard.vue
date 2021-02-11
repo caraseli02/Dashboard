@@ -13,9 +13,7 @@
           class="rounded-lg col-span-2 text-gray-300 w-full mx-auto flex justify-around items-center text-lg mt-2"
         >
           {{ getDayName(today) }} {{ today.slice(0, 10) }}
-          <span v-if="today" class="text-xl text-gray-100 font-bold"
-            >hoy {{ timeNow }}</span
-          >
+          <span v-if="today" class="text-xl text-gray-100 font-bold">Hoy</span>
         </li>
         <li class="flex justify-center items-center mb-2">
           <label class="text-xl mb-2 text-gray-200" for="vol"
@@ -69,16 +67,17 @@
           attendList[0] ? "Sesión sin cerrar" : "No tienes sesiónes sin cerrar"
         }}
       </h3>
+
       <ul
         v-for="(attend, index) in attendList"
         :key="index"
-        class="glass-light w-screen h-32 grid grid-flow-col auto-cols-max"
+        class="glass-light w-screen h-32 grid grid-flow-col auto-cols-max classControl"
       >
         <li
           v-if="attend.data"
-          class="w-20 mx-auto flex flex-col justify-center items-center text-3xl"
+          class="w-20 bg-green-400 mx-auto flex flex-col justify-center items-center text-3xl my-2 rounded-lg"
         >
-          <span class="text-base text-gray-600">{{
+          <span class="text-base text-gray-900">{{
             getDayName(attend.data.enterTime)
           }}</span>
           {{ attend.data.enterTime.slice(8, 10) }}
@@ -88,7 +87,7 @@
         >
           Entrada
           <span class="text-2xl text-green-800">
-            {{ attend.data.enterTime.slice(11, 16) }}</span
+            &#8595;{{ attend.data.enterTime.slice(11, 16) }}</span
           >
         </li>
         <li
@@ -96,8 +95,8 @@
           class="w-20 mx-auto flex flex-col justify-around text-lg items-center p-4"
         >
           Salida
-          <span class="text-2xl text-green-800">
-            {{ attend.data.leaveTime.slice(11, 16) }}</span
+          <span class="text-2xl text-red-800">
+            &#8593;{{ attend.data.leaveTime.slice(11, 16) }}</span
           >
         </li>
         <li v-else class="flex justify-center items-center">
@@ -119,6 +118,24 @@
           </icon-base>
         </li>
       </ul>
+      <ul
+        v-if="workedTime"
+        class="glass-light w-screen h-24 grid grid-flow-col auto-cols-max classControl"
+      >
+        <li
+          class="w-full mx-auto flex flex-col justify-around text-lg items-center p-4"
+        >
+          Has trabajado
+          <span class="text-xl text-green-800"> {{ workedTime }}</span>
+        </li>
+        <li
+          class="w-full mx-auto flex flex-col justify-around text-lg items-center p-4"
+          v-if="extraHors"
+        >
+          Horas Extra
+          <span class="text-xl text-red-800">{{ extraHors }} </span>
+        </li>
+      </ul>
       <p
         v-if="
           attendList[0] &&
@@ -137,39 +154,6 @@
       <Options v-if="!checkCalendarToday && d.getMonth() === selectedMes" />
     </section>
   </article>
-  <section v-else class="flex flex-col justify-center items-center">
-    <button v-if="loadingMap" type="button" class="mx-auto text-sm" disabled>
-      <svg class="animate-spin h-4 w-4 mx-auto" viewBox="0 0 24 24">
-        <path
-          d="M19.305,9.61c-0.235-0.235-0.615-0.235-0.85,0l-1.339,1.339c0.045-0.311,0.073-0.626,0.073-0.949
-                  c0-3.812-3.09-6.901-6.901-6.901c-2.213,0-4.177,1.045-5.44,2.664l0.897,0.719c1.053-1.356,2.693-2.232,4.543-2.232
-                  c3.176,0,5.751,2.574,5.751,5.751c0,0.342-0.037,0.675-0.095,1l-1.746-1.39c-0.234-0.235-0.614-0.235-0.849,0
-                  c-0.235,0.235-0.235,0.615,0,0.85l2.823,2.25c0.122,0.121,0.282,0.177,0.441,0.172c0.159,0.005,0.32-0.051,0.44-0.172l2.25-2.25
-                  C19.539,10.225,19.539,9.845,19.305,9.61z M10.288,15.752c-3.177,0-5.751-2.575-5.751-5.752c0-0.276,0.025-0.547,0.062-0.813
-                  l1.203,1.203c0.235,0.234,0.615,0.234,0.85,0c0.234-0.235,0.234-0.615,0-0.85l-2.25-2.25C4.281,7.169,4.121,7.114,3.961,7.118
-                  C3.802,7.114,3.642,7.169,3.52,7.291l-2.824,2.25c-0.234,0.235-0.234,0.615,0,0.85c0.235,0.234,0.615,0.234,0.85,0l1.957-1.559
-                  C3.435,9.212,3.386,9.6,3.386,10c0,3.812,3.09,6.901,6.902,6.901c2.083,0,3.946-0.927,5.212-2.387l-0.898-0.719
-                  C13.547,14.992,12.008,15.752,10.288,15.752z"
-        ></path>
-      </svg>
-      Cargando...
-    </button>
-    <div v-else>
-      <Alerts />
-      <h1 class="text-red-600 text-2xl text-center m-4 glass-light">
-        Tu ubicación no esta disponible
-      </h1>
-      <a
-        class="bg-gradient-to-r from-blue-600 via-teal-500 to-blue-700 hover:bg-green-400 text-white py-2 px-4 text-lg rounded"
-        href="https://support.google.com/accounts/answer/3467281?hl=es-419"
-      >
-        Como administrar tu ubicación
-        <span class="block mt-2 text-sm text-center"
-          >( Ayuda de Cuenta de Google )</span
-        ></a
-      >
-    </div>
-  </section>
 </template>
 
 <script>
@@ -183,27 +167,6 @@ import dragVerify from "vue-drag-verify";
 import monthSelector from "@/components/utils/monthSelector.vue";
 
 export default {
-  // watch: {
-  //   attendList: function (newValue) {
-  //     if (newValue.length > 0) {
-  //       const enter = newValue[0].data.enterTime;
-  //       const leave = newValue[0].data.leaveTime;
-  //       console.log(enter, leave);
-  //       this.workedHors =
-  //         (new Date(leave.replace("Z", "")).getTime() -
-  //           new Date(enter.replace("Z", "")).getTime()) /
-  //         60000;
-  //       if (this.workedHors > 500) {
-  //         this.extraHors = this.timeConvert(
-  //           this.diff_minutes(enter, leave) - 480
-  //         );
-  //       }
-  //       if (Math.sign(this.workedHors)) {
-  //         this.workedHors = this.timeConvert(this.workedHors);
-  //       }
-  //     }
-  //   },
-  // },
   name: "Dashboard",
   components: {
     Options,
@@ -243,9 +206,38 @@ export default {
       today: null,
       temperature: 36.6,
       tempList: [],
-      workedHors: null,
+      workedTime: null,
       extraHors: null,
     };
+  },
+  watch: {
+    attendList: function (newValue) {
+      if (newValue.length > 0 && newValue[0].data.leaveTime) {
+        let enter = new Date(String(newValue[0].data.enterTime).slice(0,16));
+        let leave = new Date(String(newValue[0].data.leaveTime).slice(0,16));
+
+        console.log(enter, leave);
+        const workedMin = (leave.getTime() - enter.getTime()) / 60000;
+        if (enter.getDay() === 5) {
+          if (workedMin > 440) {
+            this.extraHors = this.timeConvert(
+              this.diff_minutes(enter, leave) - 420
+            );
+          }
+        }
+        if (enter.getDay() !== 5) {
+          if (workedMin > 500) {
+            this.extraHors = this.timeConvert(
+              this.diff_minutes(enter, leave) - 480
+            );
+            console.log(enter, leave);
+          }
+        }
+        if (Math.sign(workedMin)) {
+          this.workedTime = this.timeConvert(workedMin);
+        }
+      }
+    },
   },
   computed: {
     // mix this into the outer object with the object spread operator
@@ -269,33 +261,6 @@ export default {
       }
       return `${hours} : ${minutes} `;
     },
-    timeInfo: {
-      // getter
-      get: function () {
-        return {
-          workedHors: this.workedHors,
-          extraHors: this.extraHors,
-        };
-      },
-      // setter
-      set: function () {
-        const enter = this.attendList[0].data.leaveTime;
-        const leave = this.attendList[0].data.enterTime;
-        this.workedHors =
-          (new Date(leave).getTime() - new Date(enter).getTime()) / 60000;
-        if (this.workedHors > 500) {
-          this.extraHors = this.timeConvert(
-            this.diff_minutes(enter, leave) - 480
-          );
-          this.userData["extraHors"] = this.extraHors;
-        }
-        if (Math.sign(this.workedHors)) {
-          this.workedHors = this.timeConvert(this.workedHors);
-          this.userData["workedHors"] = this.workedHors;
-        }
-        this.userData["leaveTime"] = this.leaveTime;
-      },
-    },
   },
   methods: {
     ...mapActions([
@@ -304,6 +269,7 @@ export default {
       "changeAttendance",
       "deleteAsist",
       "currentLocation",
+      "clearLocation",
     ]),
     deepEqual(object1, object2) {
       function isObject(object) {
@@ -330,7 +296,9 @@ export default {
       }
       return false;
     },
-    saveLeaveTime(value) {
+    async saveLeaveTime(value) {
+      await this.clearLocation();
+      await this.currentLocation();
       if (value) {
         this.$confirm(`Apuntar Salida?`).then(() => {
           if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
@@ -343,6 +311,8 @@ export default {
       }
     },
     async swipeHandler() {
+      await this.clearLocation();
+      await this.currentLocation();
       this.setAttendance({
         email: localStorage.getItem("email"),
         uid: localStorage.getItem("uid"),
@@ -369,12 +339,13 @@ export default {
       return rhours + " h " + rminutes + " m ";
     },
     diff_minutes(dt2, dt1) {
-      var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+      // console.log(dt2, dt1);
+      var diff = (new Date(dt2).getTime() - new Date(dt1).getTime()) / 1000;
       diff /= 60;
       return Math.abs(Math.round(diff));
     },
   },
-  async mounted() {
+  mounted() {
     var date = new Date(); // Or the date you'd like converted.
     this.today = new Date(
       date.getTime() - date.getTimezoneOffset() * 60000

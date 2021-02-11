@@ -113,14 +113,14 @@
         :width="swiper.width"
         :height="swiper.height"
         :text="swiper.text"
-        :success-text="swiper.successText"
+        :success-text="geolocation.lat ? swiper.successText : 'error'"
         :background="swiper.background"
         :progress-bar-bg="swiper.progressBarBg"
-        :completed-bg="swiper.completedBg"
+        :completed-bg="geolocation.lat ? swiper.completedBg : 'red'"
         :handler-bg="swiper.handlerBg"
         :handler-icon="swiper.handlerIcon"
         :text-size="swiper.textSize"
-        :success-icon="swiper.successIcon"
+        :success-icon="geolocation.lat ? swiper.successIcon : 'x'"
         :circle="swiper.isCircle"
       >
       </drag-verify>
@@ -217,48 +217,12 @@
       </div>
     </section>
   </article>
-  <section v-else class="flex flex-col justify-center items-center">
-    <button v-if="loadingMap" type="button" class="mx-auto text-sm" disabled>
-      <svg class="animate-spin h-4 w-4 mx-auto" viewBox="0 0 24 24">
-        <path
-          d="M19.305,9.61c-0.235-0.235-0.615-0.235-0.85,0l-1.339,1.339c0.045-0.311,0.073-0.626,0.073-0.949
-                  c0-3.812-3.09-6.901-6.901-6.901c-2.213,0-4.177,1.045-5.44,2.664l0.897,0.719c1.053-1.356,2.693-2.232,4.543-2.232
-                  c3.176,0,5.751,2.574,5.751,5.751c0,0.342-0.037,0.675-0.095,1l-1.746-1.39c-0.234-0.235-0.614-0.235-0.849,0
-                  c-0.235,0.235-0.235,0.615,0,0.85l2.823,2.25c0.122,0.121,0.282,0.177,0.441,0.172c0.159,0.005,0.32-0.051,0.44-0.172l2.25-2.25
-                  C19.539,10.225,19.539,9.845,19.305,9.61z M10.288,15.752c-3.177,0-5.751-2.575-5.751-5.752c0-0.276,0.025-0.547,0.062-0.813
-                  l1.203,1.203c0.235,0.234,0.615,0.234,0.85,0c0.234-0.235,0.234-0.615,0-0.85l-2.25-2.25C4.281,7.169,4.121,7.114,3.961,7.118
-                  C3.802,7.114,3.642,7.169,3.52,7.291l-2.824,2.25c-0.234,0.235-0.234,0.615,0,0.85c0.235,0.234,0.615,0.234,0.85,0l1.957-1.559
-                  C3.435,9.212,3.386,9.6,3.386,10c0,3.812,3.09,6.901,6.902,6.901c2.083,0,3.946-0.927,5.212-2.387l-0.898-0.719
-                  C13.547,14.992,12.008,15.752,10.288,15.752z"
-        ></path>
-      </svg>
-      Cargando...
-    </button>
-    <div v-else>
-      <Alerts />
-      <h1 class="text-red-600 text-2xl text-center m-4">
-        Tu ubicación no esta disponible<br />
-        <span class="text-gray-700 text-lg px-4 mt-2"
-          >Por favor habilita servicio de ubicación y recarga la pagina</span
-        >
-      </h1>
-      <a
-        class="flex justify-center bg-gray-500 text-gray-700 text-lg rounded p-2 w-2/3 mt-8 mx-auto text-center"
-        href="https://support.google.com/accounts/answer/3467281?hl=es-419"
-      >
-        Como administrar tu ubicación
-      </a>
-      <span class="block mt-2 text-sm text-center"
-        >( Ayuda de Cuenta de Google )</span
-      >
-    </div>
-  </section>
 </template>
 
 <script>
 // import IconBase from "@/components/IconBase.vue";
 // import IconMaps from "@/components/icons/IconMaps.vue";
-import Alerts from "@/components/utils/Alerts.vue";
+// import Alerts from "@/components/utils/Alerts.vue";
 import { mapActions, mapState } from "vuex";
 import { Datetime } from "vue-datetime";
 import dragVerify from "vue-drag-verify";
@@ -286,7 +250,6 @@ export default {
       userData: {
         email: localStorage.getItem("email"),
         uid: localStorage.getItem("uid"),
-        gpsLoc: {},
         dttm: new Date(),
         enterTime: null,
         temperature: 36.6,
@@ -343,7 +306,7 @@ export default {
     //   }
     // },
   },
-  components: { datetime: Datetime, dragVerify, Alerts },
+  components: { datetime: Datetime, dragVerify /*,Alerts*/ },
   // components: { IconBase, IconMaps, datetime: Datetime },
   computed: {
     ...mapState({
@@ -372,21 +335,28 @@ export default {
       "setAttendance",
       "changeAttendance",
       "deleteAsist",
+      "currentLocation",
+      "clearLocation",
     ]),
 
-    swipeHandler() {
-      // console.log(direction);  May be left / right / top / bottom
-      this.setAttendance(this.userData);
+    async swipeHandler() {
+      await this.clearLocation();
+      await this.currentLocation();
+      if (this.geolocation.lat && this.geolocation.lng) {
+        (this.userData.gpsLoc = this.geolocation),
+          await this.setAttendance(this.userData);
+      }
       // this.enterModal = false;
       // this.$router.replace("calendar");
     },
-    changeEnterTime(value) {
-      console.log(value);
+    async changeEnterTime(value) {
+      await this.clearLocation();
+      await this.currentLocation();
       if (value[0]["data"]["enterTime"]) {
         this.$prompt(
           `Motivo del cambio?
              La nueva hora: ${this.userData.enterTime.slice(11, 16)}`
-        ).then((text) => {
+        ).then(text => {
           value[0]["data"]["enterChange"] = {
             oldValue: value[0]["data"]["enterTime"].slice(11, 16),
             newValue: this.userData.enterTime.slice(11, 16),
@@ -394,16 +364,22 @@ export default {
             changeTime: new Date().toLocaleString(),
           };
           value[0]["data"]["enterTime"] = this.userData.enterTime;
-          this.changeAttendance(value[0]);
+          if (this.geolocation.lat && this.geolocation.lng) {
+            this.changeAttendance(value[0]);
+          }
         });
       }
     },
-    saveLeaveTime(value) {
+    async saveLeaveTime(value) {
+      await this.clearLocation();
+      await this.currentLocation();
       if (value[0]) {
         value[0]["data"]["leaveTime"] = this.leaveTime;
-        value[0]["data"]["extraHors"] = this.extraHors;
-        value[0]["data"]["workedHors"] = this.workedHors;
-        this.changeAttendance(value[0]);
+        // value[0]["data"]["extraHors"] = this.extraHors;
+        // value[0]["data"]["workedHors"] = this.workedHors;
+        if (this.geolocation.lat && this.geolocation.lng) {
+          this.changeAttendance(value[0]);
+        }
       }
     },
     deleteAttendData() {
@@ -480,22 +456,6 @@ export default {
     for (var i = 355; i <= 375; i++) {
       this.tempList.push(i / 10);
     }
-    //do we support geolocation
-    if (!("geolocation" in navigator)) {
-      this.errorStr = "Geolocation is not available.";
-      return;
-    }
-    // get position
-    await navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        this.userData.gpsLoc.lat = pos.coords.latitude;
-        this.userData.gpsLoc.lng = pos.coords.longitude;
-      },
-      (err) => {
-        this.gettingLocation = false;
-        this.errorStr = err.message;
-      }
-    );
   },
 };
 </script>

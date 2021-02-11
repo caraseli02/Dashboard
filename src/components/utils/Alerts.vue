@@ -30,6 +30,7 @@
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
 export default {
+  name: "Alert",
   // watch: {
   //   notificationMessage(newValue, oldValue) {
   //     console.log(`Updating from ${oldValue} to ${newValue}`);

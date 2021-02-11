@@ -136,6 +136,9 @@ export const store = new Vuex.Store({
         }
       });
     },
+    clearLocation({ commit }) {
+      commit("CHANGE_GEOLOCATION", {});
+    },
     showMapAction(context) {
       context.commit("SHOW_MAP");
     },
