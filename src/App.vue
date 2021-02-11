@@ -54,8 +54,8 @@ export default {
   },
   computed: {
     ...mapState({
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
     }),
   },
   methods: {

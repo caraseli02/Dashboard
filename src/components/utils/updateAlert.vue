@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="alert-banner w-full h-screen fixed top-0 z-50"
-  >
+  <div class="alert-banner w-full h-screen fixed top-0 z-50">
     <input type="checkbox" class="hidden" id="banneralert" />
 
     <label

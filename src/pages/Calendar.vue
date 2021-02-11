@@ -176,8 +176,8 @@
               <button
                 v-if="
                   enterModal &&
-                  userData.enterTime.slice(11, 16) !==
-                    dateExist[0]['data']['enterTime'].slice(11, 16)
+                    userData.enterTime.slice(11, 16) !==
+                      dateExist[0]['data']['enterTime'].slice(11, 16)
                 "
                 class="bg-blue-500 hover:bg-blue-400 text-sm text-white py-2 px-4 w-full rounded-b-lg"
                 @click="changeEnterTime(dateExist)"
@@ -310,9 +310,9 @@ export default {
   // components: { IconBase, IconMaps, datetime: Datetime },
   computed: {
     ...mapState({
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      d: (state) => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      d: state => state.d,
     }),
     dateExist() {
       return this.$store.state.checkDay;
@@ -437,7 +437,7 @@ export default {
     convertToAsist() {
       this.asistList = new Set();
 
-      this.$store.state.attendance.forEach((element) => {
+      this.$store.state.attendance.forEach(element => {
         let monthNr = new Date(
           element["createdAt"]["seconds"] * 1000
         ).getMonth();

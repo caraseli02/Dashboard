@@ -139,8 +139,8 @@
       <p
         v-if="
           attendList[0] &&
-          'msg' in attendList[0].data &&
-          d.getMonth() === selectedMes
+            'msg' in attendList[0].data &&
+            d.getMonth() === selectedMes
         "
         class="w-screen glass-light h-auto p-3 flex justify-start items-start overflow-y-auto"
       >
@@ -211,10 +211,10 @@ export default {
     };
   },
   watch: {
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       if (newValue.length > 0 && newValue[0].data.leaveTime) {
-        let enter = new Date(String(newValue[0].data.enterTime).slice(0,16));
-        let leave = new Date(String(newValue[0].data.leaveTime).slice(0,16));
+        let enter = new Date(String(newValue[0].data.enterTime).slice(0, 16));
+        let leave = new Date(String(newValue[0].data.leaveTime).slice(0, 16));
 
         console.log(enter, leave);
         const workedMin = (leave.getTime() - enter.getTime()) / 60000;
@@ -242,12 +242,12 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      checkDay: (state) => state.checkDay,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      selectedMes: (state) => state.selectedMonth,
+      attendList: state => state.attendance,
+      checkDay: state => state.checkDay,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      selectedMes: state => state.selectedMonth,
     }),
     ...mapGetters(["checkCalendarToday"]),
     timeNow() {
