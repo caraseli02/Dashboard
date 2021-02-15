@@ -9,7 +9,7 @@
       <button
         class="glass-gray"
         :class="enterModal ? 'shadow-lg bg-gray-300' : ''"
-        @click="(enterModal = true), (leaveTime = null)"
+        @click="(enterModal = true), (userData.leaveTime = null)"
       >
         Entrada
       </button>
@@ -81,18 +81,18 @@
               value-zone="local"
               zone="local"
               :input-class="
-                leaveTime
+                userData.leaveTime
                   ? 'mb-4 mx-auto p-2 rounded-l-lg text-green-500 font-bold text-center text-lg shadow-xl'
                   : 'mb-4 mx-auto p-2 rounded-lg text-green-500 font-bold text-center text-lg  animate-bounce'
               "
               placeholder="Pulsa para seleccionar"
-              v-model="leaveTime"
+              v-model="userData.leaveTime"
               :min-datetime="userData.enterTime"
               :max-datetime="setMaxDateTime"
             ></datetime>
             <span
-              v-if="leaveTime"
-              @click="leaveTime = null"
+              v-if="userData.leaveTime"
+              @click="userData.leaveTime = null"
               class="mb-4 text-center text-gray-900 bg-gradient-to-r from-red-400 via-pink-500 to-red-500 font-bold p-2 rounded-r-lg px-4 text-lg"
             >
               X
@@ -150,11 +150,6 @@
             </li>
           </ul>
         </div>
-        <!-- Salida a las: {{ dateExist[0]["data"]["leaveTime"].slice(11, 16) }} -->
-        <!-- <button @click="deleteAttendData"
-          class="block text-gray-900 font-bold my-3 mx-auto py-2 px-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 rounded-lg">
-          Borrar
-        </button> -->
       </div>
       <div
         class="w-full mx-auto text-left mt-4 rounded-xl p-2 glass-light"
@@ -177,10 +172,11 @@
                 v-if="
                   enterModal &&
                   userData.enterTime.slice(11, 16) !==
-                    dateExist[0]['data']['enterTime'].slice(11, 16)
+                    dateExist[0]['data']['enterTime'].slice(11, 16) &&
+                  !dateExist[0].data.leaveTime
                 "
                 class="bg-blue-500 hover:bg-blue-400 text-sm text-white py-2 px-4 w-full rounded-b-lg"
-                @click="changeEnterTime(dateExist)"
+                @click="changEnterTime(dateExist[0])"
               >
                 Cambiar<br />
               </button>
@@ -192,13 +188,17 @@
             <li class="flex flex-col justify-center items-center mb-2">
               <span class="block leaveTime w-8 h-8 mb-2"></span>
               <span class="text-lg font-light mb-1">Salida</span>
-              {{ leaveTime ? leaveTime.slice(11, 16) : "-- / --" }}
+              {{
+                userData.leaveTime
+                  ? userData.leaveTime.slice(11, 16)
+                  : "-- / --"
+              }}
             </li>
             <li class="w-full">
               <button
                 class="bg-green-500 hover:bg-green-400 text-sm text-white py-2 px-4 rounded-b-lg w-full"
-                v-if="enterModal"
-                @click="enterModal = false"
+                v-if="enterModal && !dateExist[0].data.leaveTime"
+                @click="leaveConfirm(dateExist[0])"
               >
                 Apuntar
               </button>
@@ -206,7 +206,11 @@
           </ul>
         </div>
         <div class="flex justify-around items-center mt-2">
-          <button class="my-3" v-if="leaveTime" @click="enterModal = false">
+          <button
+            class="my-3"
+            v-if="userData.leaveTime"
+            @click="enterModal = false"
+          >
             <span
               class="bg-gradient-to-r from-teal-400 via-green-500 to-blue-500 hover:bg-green-400 text-white py-2 px-4 text-lg rounded"
               @click="saveLeaveTime(dateExist)"
@@ -226,9 +230,11 @@
 import { mapActions, mapState } from "vuex";
 import { Datetime } from "vue-datetime";
 import dragVerify from "vue-drag-verify";
+import utils from "@/mixins/utils";
 
 export default {
   name: "calendar",
+  mixins: [utils],
   data() {
     return {
       swiper: {
@@ -253,10 +259,8 @@ export default {
         dttm: new Date(),
         enterTime: null,
         temperature: 36.6,
+        leaveTime: null,
       },
-      leaveTime: null,
-      workedHors: null,
-      extraHors: null,
       // emailSending: false,
       asistList: null,
       tempList: [],
@@ -276,35 +280,6 @@ export default {
         }
       },
     },
-    // leaveTime: function (val) {
-    //   if (val) {
-    //     this.extraHors = 0;
-    //     let enter = null;
-    //     if (this.dateExist[0]) {
-    //       enter = this.dateExist[0].data.enterTime.replace('Z', '')
-    //       enter = new Date(enter);
-    //       console.log(enter);
-    //     } else {
-    //       enter = new Date(this.userData.enterTime);
-    //       console.log(enter);
-    //     }
-    //     const leave = new Date(val);
-
-    //     this.workedHors =
-    //       (new Date(leave).getTime() - new Date(enter).getTime()) / 60000;
-    //     if (this.workedHors > 500) {
-    //       this.extraHors = this.timeConvert(
-    //         this.diff_minutes(enter, leave) - 480
-    //       );
-    //       this.userData["extraHors"] = this.extraHors;
-    //     }
-    //     if (Math.sign(this.workedHors)) {
-    //       this.workedHors = this.timeConvert(this.workedHors);
-    //       this.userData["workedHors"] = this.workedHors;
-    //     }
-    //     this.userData["leaveTime"] = this.leaveTime;
-    //   }
-    // },
   },
   components: { datetime: Datetime, dragVerify /*,Alerts*/ },
   // components: { IconBase, IconMaps, datetime: Datetime },
@@ -344,30 +319,31 @@ export default {
       await this.currentLocation();
       if (this.geolocation.lat && this.geolocation.lng) {
         (this.userData.gpsLoc = this.geolocation),
-          await this.setAttendance(this.userData).then(() => {
-            window.localStorage.setItem("enterTime", this.userData.enterTime);
-          });
+          await this.setAttendance(this.userData).then(
+            this.$alert("Apuntado.")
+          );
       }
+
       // this.enterModal = false;
       // this.$router.replace("calendar");
     },
-    async changeEnterTime(value) {
+    async changEnterTime(value) {
       await this.clearLocation();
       await this.currentLocation();
-      if (value[0]["data"]["enterTime"]) {
+      if (value["data"]["enterTime"]) {
         this.$prompt(
           `Motivo del cambio?
              La nueva hora: ${this.userData.enterTime.slice(11, 16)}`
         ).then((text) => {
-          value[0]["data"]["enterChange"] = {
-            oldValue: value[0]["data"]["enterTime"].slice(11, 16),
+          value["data"]["enterChange"] = {
+            oldValue: value["data"]["enterTime"].slice(11, 16),
             newValue: this.userData.enterTime.slice(11, 16),
             msg: text,
             changeTime: new Date().toLocaleString(),
           };
-          value[0]["data"]["enterTime"] = this.userData.enterTime;
+          value["data"]["enterTime"] = this.userData.enterTime;
           if (this.geolocation.lat && this.geolocation.lng) {
-            this.changeAttendance(value[0]);
+            this.changeAttendance(value);
           }
         });
       }
@@ -375,36 +351,38 @@ export default {
     async saveLeaveTime(value) {
       await this.clearLocation();
       await this.currentLocation();
-      if (value[0]) {
-        value[0]["data"]["leaveTime"] = this.leaveTime;
-        value[0]["activeSession"] = false;
+      if (value) {
+        value["data"]["leaveTime"] = this.userData.leaveTime
+          ? this.userData.leaveTime
+          : this.userData.enterTime;
+        value["activeSession"] = false;
         // value[0]["data"]["extraHors"] = this.extraHors;
         // value[0]["data"]["workedHors"] = this.workedHors;
         if (this.geolocation.lat && this.geolocation.lng) {
-          this.changeAttendance(value[0]);
+          if (this.deepEqual(value.data.gpsLoc, this.geolocation)) {
+            value["data"]["gpsLocLeave"] = this.geolocation;
+          }
+          value["activeSession"] = false;
+          this.changeAttendance(value).then(() => {
+            this.$alert("Apuntado.");
+          });
         }
       }
     },
+    leaveConfirm(value) {
+      this.$confirm(
+        `Apuntar Salida? A las ${this.userData.enterTime.slice(11, 16)}`
+      ).then(() => {
+        this.saveLeaveTime(value);
+      });
+    },
     deleteAttendData() {
       this.$confirm("Borar assistencia?").then(() => {
-        (this.leaveTime = null),
+        (this.userData.leaveTime = null),
           (this.userData.enterTime = null),
           (this.enterModal = true),
           this.deleteAsist(this.dateExist[0].id);
       });
-    },
-    timeConvert(n) {
-      var num = n;
-      var hours = num / 60;
-      var rhours = Math.floor(hours);
-      var minutes = (hours - rhours) * 60;
-      var rminutes = Math.round(minutes);
-      return rhours + " h " + rminutes + " m ";
-    },
-    diff_minutes(dt2, dt1) {
-      var diff = (dt2.getTime() - dt1.getTime()) / 1000;
-      diff /= 60;
-      return Math.abs(Math.round(diff));
     },
     // sendVerifyEmail() {
     //   this.emailSending = true;
@@ -440,7 +418,7 @@ export default {
     },
     // ...mapActions(["createAsist"]),
   },
-  created() {
+  async created() {
     for (var i = 355; i <= 375; i++) {
       this.tempList.push(i / 10);
     }

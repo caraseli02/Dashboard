@@ -171,9 +171,11 @@ import IconContact from "../components/icons/IconContact.vue";
 import dragVerify from "vue-drag-verify";
 import monthSelector from "@/components/utils/monthSelector.vue";
 import { Datetime } from "vue-datetime";
+import utils from "@/mixins/utils";
 
 export default {
   name: "Dashboard",
+  mixins: [utils],
   components: {
     Options,
     IconBase,
@@ -214,12 +216,10 @@ export default {
       today: null,
       temperature: 36.6,
       tempList: [],
-      workedTime: null,
-      extraHors: null,
     };
   },
   watch: {
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       if (newValue.length > 0 && newValue[0].data.leaveTime) {
         let enter = new Date(String(newValue[0].data.enterTime).slice(0, 16));
         let leave = new Date(String(newValue[0].data.leaveTime).slice(0, 16));
@@ -249,7 +249,7 @@ export default {
         }
       }
     },
-    datetimeTheming: async function (newValue) {
+    datetimeTheming: async function(newValue) {
       if (newValue.length > 0) {
         newValue = newValue.slice(0, 16);
         this.$confirm(`Salida: ${newValue.replace("T", " ")}`).then(() => {
@@ -265,12 +265,12 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      checkDay: (state) => state.checkDay,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      selectedMes: (state) => state.selectedMonth,
+      attendList: state => state.attendance,
+      checkDay: state => state.checkDay,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      selectedMes: state => state.selectedMonth,
     }),
     ...mapGetters(["checkCalendarToday"]),
     timeNow() {
@@ -297,31 +297,6 @@ export default {
       "currentLocation",
       "clearLocation",
     ]),
-    deepEqual(object1, object2) {
-      function isObject(object) {
-        return object != null && typeof object === "object";
-      }
-
-      const keys1 = Object.keys(object1);
-      const keys2 = Object.keys(object2);
-
-      if (keys1.length !== keys2.length) {
-        return true;
-      }
-
-      for (const key of keys1) {
-        const val1 = object1[key];
-        const val2 = object2[key];
-        const areObjects = isObject(val1) && isObject(val2);
-        if (
-          (areObjects && !this.deepEqual(val1, val2)) ||
-          (!areObjects && val1 !== val2)
-        ) {
-          return true;
-        }
-      }
-      return false;
-    },
     async saveLeaveTime(value) {
       if (this.actualMonthCheck) {
         await this.clearLocation();
@@ -357,20 +332,6 @@ export default {
       var d = new Date(dateString);
       var dayName = this.days[d.getDay()];
       return dayName;
-    },
-    timeConvert(n) {
-      var num = n;
-      var hours = num / 60;
-      var rhours = Math.floor(hours);
-      var minutes = (hours - rhours) * 60;
-      var rminutes = Math.round(minutes);
-      return rhours + " h " + rminutes + " m ";
-    },
-    diff_minutes(dt2, dt1) {
-      // console.log(dt2, dt1);
-      var diff = (new Date(dt2).getTime() - new Date(dt1).getTime()) / 1000;
-      diff /= 60;
-      return Math.abs(Math.round(diff));
     },
     addDayToTime(date) {
       return new Date(

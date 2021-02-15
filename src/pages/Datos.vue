@@ -128,7 +128,10 @@
         <li
           class="mx-auto h-full w-full flex justify-center items-center p-1 border-b-2 border-gray-600"
         >
-          <span class="text-red-900 text-base text-center">
+          <span
+            v-if="attend.closedAt"
+            class="text-red-900 text-base text-center"
+          >
             {{ checkLeaveUpdate(attend.closedAt, attend.data.leaveTime) }}
           </span>
         </li>
@@ -165,6 +168,82 @@
         </li>
       </ul>
     </section>
+    <section class="mt-8">
+      <div class="flex items-center p-2 glass-light shadow rounded-lg">
+        <div
+          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-yellow-600 bg-yellow-100 rounded-full mr-6"
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M17 7C17 5.34315 15.6569 4 14 4H10C8.34315 4 7 5.34315 7 7H6C4.34315 7 3 8.34315 3 10V18C3 19.6569 4.34315 21 6 21H18C19.6569 21 21 19.6569 21 18V10C21 8.34315 19.6569 7 18 7H17ZM14 6H10C9.44772 6 9 6.44772 9 7H15C15 6.44772 14.5523 6 14 6ZM6 9H18C18.5523 9 19 9.44772 19 10V18C19 18.5523 18.5523 19 18 19H6C5.44772 19 5 18.5523 5 18V10C5 9.44772 5.44772 9 6 9Z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+        <div>
+          <span class="block text-3xl font-bold">{{ workedDays }}</span>
+          <span class="block text-xl text-gray-900">Días de trabajo</span>
+        </div>
+      </div>
+      <div class="flex items-center p-2 glass-light shadow rounded-lg my-4">
+        <div
+          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-teal-600 bg-teal-100 rounded-full mr-6"
+        >
+          <svg
+            aria-hidden="true"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            class="h-10 w-10"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <span class="block text-3xl font-bold">{{ workedTime }}</span>
+          <span class="block text-xl text-gray-900">Horas de servicio</span>
+        </div>
+      </div>
+      <div class="flex items-center p-2 glass-light shadow rounded-lg">
+        <div
+          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-red-600 bg-gray-100 rounded-full mr-6"
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 4C12.5523 4 13 4.44772 13 5V8H16C16.5523 8 17 8.44772 17 9C17 9.55228 16.5523 10 16 10H13V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V10H8C7.44772 10 7 9.55228 7 9C7 8.44772 7.44772 8 8 8H11V5C11 4.44772 11.4477 4 12 4Z"
+              fill="currentColor"
+            />
+            <path
+              d="M3 19C3 18.4477 3.44772 18 4 18H20C20.5523 18 21 18.4477 21 19C21 19.5523 20.5523 20 20 20H4C3.44772 20 3 19.5523 3 19Z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+        <div>
+          <span class="block text-3xl font-bold">{{ extraHors }}</span>
+          <span class="block text-xl text-gray-900">Horas extraordinarias</span>
+        </div>
+      </div>
+    </section>
     <section>
       <HereMap :attendance="attendList" :center="geolocation" />
     </section>
@@ -179,10 +258,12 @@ import IconContact from "../components/icons/IconContact.vue";
 import IconTemp from "../components/icons/IconTemp.vue";
 import HereMap from "@/components/HereMap.vue";
 import monthSelector from "@/components/utils/monthSelector.vue";
+import utils from "@/mixins/utils";
 
 export default {
   props: {},
   name: "Datos",
+  mixins: [utils],
   components: {
     IconBase,
     monthSelector,
@@ -206,17 +287,18 @@ export default {
       ],
       today: null,
       selectedUser: null,
+      workedDays: null,
     };
   },
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      d: state => state.d,
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      users: state => state.users,
-      selectedTime: state => state.selectedTime,
+      attendList: (state) => state.attendance,
+      d: (state) => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      users: (state) => state.users,
+      selectedTime: (state) => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
@@ -259,29 +341,31 @@ export default {
         return "--/--";
       }
     },
-    checkLeaveUpdate: (updatedAt, leaveTime) => {
-      if (updatedAt && leaveTime) {
+    checkLeaveUpdate: (closedAt, leaveTime) => {
+      if (closedAt && leaveTime) {
         const leave = new Date(leaveTime.replace("Z", ""));
-        const updated = new Date(updatedAt.seconds * 1000);
+        const closed = new Date(closedAt.seconds * 1000);
 
-        const diffMs = leave - updated;
+        const diffMs = leave - closed;
+        // console.log(diffMs);
         // milliseconds between now & Christmas
-        const diffDays = Math.floor(diffMs / 86400000); // days
-        const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-        const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+        // const diffDays = Math.floor(diffMs / 86400000); // days
+        // const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+        // const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
         // console.log(
         //   leave.toString().slice(7, 21),
         //   updated.toString().slice(7, 21)
         // );
-        if (diffDays < 0) {
-          return updated.toString().slice(7, 21);
+
+        if (diffMs < -900000) {
+          return closed.toString().slice(7, 21);
         }
-        if (diffMins > 30 || diffHrs > 0.5) {
-          if (diffHrs > 0.5) {
-            return `Antes con ${diffHrs} Horas`;
-          }
-          return `Antes con ${diffMins} Minutes`;
-        }
+        // if (diffMins > 30 || diffHrs > 0.5) {
+        //   if (diffHrs > 0.5) {
+        //     return `Antes con ${diffHrs} Horas`;
+        //   }
+        //   return `Antes con ${diffMins} Minutes`;
+        // }
         return "--/--";
       }
       return "--/--";
@@ -322,13 +406,61 @@ export default {
     },
   },
   watch: {
-    selectedUser: function(newValue) {
+    selectedUser: function (newValue) {
       const data = {
         user: newValue,
         time: this.selectedTime,
         uid: this.user.uid,
       };
       this.getAsist(data);
+    },
+    attendList: function (newValue) {
+      if (newValue.length > 0) {
+        this.extraHors = 0;
+        this.workedTime = 0;
+        this.workedDays = 0
+        for (let i = 0; i < newValue.length; i++) {
+          if (newValue[i].data.leaveTime) {
+            let enter = new Date(
+              String(newValue[i].data.enterTime).slice(0, 16)
+            );
+            let leave = new Date(
+              String(newValue[i].data.leaveTime).slice(0, 16)
+            );
+            const workedMin = (leave.getTime() - enter.getTime()) / 60000;
+
+            if (
+              enter.getDay() === 5 &&
+              enter.getMonth() === new Date().getMonth()
+            ) {
+              if (workedMin > 440) {
+                this.extraHors += this.diff_minutes(enter, leave) - 420;
+                // this.extraHors = this.timeConvert(
+                //   this.diff_minutes(enter, leave) - 420
+                // );
+              }
+            }
+            if (
+              enter.getDay() !== 5 &&
+              enter.getMonth() === new Date().getMonth()
+            ) {
+              if (workedMin > 500) {
+                this.extraHors += this.diff_minutes(enter, leave) - 480;
+                // this.extraHors = this.timeConvert(
+                //   this.diff_minutes(enter, leave) - 480
+                // );
+              }
+            }
+            if (Math.sign(workedMin)) {
+              this.workedTime += workedMin;
+              // this.workedTime = this.timeConvert(workedMin);
+            }
+            this.workedDays += 1
+          }
+        }
+        this.extraHors = this.timeConvert(this.extraHors);
+        this.workedTime = this.timeConvert(this.workedTime);
+      }
     },
   },
   mounted() {
