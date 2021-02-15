@@ -35,7 +35,7 @@
                 ? user.photoURL
                 : 'https://scontent-cdg2-1.xx.fbcdn.net/v/t1.0-9/51709353_1143587805818388_6243076857017663488_n.jpg?_nc_cat=108&ccb=2&_nc_sid=85a577&_nc_ohc=yHuEbw6H53kAX-mA7Iu&_nc_ht=scontent-cdg2-1.xx&oh=60649a0eae8da3584e9fd1afc2a05d07&oe=602C5652'
             "
-            class="rounded-full border-solid border-white border-2 mt-3 w-24"
+            class="rounded-full border-solid border-white border-2 mt-3 w-24 h-auto"
           />
         </div>
         <div class="text-center px-3 pb-6 pt-2">

@@ -4,7 +4,7 @@
     <monthSelector :pasedUser="selectedUser" :getAsistFunc="true" />
     <!-- User Selector if login like admin -->
     <section
-      v-if="users.length > 1"
+      v-if="users !== null && users.length > 0"
       class="flex justify-between items-center p-4 overflow-hidden"
     >
       <div class="w-1/2 px-3 mb-6 md:mb-0">
