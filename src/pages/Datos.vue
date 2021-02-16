@@ -168,6 +168,7 @@
         </li>
       </ul>
     </section>
+    <!-- Worked and Extra Time Calculation -->
     <section class="mt-8">
       <div class="flex items-center p-2 glass-light shadow rounded-lg">
         <div
@@ -189,7 +190,9 @@
           </svg>
         </div>
         <div>
-          <span class="block text-3xl font-bold">{{ workedDays }}</span>
+          <span :key="workedDays" class="block text-3xl font-bold">{{
+            workedDays
+          }}</span>
           <span class="block text-xl text-gray-900">Días de trabajo</span>
         </div>
       </div>
@@ -213,7 +216,9 @@
           </svg>
         </div>
         <div>
-          <span class="block text-3xl font-bold">{{ workedTime }}</span>
+          <span :key="workedTime" class="block text-3xl font-bold">{{
+            workedTime
+          }}</span>
           <span class="block text-xl text-gray-900">Horas de servicio</span>
         </div>
       </div>
@@ -239,7 +244,9 @@
           </svg>
         </div>
         <div>
-          <span class="block text-3xl font-bold">{{ extraHors }}</span>
+          <span :key="extraHors" class="block text-3xl font-bold">{{
+            extraHors
+          }}</span>
           <span class="block text-xl text-gray-900">Horas extraordinarias</span>
         </div>
       </div>
@@ -413,12 +420,13 @@ export default {
         uid: this.user.uid,
       };
       this.getAsist(data);
+      console.log(this.workedTime, this.workedDays);
     },
     attendList: function (newValue) {
       if (newValue.length > 0) {
         this.extraHors = 0;
         this.workedTime = 0;
-        this.workedDays = 0
+        this.workedDays = 0;
         for (let i = 0; i < newValue.length; i++) {
           if (newValue[i].data.leaveTime) {
             let enter = new Date(
@@ -455,7 +463,7 @@ export default {
               this.workedTime += workedMin;
               // this.workedTime = this.timeConvert(workedMin);
             }
-            this.workedDays += 1
+            this.workedDays += 1;
           }
         }
         this.extraHors = this.timeConvert(this.extraHors);

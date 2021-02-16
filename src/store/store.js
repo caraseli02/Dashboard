@@ -10,6 +10,7 @@ import VueSimpleAlert from "vue-simple-alert";
 
 import auth from "./auth";
 import notifi from "./notifi";
+import workTime from "./workTime";
 
 Vue.use(Vuex);
 Vue.use(VueSimpleAlert);
@@ -246,5 +247,6 @@ export const store = new Vuex.Store({
   modules: {
     auth,
     notifi,
+    workTime,
   },
 });
