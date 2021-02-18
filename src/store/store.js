@@ -28,6 +28,7 @@ export const store = new Vuex.Store({
     users: null,
     selectedMonth: null,
     selectedTime: null,
+    userData: null,
   },
 
   getters: {
@@ -87,9 +88,9 @@ export const store = new Vuex.Store({
     },
     async CHANGE_ATTENDANCE(state, { userData }) {
       const docRef = db.collection("attendance").doc(userData.id);
-      if (userData.data.leaveTime) {
+      if (userData.msgLeave) {
         return await docRef.update({
-          data: userData.data,
+          msgLeave: userData.msgLeave,
           activeSession: userData.activeSession,
           closedAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
@@ -207,6 +208,15 @@ export const store = new Vuex.Store({
             .orderBy("curentTime", "desc")
         );
       }
+    }),
+    getUserData: firestoreAction(({ state, bindFirestoreRef }) => {
+      // return the promise returned by `bindFirestoreRef`
+      return bindFirestoreRef(
+        "userData",
+        db
+          .collection("attendanceUsers")
+          .where("author", "==", state.auth.user.uid)
+      );
     }),
     bindLastAsist: firestoreAction(({ state, bindFirestoreRef }, time) => {
       // return the promise returned by `bindFirestoreRef`

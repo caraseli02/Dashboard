@@ -16,7 +16,7 @@ export default {
       var rhours = Math.floor(hours);
       var minutes = (hours - rhours) * 60;
       var rminutes = Math.round(minutes);
-      return rhours + " h " + rminutes + " m ";
+      return `${rhours}h  ${Math.ceil(rminutes / 5) * 5}m `;
     },
     diff_minutes(dt2, dt1) {
       var diff = (dt2.getTime() - dt1.getTime()) / 1000;
@@ -47,6 +47,20 @@ export default {
         }
       }
       return false;
+    },
+    roundTime(time, minutesToRound) {
+      let [hours, minutes] = time.split(":");
+      hours = parseInt(hours);
+      minutes = parseInt(minutes);
+
+      // Convert hours and minutes to time in minutes
+      time = hours * 60 + minutes;
+
+      let rounded = Math.round(time / minutesToRound) * minutesToRound;
+      let rHr = "" + Math.floor(rounded / 60);
+      let rMin = "" + (rounded % 60);
+
+      return rHr.padStart(2, "0") + ":" + rMin.padStart(2, "0");
     },
   },
 };

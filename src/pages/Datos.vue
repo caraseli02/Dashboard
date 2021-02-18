@@ -4,7 +4,7 @@
     <monthSelector :pasedUser="selectedUser" :getAsistFunc="true" />
     <!-- User Selector if login like admin -->
     <section
-      v-if="users !== null && users.length > 0"
+      v-if="users !== null && users.length > 1"
       class="flex justify-between items-center p-4 overflow-hidden"
     >
       <div class="w-1/2 px-3 mb-6 md:mb-0">
@@ -18,6 +18,7 @@
           <select
             class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             id="grid-state"
+            v-model="workplace"
           >
             <option>PMI</option>
             <option>VLC</option>
@@ -38,7 +39,7 @@
           </div>
         </div>
       </div>
-      <div class="w-1/2 px-3 mb-6 md:mb-0 overflow-hidden">
+      <div v-if="workplace" class="w-1/2 px-3 mb-6 md:mb-0 overflow-hidden">
         <label
           class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
           for="grid-state"
@@ -52,9 +53,17 @@
             v-model="selectedUser"
           >
             <option disabled>Seleccionar</option>
-            <option v-for="(user, index) in users" :key="index">
-              {{ user.email }}
+            <option
+              :value="user.email"
+              v-for="(user, index) in users"
+              :key="index"
+              :class="user.workplace === workplace ? '' : 'hidden'"
+            >
+              {{ user.name }} {{ user.surname ? user.surname : "" }}
             </option>
+            <!-- <option v-for="(user, index) in users" :key="index">
+              {{ user.email }}
+            </option> -->
           </select>
           <div
             class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
@@ -79,7 +88,7 @@
       <ul
         v-for="(attend, index) in attendList"
         :key="index"
-        class="w-24 grid grid-flow-row grid-rows-6 glass-light"
+        class="w-24 grid grid-flow-row grid-rows-5 glass-light"
       >
         <li
           v-if="attend.data"
@@ -105,27 +114,27 @@
         <li class="mx-auto h-full flex justify-center items-center p-1">
           <span class="text-green-700 text-2xl mr-1"> &#8595; </span>
           <span class="text-xl text-green-800">
-            {{ attend.data.enterTime.slice(11, 16) }}</span
+            {{ roundTime(attend.data.enterTime.slice(11, 16), 30) }}</span
           >
         </li>
         <!-- v-if="checkEnterCreated(attend.createdAt, attend.curentTime) !== 0" -->
-        <li
+        <!-- <li
           class="w-full flex justify-center items-center text-gray-800 text-base text-center rounded-lg"
         >
           <span class="h-16 pt-2 px-1">{{
             checkEnterCreated(attend.createdAt, attend.curentTime)
           }}</span>
-        </li>
+        </li> -->
         <li
           class="mx-auto h-full flex justify-center items-center p-1 border-t-2 border-gray-600"
         >
           <span v-if="attend.data.leaveTime" class="text-xl text-red-800">
-            {{ attend.data.leaveTime.slice(11, 16) }}</span
+            {{ roundTime(attend.data.leaveTime.slice(11, 16), 30) }}</span
           >
           <button v-else class="text-xl text-red-800">--:--</button>
           <span class="text-red-700 text-2xl">&#8593;</span>
         </li>
-        <li
+        <!-- <li
           class="mx-auto h-full w-full flex justify-center items-center p-1 border-b-2 border-gray-600"
         >
           <span
@@ -134,7 +143,7 @@
           >
             {{ checkLeaveUpdate(attend.closedAt, attend.data.leaveTime) }}
           </span>
-        </li>
+        </li> -->
         <li class="flex justify-center items-center text-purple-800">
           <icon-base>
             <icon-temp />
@@ -154,7 +163,7 @@
           </icon-base>
           <span class="text-xs mx-4 text-center" v-else>No tiene Mensajes</span>
         </li>
-        <li
+        <!-- <li
           @click="showChangeMsg(attend.data.enterChange)"
           class="h-10 flex justify-center items-center text-purple-800 my-2 pb-2"
         >
@@ -165,7 +174,7 @@
             <i class="gg-sync mx-auto"></i>
           </div>
           <span class="text-xs mx-4 text-center" v-else>No tiene Cambios</span>
-        </li>
+        </li> -->
       </ul>
     </section>
     <!-- Worked and Extra Time Calculation -->
@@ -295,6 +304,7 @@ export default {
       today: null,
       selectedUser: null,
       workedDays: null,
+      workplace: null,
     };
   },
   computed: {
@@ -414,19 +424,24 @@ export default {
   },
   watch: {
     selectedUser: function (newValue) {
-      const data = {
-        user: newValue,
-        time: this.selectedTime,
-        uid: this.user.uid,
-      };
-      this.getAsist(data);
-      console.log(this.workedTime, this.workedDays);
+      if (newValue && this.selectedTime) {
+        const data = {
+          user: newValue,
+          time: this.selectedTime,
+          uid: this.user.uid,
+        };
+        this.getAsist(data);
+      }
     },
     attendList: function (newValue) {
-      if (newValue.length > 0) {
+      if (newValue.length > 0 && this.selectedUser) {
+        const userData = this.users.find(
+          ({ email }) => email === this.selectedUser
+        );
         this.extraHors = 0;
         this.workedTime = 0;
         this.workedDays = 0;
+        var minutes = 0;
         for (let i = 0; i < newValue.length; i++) {
           if (newValue[i].data.leaveTime) {
             let enter = new Date(
@@ -435,39 +450,60 @@ export default {
             let leave = new Date(
               String(newValue[i].data.leaveTime).slice(0, 16)
             );
-            const workedMin = (leave.getTime() - enter.getTime()) / 60000;
+            let workedMin = (leave.getTime() - enter.getTime()) / 60000;
 
+            const isWeekends = enter.getDay() === 0 || enter.getDay() === 6;
+
+            const isCurentMonth = enter.getMonth() === new Date().getMonth();
+
+            if (userData.eatHour) {
+              workedMin -= 60;
+            }
+            const minDiff = this.diff_minutes(enter, leave);
             if (
               enter.getDay() === 5 &&
-              enter.getMonth() === new Date().getMonth()
+              enter.getMonth() === new Date().getMonth() &&
+              userData.schedule !== "39"
             ) {
               if (workedMin > 440) {
-                this.extraHors += this.diff_minutes(enter, leave) - 420;
+                this.extraHors += minDiff - 420;
                 // this.extraHors = this.timeConvert(
                 //   this.diff_minutes(enter, leave) - 420
                 // );
               }
             }
-            if (
-              enter.getDay() !== 5 &&
-              enter.getMonth() === new Date().getMonth()
-            ) {
+            if (enter.getDay() !== 5 && isCurentMonth) {
               if (workedMin > 500) {
-                this.extraHors += this.diff_minutes(enter, leave) - 480;
-                // this.extraHors = this.timeConvert(
-                //   this.diff_minutes(enter, leave) - 480
-                // );
+                this.extraHors += minDiff - 480;
+                minutes = minDiff % 60;
+                if (minutes < 30) {
+                  this.extraHors -= minutes;
+                }
               }
             }
-            if (Math.sign(workedMin)) {
+            if (isWeekends && isCurentMonth) {
+              this.extraHors += minDiff;
+              this.workedTime += minDiff;
+              minutes = minDiff % 60;
+              if (minutes < 30) {
+                this.extraHors -= minutes;
+                this.workedTime -= minutes;
+              }
+            }
+            if (Math.sign(workedMin) && !isWeekends) {
+              minutes = workedMin % 60;
+              if (minutes < 30) {
+                workedMin -= minutes;
+              }
               this.workedTime += workedMin;
               // this.workedTime = this.timeConvert(workedMin);
             }
             this.workedDays += 1;
           }
         }
-        this.extraHors = this.timeConvert(this.extraHors);
-        this.workedTime = this.timeConvert(this.workedTime);
+        console.log(this.extraHors, this.workedTime);
+        this.extraHors = this.timeConvert(this.extraHors + 1);
+        this.workedTime = this.timeConvert(this.workedTime + 1);
       }
     },
   },
@@ -478,6 +514,7 @@ export default {
     ).toISOString();
     this.selectedMes = date.getMonth();
     this.getUsers();
+    this.selectedUser = this.user.email;
   },
 };
 </script>

@@ -55,7 +55,7 @@
 <script>
 import { mapGetters } from "vuex";
 import IconBase from "@/components/IconBase.vue";
-import IconCalendar from "@/components/icons/IconCalendar.vue";
+// import IconCalendar from "@/components/icons/IconCalendar.vue";
 import IconData from "@/components/icons/IconData.vue";
 import IconTime from "@/components/icons/IconTime.vue";
 import IconContact from "@/components/icons/IconContact.vue";
@@ -68,17 +68,17 @@ export default {
     return {
       buttons: [
         {
-          text: "Apuntar Para Hoy",
+          text: "Apuntar Entradas/Salidas",
           path: "/dashboard",
           iconName: "time",
           component: IconTime,
         },
-        {
-          text: "Apuntar Para Otro Dia",
-          path: "/calendar",
-          iconName: "calendar",
-          component: IconCalendar,
-        },
+        // {
+        //   text: "Apuntar Para Otro Dia",
+        //   path: "/calendar",
+        //   iconName: "calendar",
+        //   component: IconCalendar,
+        // },
         {
           text: "Mirar Entradas/Salidas",
           path: "/datos",
@@ -105,7 +105,7 @@ export default {
   components: {
     IconBase,
     IconTime,
-    IconCalendar,
+    // IconCalendar,
     IconData,
     IconContact,
     IconProfile,

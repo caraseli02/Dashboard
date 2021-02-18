@@ -66,26 +66,26 @@ export default {
     return {
       options: [
         {
-          text: "¿Llegaste Tarde?",
-          icon: "gg-alarm",
-          btnText: "Escríbeme",
+          text: "¿Dejar una Nota?",
+          icon: "gg-danger",
+          btnText: "Apuntar",
           funcMsg: true,
         },
-        {
-          text: "¿Horario partido?",
-          icon: "gg-timer",
-          btnText: "Apuntar",
-        },
-        {
-          text: "¿Tienes una cita?",
-          icon: "gg-calendar-today",
-          btnText: "Avisar",
-        },
-        {
-          text: "¿Otros motivos?",
-          icon: "gg-danger",
-          btnText: "Seleccionar",
-        },
+        // {
+        //   text: "¿Horario partido?",
+        //   icon: "gg-timer",
+        //   btnText: "Apuntar",
+        // },
+        // {
+        //   text: "¿Tienes una cita?",
+        //   icon: "gg-calendar-today",
+        //   btnText: "Avisar",
+        // },
+        // {
+        //   text: "¿Otros motivos?",
+        //   icon: "gg-danger",
+        //   btnText: "Seleccionar",
+        // },
       ],
     };
   },

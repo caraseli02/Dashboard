@@ -3,10 +3,10 @@
     <!-- Month selector  -->
     <monthSelector :bindAsistFunc="true" />
     <!-- Attendence Display -->
-    <section class="grid grid-flow-row auto-rows-max gap-4">
+    <section v-if="attendList[0] && this.today" class="grid grid-flow-row auto-rows-max gap-4">
       <ul
         v-if="checkCalendarToday === true || checkCalendarToday === selectedMes"
-        class="glass-dark w-screen h-48 flex flex-col justify-center items-center mb-4"
+        class="glass-dark w-screen h-48 flex flex-col justify-center items-center my-4 rounded-none"
       >
         <li
           v-if="today"
@@ -95,27 +95,40 @@
             &#8593;{{ attend.data.leaveTime.slice(11, 16) }}</span
           >
         </li>
-        <li class="flex justify-center items-center h-full w-full z-50">
+        <li
+          class="flex flex-col justify-center text-red-900 font-bold items-center h-full w-full z-50"
+          v-if="'curentTime' in attendList[0]"
+        >
           <button
-            v-if="actualMonthCheck && !attend.data.leaveTime"
+            v-if="actualMonthCheck && !attend.data.leaveTime && attendIsToday"
             @click="saveLeaveTime(attend)"
             class="block text-gray-900 font-bold my-3 mx-auto py-2 px-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 rounded-lg"
           >
             Apuntar<br />
             Salida<br />
           </button>
-          <datetime
-            v-model="datetimeTheming"
-            class="top-0"
-            v-if="!actualMonthCheck && !attend.data.leaveTime"
-            input-class="block text-gray-900 font-bold w-32 my-3 mx-auto py-2 px-4 bg-white rounded-lg text-center "
-            type="datetime"
-            value-zone="local"
-            zone="local"
-            placeholder="Salida"
-            :min-datetime="attend.data.enterTime"
-            :max-datetime="addDayToTime(attend.data.enterTime)"
-          ></datetime>
+          <div
+            v-if="!attend.msgLeave && !attend.data.leaveTime && !attendIsToday"
+          >
+            No tiene Salida
+            <button
+              class="block text-gray-900 font-bold w-32 my-1 mx-auto py-1 px-2 bg-white rounded-lg text-center top-0"
+              placeholder="Avisar"
+              @click="addMsg()"
+            >
+              Apuntar<br />
+              Motivo<br />
+            </button>
+          </div>
+        </li>
+        <li
+          v-if="attend.msgLeave"
+          class="flex flex-col justify-center text-red-900 font-bold items-center h-full w-full z-50"
+          @click="showMsg(attend.msgLeave)"
+        >
+          <icon-base class="mx-4 self-center bg-green-200 rounded-lg pl-1">
+            <icon-contact />
+          </icon-base>
         </li>
         <li
           v-if="attend.data.temperature"
@@ -147,14 +160,12 @@
       </ul>
       <p
         v-if="attendList[0] && 'msg' in attendList[0].data && actualMonthCheck"
-        class="w-screen glass-light h-auto p-3 flex justify-start items-start overflow-y-auto"
+        class="w-24 mx-auto glass-light h-auto p-3 flex justify-start items-start overflow-y-auto"
+        @click="showMsg(attendList[0].data.msg)"
       >
         <icon-base class="mx-4 self-center bg-green-200 rounded-lg pl-1">
           <icon-contact />
         </icon-base>
-        <span class="w-64 h-10 overflow-y-auto mx-auto">
-          {{ attendList[0].data.msg }}
-        </span>
       </p>
       <Options v-if="!checkCalendarToday && actualMonthCheck" />
     </section>
@@ -170,7 +181,6 @@ import IconTemp from "../components/icons/IconTemp.vue";
 import IconContact from "../components/icons/IconContact.vue";
 import dragVerify from "vue-drag-verify";
 import monthSelector from "@/components/utils/monthSelector.vue";
-import { Datetime } from "vue-datetime";
 import utils from "@/mixins/utils";
 
 export default {
@@ -183,12 +193,10 @@ export default {
     IconTemp,
     dragVerify,
     monthSelector,
-    Datetime,
     // Alerts,
   },
   data() {
     return {
-      datetimeTheming: null,
       swiper: {
         width: 300,
         text: "Apuntar Entrada",
@@ -219,7 +227,7 @@ export default {
     };
   },
   watch: {
-    attendList: function(newValue) {
+    attendList: function (newValue) {
       if (newValue.length > 0 && newValue[0].data.leaveTime) {
         let enter = new Date(String(newValue[0].data.enterTime).slice(0, 16));
         let leave = new Date(String(newValue[0].data.leaveTime).slice(0, 16));
@@ -249,28 +257,16 @@ export default {
         }
       }
     },
-    datetimeTheming: async function(newValue) {
-      if (newValue.length > 0) {
-        newValue = newValue.slice(0, 16);
-        this.$confirm(`Salida: ${newValue.replace("T", " ")}`).then(() => {
-          let attend = this.attendList[0];
-          attend["activeSession"] = false;
-          attend["data"]["leaveTime"] = newValue;
-          this.changeAttendance(attend);
-          console.log(attend);
-        });
-      }
-    },
   },
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      checkDay: state => state.checkDay,
-      d: state => state.d,
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      selectedMes: state => state.selectedMonth,
+      attendList: (state) => state.attendance,
+      checkDay: (state) => state.checkDay,
+      d: (state) => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      selectedMes: (state) => state.selectedMonth,
     }),
     ...mapGetters(["checkCalendarToday"]),
     timeNow() {
@@ -286,6 +282,13 @@ export default {
     },
     actualMonthCheck() {
       return this.d.getMonth() === this.selectedMes;
+    },
+    attendIsToday: function () {
+      // `this` points to the vm instance
+      return (
+        new Date(this.attendList[0].curentTime).toISOString().slice(0, 10) ===
+        this.today.slice(0, 10)
+      );
     },
   },
   methods: {
@@ -333,10 +336,16 @@ export default {
       var dayName = this.days[d.getDay()];
       return dayName;
     },
-    addDayToTime(date) {
-      return new Date(
-        new Date(date).getTime() + 60 * 60 * 24 * 1000
-      ).toISOString();
+    addMsg() {
+      this.$prompt("Mensaje").then((text) => {
+        let attend = this.attendList[0];
+        attend["msgLeave"] = text;
+        attend["activeSession"] = false;
+        this.changeAttendance(attend);
+      });
+    },
+    showMsg(msg) {
+      this.$alert(msg);
     },
   },
   mounted() {

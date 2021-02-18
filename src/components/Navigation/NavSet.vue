@@ -33,7 +33,7 @@
 <script>
 import IconBase from "@/components/IconBase.vue";
 import IconHome from "@/components/icons/IconHome.vue";
-import IconCalendar from "@/components/icons/IconCalendar.vue";
+// import IconCalendar from "@/components/icons/IconCalendar.vue";
 import IconData from "@/components/icons/IconData.vue";
 import IconTime from "@/components/icons/IconTime.vue";
 import IconContact from "@/components/icons/IconContact.vue";
@@ -44,7 +44,7 @@ export default {
   components: {
     IconBase,
     IconTime,
-    IconCalendar,
+    // IconCalendar,
     IconData,
     IconHome,
     IconContact,
@@ -60,12 +60,12 @@ export default {
           path: "/",
           name: "Inicio",
         },
-        {
-          iconName: "calendar",
-          component: IconCalendar,
-          path: "/calendar",
-          name: "Calendar",
-        },
+        // {
+        //   iconName: "calendar",
+        //   component: IconCalendar,
+        //   path: "/calendar",
+        //   name: "Calendar",
+        // },
         {
           iconName: "time",
           component: IconTime,
