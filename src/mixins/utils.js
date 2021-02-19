@@ -16,7 +16,10 @@ export default {
       var rhours = Math.floor(hours);
       var minutes = (hours - rhours) * 60;
       var rminutes = Math.round(minutes);
-      return `${rhours}h  ${Math.ceil(rminutes / 5) * 5}m `;
+      if (rminutes > 9) {
+        return `${rhours}h  ${Math.ceil(rminutes / 5) * 5}m `;
+      }
+      return `${rhours}h  `;
     },
     diff_minutes(dt2, dt1) {
       var diff = (dt2.getTime() - dt1.getTime()) / 1000;
@@ -61,6 +64,16 @@ export default {
       let rMin = "" + (rounded % 60);
 
       return rHr.padStart(2, "0") + ":" + rMin.padStart(2, "0");
+    },
+    getRoundedDate: (minutes, d = new Date()) => {
+      let ms = 1000 * 60 * minutes; // convert minutes to ms
+      let roundedDate = new Date(Math.round(d.getTime() / ms) * ms);
+      roundedDate = new Date(
+        roundedDate.getTime() - roundedDate.getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .slice(0, 16);
+      return roundedDate;
     },
   },
 };

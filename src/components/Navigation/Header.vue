@@ -112,8 +112,8 @@ export default {
   computed: {
     ...mapGetters("auth", ["getUser"]),
     ...mapState({
-      showSidebar: (state) => state.showSidebar,
-      loadingMap: (state) => state.loadingMap,
+      showSidebar: state => state.showSidebar,
+      loadingMap: state => state.loadingMap,
     }),
     user() {
       return this.$store.getters["auth/getUser"];

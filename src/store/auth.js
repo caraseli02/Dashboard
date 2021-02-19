@@ -45,7 +45,12 @@ const actions = {
           .set({
             email: user.email,
             name: payload.name,
+            surname: payload.surname,
             dni: payload.dni,
+            workplace: payload.workplace,
+            schedule: "40",
+            eatHour: true,
+            author: user.uid,
           });
       })
       .catch(error => {

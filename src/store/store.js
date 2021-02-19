@@ -102,6 +102,13 @@ export const store = new Vuex.Store({
         });
       }
     },
+    async CHANGE_USER_DATA(state, { userData }) {
+      console.log(userData);
+      const docRef = db.collection("attendanceUsers").doc(userData.id);
+      return await docRef.update({
+        surname: userData.surname,
+      });
+    },
   },
 
   actions: {
@@ -245,6 +252,9 @@ export const store = new Vuex.Store({
     },
     changeAttendance(context, userData) {
       context.commit("CHANGE_ATTENDANCE", { userData });
+    },
+    changeUserData(context, userData) {
+      context.commit("CHANGE_USER_DATA", { userData });
     },
     selectMonth(context, userData) {
       context.commit("SET_MONTH", userData);

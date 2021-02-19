@@ -171,9 +171,9 @@
               <button
                 v-if="
                   enterModal &&
-                  userData.enterTime.slice(11, 16) !==
-                    dateExist[0]['data']['enterTime'].slice(11, 16) &&
-                  !dateExist[0].data.leaveTime
+                    userData.enterTime.slice(11, 16) !==
+                      dateExist[0]['data']['enterTime'].slice(11, 16) &&
+                    !dateExist[0].data.leaveTime
                 "
                 class="bg-blue-500 hover:bg-blue-400 text-sm text-white py-2 px-4 w-full rounded-b-lg"
                 @click="changEnterTime(dateExist[0])"
@@ -285,9 +285,9 @@ export default {
   // components: { IconBase, IconMaps, datetime: Datetime },
   computed: {
     ...mapState({
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      d: (state) => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      d: state => state.d,
     }),
     dateExist() {
       return this.$store.state.checkDay;
@@ -334,7 +334,7 @@ export default {
         this.$prompt(
           `Motivo del cambio?
              La nueva hora: ${this.userData.enterTime.slice(11, 16)}`
-        ).then((text) => {
+        ).then(text => {
           value["data"]["enterChange"] = {
             oldValue: value["data"]["enterTime"].slice(11, 16),
             newValue: this.userData.enterTime.slice(11, 16),
@@ -403,7 +403,7 @@ export default {
     convertToAsist() {
       this.asistList = new Set();
 
-      this.$store.state.attendance.forEach((element) => {
+      this.$store.state.attendance.forEach(element => {
         let monthNr = new Date(
           element["createdAt"]["seconds"] * 1000
         ).getMonth();

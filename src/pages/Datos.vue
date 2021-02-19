@@ -310,12 +310,12 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      users: (state) => state.users,
-      selectedTime: (state) => state.selectedTime,
+      attendList: state => state.attendance,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      users: state => state.users,
+      selectedTime: state => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
@@ -423,7 +423,7 @@ export default {
     },
   },
   watch: {
-    selectedUser: function (newValue) {
+    selectedUser: function(newValue) {
       if (newValue && this.selectedTime) {
         const data = {
           user: newValue,
@@ -433,7 +433,7 @@ export default {
         this.getAsist(data);
       }
     },
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       if (newValue.length > 0 && this.selectedUser) {
         const userData = this.users.find(
           ({ email }) => email === this.selectedUser
@@ -501,7 +501,6 @@ export default {
             this.workedDays += 1;
           }
         }
-        console.log(this.extraHors, this.workedTime);
         this.extraHors = this.timeConvert(this.extraHors + 1);
         this.workedTime = this.timeConvert(this.workedTime + 1);
       }

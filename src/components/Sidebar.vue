@@ -1,5 +1,5 @@
 <template>
-  <div v-if="getUser && userData[0]" >
+  <div v-if="getUser && userData[0]">
     <transition
       enter-class="opacity-0"
       enter-active-class="ease-out transition-medium"
@@ -41,10 +41,30 @@
         </div>
         <div class="text-center px-3 pb-6 pt-2">
           <h3 class="text-black text-xl bold font-sans">
-            {{ getUser.displayName }}
+            {{ userData[0].name }}
           </h3>
+          <h3
+            v-if="'surname' in userData[0]"
+            class="text-black text-xl bold font-sans"
+          >
+            {{ userData[0].surname }}
+          </h3>
+          <button class="flex mt-2" v-else>
+            <input
+              v-model="surname"
+              class="shadow appearance-none border rounded py-2 px-3 htext-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="surname"
+              type="text"
+              placeholder="Apellidos"
+            />
+            <span
+              @click="addSurname(userData[0])"
+              class="p-2 w-10 bg-green-500 rounded"
+              >OK</span
+            >
+          </button>
           <p class="mt-2 font-sans font-light text-gray-700">
-            {{ getUser.email }}
+            {{ userData[0].email }}
           </p>
         </div>
         <div class="flex justify-center pb-3 text-grey-dark">
@@ -200,7 +220,13 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from "vuex";
+
 export default {
+  data() {
+    return {
+      surname: null,
+    };
+  },
   watch: {
     showSidebar: {
       immediate: true,
@@ -214,7 +240,7 @@ export default {
     },
   },
   mounted() {
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", e => {
       if (e.keyCode == 27 && this.showSidebar) this.toggleSidebar;
     });
   },
@@ -226,7 +252,12 @@ export default {
     ...mapState(["showSidebar", "userData"]),
   },
   methods: {
-    ...mapActions(["toggleSidebar", "getUserData"]),
+    addSurname() {
+      let data = this.userData[0];
+      data["surname"] = this.surname;
+      this.changeUserData(data);
+    },
+    ...mapActions(["toggleSidebar", "getUserData", "changeUserData"]),
     ...mapActions("auth", ["signOut"]),
     async closeSession() {
       await this.toggleSidebar();
