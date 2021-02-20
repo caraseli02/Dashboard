@@ -9,7 +9,7 @@
         alt=""
       /> -->
       <div
-        class="mx-auto w-full max-w-sm z-10 transform glass-light p-2 self-center my-10"
+        :class="`mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10`"
       >
         <div>
           <h2 class="text-3xl leading-9 font-extrabold text-primary">
@@ -109,7 +109,7 @@
       </div>
     </div>
     <div
-      class="glass-light rounded-none text-secondary w-full h-20 text-lg flex justify-center items-center "
+      :class="`glass-${theme} rounded-none text-secondary w-full h-20 text-lg flex justify-center items-center`"
     >
       ¿No tienes cuenta?
       <router-link
@@ -136,6 +136,7 @@ export default {
   computed: {
     // mix the getters into computed with object spread operator
     ...mapGetters("notifi", ["notificationMessage"]),
+    ...mapGetters({ theme: "theme/getTheme" }),
   },
   methods: {
     ...mapActions("auth", ["signInAction"]),

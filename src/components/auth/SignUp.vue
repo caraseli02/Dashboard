@@ -9,7 +9,7 @@
         alt=""
       /> -->
       <div
-        class="mx-auto w-full max-w-sm flex-1 z-10 transform glass-light p-2 flex justify-center items-center flex-col"
+        :class="`mx-auto w-full max-w-sm flex-1 z-10 transform glass-${theme} p-2 flex justify-center items-center flex-col`"
       >
         <div>
           <h2 class="text-3xl leading-9 font-extrabold text-primary">
@@ -159,6 +159,7 @@ export default {
   computed: {
     // mix the getters into computed with object spread operator
     ...mapGetters("notifi", ["notificationMessage"]),
+    ...mapGetters({ theme: "theme/getTheme" }),
   },
   methods: {
     ...mapActions("auth", ["signUpAction"]),

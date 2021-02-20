@@ -1,6 +1,6 @@
 <template>
   <!-- Month selector  -->
-  <section :class="`w-full glass-${theme} h-12 px-2 flex justify-between`">
+  <section :class="`w-full h-12 px-2 flex justify-between`">
     <button v-if="selectedMes > 0" @click="prevMonth()">
       <icon-base class="text-accent">
         <icon-arrow-left />

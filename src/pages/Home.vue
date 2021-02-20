@@ -15,7 +15,7 @@
           v-for="(link, index) in buttons"
           :key="index"
           :to="link.path"
-          class="shadow-lg text-primary bg-secondary w-full mx-8 h-24 text-lg flex flex-col justify-center items-center mb-4 py-2 rounded-lg"
+          class="shadow-lg text-primary bg-secondary w-full mx-8 h-24 text-lg flex flex-col justify-center items-center mb-4 py-2 rounded-lg "
         >
           <icon-base :width="50" :height="50" :icon-name="link.iconName">
             <component
@@ -31,7 +31,7 @@
           v-for="link in links"
           :key="link.iconName"
           :to="link.path"
-          class="shadow-lg bg-gray-100 w-full mx-8 h-20 text-lg flex flex-col justify-center items-center mb-4 rounded-lg"
+          class="shadow-lg bg-secondary text-primary w-full mx-8 h-20 text-lg flex flex-col justify-center items-center mb-4 rounded-lg"
         >
           <icon-base :width="50" :height="50" :icon-name="link.iconName">
             <component

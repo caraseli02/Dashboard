@@ -12,7 +12,7 @@
           </button>
         </div>
         <!-- Home, Sing-In Sign-Up Btn -->
-        <section class="flex justify-between items-center p-3">
+        <section class="flex justify-between items-center">
           <span v-for="link in links" :key="link.name">
             <router-link :to="link.to" class="ml-2 flex justify-center items-center p-2 rounded-lg text-primary bg-primary"
               v-if="!user && $route.path !== link.to">{{ link.name }}
@@ -21,8 +21,8 @@
           <!-- Side Bar -->
         </section>
         <!-- LOGOUT, ThemeToggler Btn -->
-        <div class="flex justify-between items-center w-48">
-          <ThemeToggler />
+        <div class="flex justify-end items-center w-40">
+          <ThemeToggler class="mr-10" />
           <button @click="closeSession" class="flex justify-center items-center p-3 rounded-lg text-primary bg-primary mr-2"
             v-if="user">
             Salir

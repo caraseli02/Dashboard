@@ -92,11 +92,11 @@
       >
         <li
           v-if="attend.data"
-          class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-green-400 rounded-lg"
+          class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-gray-200 dark:bg-gray-500 rounded-lg text-primary"
           @click="deleteAttendData(attend.id)"
         >
           <span
-            class="text-primary rounded-t-lg text-base bg-blue-500 w-full h-full text-center"
+            class="text-secondary rounded-t-lg text-base bg-primary w-full h-full text-center"
             >{{ getDayName(attend.data.enterTime).slice(0, 3) }}</span
           >
           {{ attend.data.enterTime.slice(8, 10) }}
@@ -144,7 +144,7 @@
             {{ checkLeaveUpdate(attend.closedAt, attend.data.leaveTime) }}
           </span>
         </li> -->
-        <li class="flex justify-center items-center text-accent dark:text-secondary">
+        <li class="flex justify-center items-center text-secondary ">
           <icon-base>
             <icon-temp />
           </icon-base>
@@ -157,7 +157,7 @@
         >
           <icon-base
             v-if="attend.data.msg"
-            class="mx-4 self-center bg-green-300 rounded-lg w-full p-1 h-8"
+            class="mx-4 self-center shadow-lg text-green-700 dark:text-green-400 rounded-lg w-full p-1 h-8"
           >
             <icon-contact />
           </icon-base>
@@ -207,7 +207,7 @@
       </div>
       <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg my-4`">
         <div
-          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-teal-600 bg-green-500 rounded-full mr-6"
+          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-teal-600 bg-gray-500 rounded-full mr-6"
         >
           <svg
             aria-hidden="true"

@@ -9,7 +9,7 @@
       @click="isOpen = false"
       :class="
         $route.path === link.path
-          ? 'opacity-100 shadow-lg bg-gray-100 dark:bg-black text-accent'
+          ? 'opacity-100 shadow-lg bg-gray-100 dark:bg-black text-accent font-bold'
           : 'text-primary shadow-none opacity-75'
       "
       class="flex justify-center items-center mx-auto rounded-lg p-2"
