@@ -9,14 +9,14 @@
     >
       <div class="w-1/2 px-3 mb-6 md:mb-0">
         <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
           for="grid-state"
         >
           Centro
         </label>
         <div class="relative">
           <select
-            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             id="grid-state"
             v-model="workplace"
           >
@@ -25,7 +25,7 @@
             <option>SVQ</option>
           </select>
           <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
           >
             <svg
               class="fill-current h-4 w-4"
@@ -41,14 +41,14 @@
       </div>
       <div v-if="workplace" class="w-1/2 px-3 mb-6 md:mb-0 overflow-hidden">
         <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
           for="grid-state"
         >
           Empleado
         </label>
         <div class="relative">
           <select
-            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             id="grid-state"
             v-model="selectedUser"
           >
@@ -66,7 +66,7 @@
             </option> -->
           </select>
           <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
           >
             <svg
               class="fill-current h-4 w-4"
@@ -88,7 +88,7 @@
       <ul
         v-for="(attend, index) in attendList"
         :key="index"
-        class="w-24 grid grid-flow-row grid-rows-5 glass-light"
+        :class="`w-24 grid grid-flow-row grid-rows-5 glass-${theme}`"
       >
         <li
           v-if="attend.data"
@@ -96,7 +96,7 @@
           @click="deleteAttendData(attend.id)"
         >
           <span
-            class="text-gray-900 rounded-t-lg text-base bg-blue-500 w-full h-full text-center"
+            class="text-primary rounded-t-lg text-base bg-blue-500 w-full h-full text-center"
             >{{ getDayName(attend.data.enterTime).slice(0, 3) }}</span
           >
           {{ attend.data.enterTime.slice(8, 10) }}
@@ -111,28 +111,28 @@
             }}</span
           >
         </li> -->
-        <li class="mx-auto h-full flex justify-center items-center p-1">
-          <span class="text-green-700 text-2xl mr-1"> &#8595; </span>
-          <span class="text-xl text-green-800">
+        <li class="mx-auto h-full flex justify-center items-center p-1 text-green-800 dark:text-green-500">
+          <span class=" text-2xl mr-1"> &#8595; </span>
+          <span class="text-xl ">
             {{ roundTime(attend.data.enterTime.slice(11, 16), 30) }}</span
           >
         </li>
         <!-- v-if="checkEnterCreated(attend.createdAt, attend.curentTime) !== 0" -->
         <!-- <li
-          class="w-full flex justify-center items-center text-gray-800 text-base text-center rounded-lg"
+          class="w-full flex justify-center items-center text-primary text-base text-center rounded-lg"
         >
           <span class="h-16 pt-2 px-1">{{
             checkEnterCreated(attend.createdAt, attend.curentTime)
           }}</span>
         </li> -->
         <li
-          class="mx-auto h-full flex justify-center items-center p-1 border-t-2 border-gray-600"
+          class="mx-auto h-full flex justify-center items-center p-1 border-t-2 border-gray-600 text-red-700 dark:text-red-500"
         >
-          <span v-if="attend.data.leaveTime" class="text-xl text-red-800">
+          <span v-if="attend.data.leaveTime" class="text-xl">
             {{ roundTime(attend.data.leaveTime.slice(11, 16), 30) }}</span
           >
-          <button v-else class="text-xl text-red-800">--:--</button>
-          <span class="text-red-700 text-2xl">&#8593;</span>
+          <button v-else class="text-xl ">--:--</button>
+          <span class=" text-2xl">&#8593;</span>
         </li>
         <!-- <li
           class="mx-auto h-full w-full flex justify-center items-center p-1 border-b-2 border-gray-600"
@@ -144,7 +144,7 @@
             {{ checkLeaveUpdate(attend.closedAt, attend.data.leaveTime) }}
           </span>
         </li> -->
-        <li class="flex justify-center items-center text-purple-800">
+        <li class="flex justify-center items-center text-accent dark:text-secondary">
           <icon-base>
             <icon-temp />
           </icon-base>
@@ -161,7 +161,7 @@
           >
             <icon-contact />
           </icon-base>
-          <span class="text-xs mx-4 text-center" v-else>No tiene Mensajes</span>
+          <span class="text-xs mx-4 text-center text-secondary" v-else>No tiene Mensajes</span>
         </li>
         <!-- <li
           @click="showChangeMsg(attend.data.enterChange)"
@@ -179,7 +179,7 @@
     </section>
     <!-- Worked and Extra Time Calculation -->
     <section class="mt-8">
-      <div class="flex items-center p-2 glass-light shadow rounded-lg">
+      <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg`">
         <div
           class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-yellow-600 bg-yellow-100 rounded-full mr-6"
         >
@@ -199,15 +199,15 @@
           </svg>
         </div>
         <div>
-          <span :key="workedDays" class="block text-3xl font-bold">{{
+          <span :key="workedDays" class="block text-3xl text-primary font-bold">{{
             workedDays
           }}</span>
-          <span class="block text-xl text-gray-900">Días de trabajo</span>
+          <span class="block text-xl text-secondary">Días de trabajo</span>
         </div>
       </div>
-      <div class="flex items-center p-2 glass-light shadow rounded-lg my-4">
+      <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg my-4`">
         <div
-          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-teal-600 bg-teal-100 rounded-full mr-6"
+          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-teal-600 bg-green-500 rounded-full mr-6"
         >
           <svg
             aria-hidden="true"
@@ -225,13 +225,13 @@
           </svg>
         </div>
         <div>
-          <span :key="workedTime" class="block text-3xl font-bold">{{
+          <span :key="workedTime" class="block text-3xl font-bold text-primary">{{
             workedTime
           }}</span>
-          <span class="block text-xl text-gray-900">Horas de servicio</span>
+          <span class="block text-xl text-secondary">Horas de servicio</span>
         </div>
       </div>
-      <div class="flex items-center p-2 glass-light shadow rounded-lg">
+      <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg`">
         <div
           class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-red-600 bg-gray-100 rounded-full mr-6"
         >
@@ -253,10 +253,10 @@
           </svg>
         </div>
         <div>
-          <span :key="extraHors" class="block text-3xl font-bold">{{
+          <span :key="extraHors" class="block text-3xl font-bold text-primary">{{
             extraHors
           }}</span>
-          <span class="block text-xl text-gray-900">Horas extraordinarias</span>
+          <span class="block text-xl text-secondary">Horas extraordinarias</span>
         </div>
       </div>
     </section>
@@ -319,6 +319,7 @@ export default {
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
+    ...mapGetters({ theme: "theme/getTheme" }),
   },
   methods: {
     ...mapActions([

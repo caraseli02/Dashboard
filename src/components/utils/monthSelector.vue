@@ -1,30 +1,30 @@
 <template>
   <!-- Month selector  -->
-  <section class="w-full glass-light h-12 px-2 flex justify-between">
+  <section :class="`w-full glass-${theme} h-12 px-2 flex justify-between`">
     <button v-if="selectedMes > 0" @click="prevMonth()">
-      <icon-base>
+      <icon-base class="text-accent">
         <icon-arrow-left />
       </icon-base>
     </button>
     <button
-      class="text-lg bg-gray-400 rounded-lg m-1 w-24"
+      class="text-lg bg-secondary text-primary rounded-lg m-1 w-24"
       v-if="selectedMes > 0"
       @click="selectedMes = selectedMes - 1"
     >
       {{ meses[selectedMes - 1].slice(0, 3) }}
     </button>
-    <button class="text-lg bg-gray-200 shadow-lg rounded-lg m-1 w-24">
+    <button class="text-lg text-primary rounded-lg m-1 w-24">
       {{ meses[selectedMes] }}
     </button>
     <button
-      class="text-lg bg-gray-400 rounded-lg m-1 w-24"
+      class="text-lg bg-secondary text-primary rounded-lg m-1 w-24"
       v-if="selectedMes < 11"
       @click="selectedMes = selectedMes + 1"
     >
       {{ meses[selectedMes + 1].slice(0, 3) }}
     </button>
     <button v-if="selectedMes < 11" @click="nextMonth()">
-      <icon-base>
+      <icon-base class="text-accent">
         <icon-arrow-right />
       </icon-base>
     </button>
@@ -90,6 +90,7 @@ export default {
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
+    ...mapGetters({ theme: "theme/getTheme" }),
   },
   methods: {
     ...mapActions([

@@ -22,7 +22,7 @@
     </transition>
     <aside
       v-if="userData"
-      class="transform top-0 left-0 w-64 bg-gray-300 fixed h-full overflow-auto ease-in-out transition-all duration-300 z-30"
+      class="transform top-0 left-0 w-64 bg-primary fixed h-full overflow-auto ease-in-out transition-all duration-300 z-30"
       :class="showSidebar ? 'translate-x-0' : '-translate-x-full'"
     >
       <div class="overflow-hidden shadow max-w-xs">
@@ -40,19 +40,19 @@
           />
         </div>
         <div class="text-center px-3 pb-6 pt-2">
-          <h3 class="text-black text-xl bold font-sans">
+          <h3 class="text-primary text-xl">
             {{ userData[0].name }}
           </h3>
           <h3
             v-if="'surname' in userData[0]"
-            class="text-black text-xl bold font-sans"
+            class="text-primary text-xl"
           >
             {{ userData[0].surname }}
           </h3>
           <button class="flex mt-2" v-else>
             <input
               v-model="surname"
-              class="shadow appearance-none border rounded py-2 px-3 htext-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="shadow appearance-none border rounded py-2 px-3 htext-primary leading-tight focus:outline-none focus:ring"
               id="surname"
               type="text"
               placeholder="Apellidos"
@@ -63,11 +63,11 @@
               >OK</span
             >
           </button>
-          <p class="mt-2 font-sans font-light text-gray-700">
+          <p class="mt-2 font-sans font-light text-primary">
             {{ userData[0].email }}
           </p>
         </div>
-        <div class="flex justify-center pb-3 text-grey-dark">
+        <!-- <div class="flex justify-center pb-3 text-grey-dark">
           <div class="text-center mr-3 border-r pr-3">
             <span>Horas Exra</span>
             <h2>0 h</h2>
@@ -76,25 +76,25 @@
             <span>Vacaciones</span>
             <h2>22 d</h2>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
         <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          class="block uppercase tracking-wide text-secondary text-xs font-bold mb-2"
           for="grid-state"
         >
           Horario de Trabajo
         </label>
         <div v-if="!userData[0]" class="relative">
           <select
-            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             id="grid-state"
           >
             <option>40 horas</option>
             <option>39 horas</option>
           </select>
           <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
           >
             <svg
               class="fill-current h-4 w-4"
@@ -108,7 +108,7 @@
           </div>
         </div>
         <div
-          class="flex items-center bg-gray-200 p-2 glass-light shadow rounded-lg"
+          class="flex bg-secondary items-center text-primary p-2 shadow rounded-lg"
         >
           <div
             class="inline-flex flex-shrink-0 items-center justify-center h-10 w-10 text-blue-600 bg-gray-100 rounded-full mr-6 shadow-lg"
@@ -133,27 +133,27 @@
           <div class="flex">
             <span
               v-if="'schedule' in userData[0]"
-              class="block text-base font-bold text-gray-700 mt-2"
+              class="block text-base font-bold text-primary mt-2"
               >{{ userData[0]["schedule"] }}h</span
             >
             <span
               v-if="userData[0].eatHour"
-              class="text-xs font-bold ml-4 flex flex-col justify-center items-center"
-              ><i class="gg-coffee"></i> 15:00/16:00</span
+              class="text-xs font-bold ml-8 flex flex-col justify-center items-center"
+              ><i class="gg-coffee text-xl"></i> 1 h</span
             >
           </div>
         </div>
       </div>
       <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
         <label
-          class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          class="block uppercase tracking-wide text-secondary text-xs font-bold mb-2"
           for="grid-state"
         >
           Centro de Trabajo
         </label>
         <div v-if="!userData[0]['workplace']" class="relative">
           <select
-            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            class="block appearance-none w-full bg-secondary text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             id="grid-state"
           >
             <option>Palma de Mallorca</option>
@@ -161,7 +161,7 @@
             <option>Valencia</option>
           </select>
           <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
           >
             <svg
               class="fill-current h-4 w-4"
@@ -175,7 +175,7 @@
           </div>
         </div>
         <div
-          class="flex items-center bg-gray-200 p-2 glass-light shadow rounded-lg"
+          class="flex items-center bg-secondary p-2 shadow rounded-lg"
         >
           <div
             class="inline-flex flex-shrink-0 items-center justify-center h-12 w-12 text-blue-600 bg-gray-100 rounded-full mr-6 shadow-lg"
@@ -199,7 +199,7 @@
             <span class="block text-3xl font-bold"></span>
             <span
               v-if="'workplace' in userData[0]"
-              class="block text-base font-bold text-gray-700"
+              class="block text-base font-bold text-primary"
               >{{ userData[0]["workplace"] }}</span
             >
           </div>

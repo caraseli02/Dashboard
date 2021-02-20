@@ -1,20 +1,21 @@
 module.exports = {
-  plugins: [],
+  purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  darkMode: "class", // or 'media' or 'class'
   theme: {
-    fontFamily: {
-      sans: ["Open Sans", "sans-serif"],
-    },
     extend: {
-      animation: {
-        "spin-slow": "spin 3s linear infinite",
-        wiggle: "wiggle 1s ease-in-out infinite",
+      backgroundColor: {
+        primary: "var(--color-bg-primary)",
+        secondary: "var(--color-bg-secondary)",
       },
-      keyframes: {
-        wiggle: {
-          "0%, 100%": { transform: "rotate(-30deg)" },
-          "50%": { transform: "rotate(30deg)" },
-        },
+      textColor: {
+        accent: "var(--color-text-accent)",
+        primary: "var(--color-text-primary)",
+        secondary: "var(--color-text-secondary)",
       },
     },
   },
+  variants: {
+    extend: {},
+  },
+  plugins: [],
 };

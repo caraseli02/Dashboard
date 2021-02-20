@@ -1,21 +1,21 @@
 <template>
-  <div class="min-h-screen bg-transparent">
+  <div class="h-screen">
     <div
       class="flex-1 flex flex-col md:flex-row justify-center pb-4 md:px-16 p-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
     >
-      <img
+      <!-- <img
         class="h-full w-full md:w-2/3 contain z-0"
         src="@/assets/img/asistSvg.svg"
         alt=""
-      />
+      /> -->
       <div
-        class="mx-auto w-full max-w-sm flex-1 z-10 transform -translate-y-20 glass-light p-2 self-center"
+        class="mx-auto w-full max-w-sm z-10 transform glass-light p-2 self-center my-10"
       >
         <div>
-          <h2 class="text-3xl leading-9 font-extrabold text-gray-900">
+          <h2 class="text-3xl leading-9 font-extrabold text-primary">
             APIMOSA APP
           </h2>
-          <span class="mt-2 text-lg leading-5 text-gray-700 max-w">
+          <span class="mt-2 text-lg leading-5 text-secondary max-w">
             Inicia sesión
           </span>
         </div>
@@ -33,7 +33,7 @@
               <div>
                 <label
                   for="email"
-                  class="block text-sm font-medium leading-5 text-gray-900"
+                  class="block text-sm font-medium leading-5 text-secondary"
                 >
                   Email address
                 </label>
@@ -44,7 +44,7 @@
                     v-model="email"
                     id="email"
                     required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
@@ -52,7 +52,7 @@
               <div class="mt-6">
                 <label
                   for="password"
-                  class="block text-sm font-medium leading-5 text-gray-900"
+                  class="block text-sm font-medium leading-5 text-secondary"
                 >
                   Password
                 </label>
@@ -62,7 +62,7 @@
                     v-model="password"
                     id="password"
                     required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
@@ -76,7 +76,7 @@
                   />
                   <label
                     for="remember_me"
-                    class="ml-2 block text-sm leading-5 text-gray-900"
+                    class="ml-2 block text-sm leading-5 text-secondary"
                   >
                     Remember me
                   </label>
@@ -85,7 +85,7 @@
                 <div class="text-sm leading-5 mt-2">
                   <a
                     href="#"
-                    class="font-medium text-indigo-900 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
+                    class="font-medium text-s hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
                   >
                     ¿Has olvidado tu contraseña?
                   </a>
@@ -97,7 +97,7 @@
                   <button
                     type="submit"
                     @click="signIn"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent text-lg font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent text-lg font-medium rounded-md text-primary bg-secondary hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
                   >
                     Inicia sesión
                   </button>
@@ -109,11 +109,11 @@
       </div>
     </div>
     <div
-      class="glass-light rounded-none text-gray-800 w-full h-20 text-lg flex justify-center items-center"
+      class="glass-light rounded-none text-secondary w-full h-20 text-lg flex justify-center items-center "
     >
       ¿No tienes cuenta?
       <router-link
-        class="bg-gray-200 shadow-lg p-3 rounded-lg ml-4 font-bold text-xl "
+        class="bg-secondary text-primary shadow-lg p-3 rounded-lg ml-4 font-bold text-xl "
         to="/sign-up"
       >
         Regístrate

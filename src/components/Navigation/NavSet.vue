@@ -1,7 +1,7 @@
 <template>
   <section
     v-if="user"
-    class="w-full flex justify-around items-center h-20 rounded-none border-none fixed bottom-0 z-10 rounded-t-lg glass-light"
+    class="w-full flex justify-around items-center h-20 rounded-none border-none fixed bottom-0 z-10 rounded-t-lg bg-white dark:bg-gray-900"
   >
     <span
       v-for="(link, index) in links"
@@ -9,14 +9,14 @@
       @click="isOpen = false"
       :class="
         $route.path === link.path
-          ? 'opacity-100 bg-gray-200'
-          : 'opacity-75 shadow-lg'
+          ? 'opacity-100 shadow-lg bg-gray-100 dark:bg-black text-accent'
+          : 'text-primary shadow-none opacity-75'
       "
       class="flex justify-center items-center mx-auto rounded-lg p-2"
     >
       <router-link
         :to="link.path"
-        class="flex justify-center text-gray-900 items-center text-xl"
+        class="flex justify-center text-primary items-center text-xl"
         v-if="user"
       >
         <icon-base :icon-name="link.iconName">

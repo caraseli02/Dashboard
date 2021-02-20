@@ -9,7 +9,6 @@ import "@firebase/auth";
 import VueRouter from "vue-router";
 import { store } from "./store/store";
 import { routes } from "./router/routes";
-import "@/assets/css/main.css";
 
 // DatePicker
 import { Datetime } from "vue-datetime";
@@ -25,6 +24,8 @@ import dragVerify from "vue-drag-verify";
 import VueSimpleAlert from "vue-simple-alert";
 
 import "./registerServiceWorker";
+
+import "./tailwind.css";
 
 export const db = firebase
   .initializeApp({

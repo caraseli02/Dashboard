@@ -1,0 +1,52 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import './components';
+@import "tailwindcss/utilities";
+@import './edm-utilities';
+
+
+:root {
+  --font-family-one: Montserrat, sans-serif;
+  --font-family-two: Roboto, sans-serif;
+  --font-weight-black: 900;
+  --font-weight-bold: 700;
+  --font-weight-normal: 400;
+  --font-weight-thin: 200;
+  --theme-color-bg-one: theme('colors.white');
+  --theme-color-bg-two: theme('colors.grey-300');
+  --theme-color-bg-three: theme('colors.grey-100');
+  --theme-color-bg-four: theme('colors.blue-500');
+  --theme-color-bg-five: theme('colors.blue-900');
+  --theme-color-border-one: theme('colors.grey-300');
+  --theme-color-border-two: theme('colors.grey-400');
+  --theme-color-border-three: theme('colors.grey-300');
+  --theme-color-border-four: theme('colors.blue-500');
+  --theme-color-text-one: theme('colors.grey-600');
+  --theme-color-text-two: theme('colors.blue-500');
+  --theme-color-text-three: theme('colors.grey-900');
+  --theme-color-text-four: theme('colors.white');
+  --theme-color-text-five: theme('colors.grey-800');
+}
+
+:root[data-theme="dark"] {
+  --font-family-one: Montserrat, sans-serif;
+  --font-family-two: Roboto, sans-serif;
+  --font-weight-black: 900;
+  --font-weight-bold: 700;
+  --font-weight-normal: 400;
+  --font-weight-thin: 200;
+  --theme-color-bg-one: theme('colors.grey-800');
+  --theme-color-bg-two: theme('colors.grey-300');
+  --theme-color-bg-three: theme('colors.grey-600');
+  --theme-color-bg-four: theme('colors.light-green-500');
+  --theme-color-bg-five: theme('colors.light-green-900');
+  --theme-color-border-one: theme('colors.grey-700');
+  --theme-color-border-two: theme('colors.grey-900');
+  --theme-color-border-three: theme('colors.grey-800');
+  --theme-color-border-four: theme('colors.light-green-500');
+  --theme-color-text-one: theme('colors.grey-400');
+  --theme-color-text-two: theme('colors.light-green-500');
+  --theme-color-text-three: theme('colors.grey-900');
+  --theme-color-text-four: theme('colors.grey-800');
+  --theme-color-text-five: theme('colors.grey-200');
+}

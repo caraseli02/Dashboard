@@ -1,15 +1,12 @@
 <template>
   <article class="max-h-screen flex flex-col justify-aroud items-center">
-    <h1 class="text-center mb-4 font-bold text-blue-900 text-2xl">
+    <h1 class="text-center mb-4 font-bold text-primary text-2xl">
       APIMOSA APP
     </h1>
-    <h2 class="text-center mb-4 text-blue-800 text-lg">
+    <h2 class="text-center mb-4 text-secondary text-lg">
       Registra tu jornada laboral en un momento.
     </h2>
     <article class="flex flex-col justify-around items-center w-full">
-      <div
-        class="glass-light p-2 mx-2 w-full flex flex-col justify-around items-center rounded-none"
-      />
       <section
         v-if="getUser"
         class="flex flex-col justify-between items-center py-8"
@@ -18,7 +15,7 @@
           v-for="(link, index) in buttons"
           :key="index"
           :to="link.path"
-          class="shadow-lg bg-gray-100 w-full mx-8 h-20 text-lg flex flex-col justify-center items-center mb-4 rounded-lg"
+          class="shadow-lg text-primary bg-secondary w-full mx-8 h-24 text-lg flex flex-col justify-center items-center mb-4 py-2 rounded-lg"
         >
           <icon-base :width="50" :height="50" :icon-name="link.iconName">
             <component
@@ -45,9 +42,6 @@
           {{ link.text }}
         </router-link>
       </section>
-      <div
-        class="glass-light p-2 mx-2 w-full flex flex-col justify-around items-center rounded-none"
-      />
     </article>
   </article>
 </template>

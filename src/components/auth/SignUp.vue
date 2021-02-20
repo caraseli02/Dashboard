@@ -3,16 +3,16 @@
     <div
       class="flex-1 flex flex-col md:flex-row justify-center pb-12 md:px-16 p-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
     >
-      <img
+      <!-- <img
         class="h-full w-full md:w-2/3 contain z-0"
         src="@/assets/img/asistSvg.svg"
         alt=""
-      />
+      /> -->
       <div
-        class="mx-auto w-full max-w-sm flex-1 z-10 transform -translate-y-20 glass-light p-2 flex justify-center items-center flex-col"
+        class="mx-auto w-full max-w-sm flex-1 z-10 transform glass-light p-2 flex justify-center items-center flex-col"
       >
         <div>
-          <h2 class="text-3xl leading-9 font-extrabold text-gray-900">
+          <h2 class="text-3xl leading-9 font-extrabold text-primary">
             APIMOSA APP
           </h2>
         </div>
@@ -24,7 +24,7 @@
             {{ error }}
             <button
               @click="error = null"
-              class="w-full flex justify-center py-2 px-4 border mt-4 border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
+              class="w-full flex justify-center py-2 px-4 border mt-4 border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
             >
               Cerrar
             </button>
@@ -36,7 +36,7 @@
               <div v-for="(field, index) in inputs" :key="index" class="mt-6">
                 <label
                   :for="field.id"
-                  class="block text-sm font-medium leading-5 text-gray-700"
+                  class="block text-sm font-medium leading-5 text-secondary"
                 >
                   {{ field.id }}
                 </label>
@@ -48,19 +48,19 @@
                     :id="field.id"
                     :pattern="field.pattern"
                     required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   />
                 </div>
               </div>
               <div class="relative">
                 <label
-                  class="block uppercase tracking-wide text-gray-700 text-xs  mt-4"
+                  class="block mb-2 uppercase tracking-wide text-secondary text-xs  mt-4"
                   for="grid-state"
                 >
                   Centro de Trabajo
                 </label>
                 <select
-                  class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  class="block appearance-none w-full bg-primary border border-gray-200 text-secondary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   v-model="workplace"
                   id="grid-state"
                 >
@@ -69,7 +69,7 @@
                   <option value="VLC">Valencia</option>
                 </select>
                 <div
-                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-secondary"
                 >
                   <svg
                     class="fill-current h-4 w-4"
@@ -86,7 +86,7 @@
                 <span class="block w-full rounded-md shadow-sm">
                   <button
                     type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out uppercase"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-primary bg-secondary hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out uppercase"
                   >
                     Crear cuenta
                   </button>
