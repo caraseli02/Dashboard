@@ -8,9 +8,9 @@ service cloud.firestore {
       return request.auth.uid == resource.data.author;  	
     }
 
-    match /attendance/{document} {
-      allow write: if isSignedIn();
-      allow read: if isDocOwner() || isAdmin();
+     match /attendance/{document} {
+      allow read: if (isDocOwner() && isSignedIn()) || isAdmin();
+      allow create: if isSignedIn() || isAdmin();
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }

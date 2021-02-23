@@ -1,279 +1,229 @@
 <template>
-  <article v-if="geolocation.lat && geolocation.lng">
-    <!-- Month selector  -->
-    <monthSelector :pasedUser="selectedUser" :getAsistFunc="true" />
-    <!-- User Selector if login like admin -->
-    <section
-      v-if="users !== null && users.length > 1"
-      class="flex justify-between items-center p-4 overflow-hidden"
-    >
-      <div class="w-1/2 px-3 mb-6 md:mb-0">
-        <label
-          class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
-          for="grid-state"
-        >
-          Centro
-        </label>
-        <div class="relative">
-          <select
-            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="grid-state"
-            v-model="workplace"
+  <transition name="slide-fade" mode="out-in">
+    <article v-if="geolocation.lat && geolocation.lng">
+      <!-- Month selector  -->
+      <monthSelector :pasedUser="selectedUser" :getAsistFunc="true" />
+      <!-- User Selector if login like admin -->
+      <section
+        v-if="users !== null && users.length > 1"
+        class="flex justify-between items-center p-4 overflow-hidden"
+      >
+        <div class="w-1/2 px-3 mb-6 md:mb-0">
+          <label
+            class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
+            for="grid-state"
           >
-            <option>PMI</option>
-            <option>VLC</option>
-            <option>SVQ</option>
-          </select>
-          <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
-          >
-            <svg
-              class="fill-current h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
+            Centro
+          </label>
+          <div class="relative">
+            <select
+              class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              id="grid-state"
+              v-model="workplace"
             >
-              <path
-                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-              />
-            </svg>
+              <option>PMI</option>
+              <option>VLC</option>
+              <option>SVQ</option>
+              <option>AGP</option>
+              <option>TFN</option>
+              <option>IBZ</option>
+            </select>
+            <div
+              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
+            >
+              <svg
+                class="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                />
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
-      <div v-if="workplace" class="w-1/2 px-3 mb-6 md:mb-0 overflow-hidden">
-        <label
-          class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
-          for="grid-state"
-        >
-          Empleado
-        </label>
-        <div class="relative">
-          <select
-            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="grid-state"
-            v-model="selectedUser"
+        <div v-if="workplace" class="w-1/2 px-3 mb-6 md:mb-0 overflow-hidden">
+          <label
+            class="block uppercase tracking-wide text-primary text-xs font-bold mb-2"
+            for="grid-state"
           >
-            <option disabled>Seleccionar</option>
-            <option
-              :value="user.email"
-              v-for="(user, index) in users"
-              :key="index"
-              :class="user.workplace === workplace ? '' : 'hidden'"
+            Empleado
+          </label>
+          <div class="relative">
+            <select
+              class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              id="grid-state"
+              v-model="selectedUser"
             >
-              {{ user.name }} {{ user.surname ? user.surname : "" }}
-            </option>
-            <!-- <option v-for="(user, index) in users" :key="index">
+              <option disabled>Seleccionar</option>
+              <option
+                :value="user.email"
+                v-for="(user, index) in users"
+                :key="index"
+                :class="user.workplace === workplace ? '' : 'hidden'"
+              >
+                {{ user.name }} {{ user.surname ? user.surname : "" }}
+              </option>
+              <!-- <option v-for="(user, index) in users" :key="index">
               {{ user.email }}
             </option> -->
-          </select>
+            </select>
+            <div
+              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
+            >
+              <svg
+                class="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Attendence Display -->
+      <section
+        class="grid grid-flow-col auto-cols-max py-2 overflow-x-scroll mt-2 ml-4"
+      >
+        <attendRow
+          v-on:passRowToChange="dataToChange = $event"
+          :selectedUser="selectedUser"
+          :users="users"
+          v-for="(attend, index) in attendList"
+          :key="index"
+          :attend="attend"
+        />
+      </section>
+      <!-- AttendChange -->
+      <transition name="fade" mode="out-in">
+        <div
+          class="w-full h-full z-10 absolute top-0 bg-gray-800 dark:bg-gray-600 bg-opacity-75"
+          v-if="dataToChange"
+        >
+          <attendChange
+            v-on:dataChanged="dataToChange = null"
+            :dataToChange="dataToChange"
+          />
+          <button
+            class="flex justify-center py-2 px-4 border border-transparent text-lg font-medium rounded-md text-primary bg-red-800 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out mt-32 z-10 w-1/2 mx-auto"
+            @click="dataToChange = null"
+          >
+            X
+          </button>
+        </div>
+      </transition>
+      <!-- AttendChange -->
+      <!-- Worked and Extra Time Calculation -->
+      <section class="mt-8">
+        <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg`">
           <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
+            class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-yellow-600 bg-yellow-100 dark:bg-gray-300  rounded-full mr-6"
           >
             <svg
-              class="fill-current h-4 w-4"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
             >
               <path
-                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M17 7C17 5.34315 15.6569 4 14 4H10C8.34315 4 7 5.34315 7 7H6C4.34315 7 3 8.34315 3 10V18C3 19.6569 4.34315 21 6 21H18C19.6569 21 21 19.6569 21 18V10C21 8.34315 19.6569 7 18 7H17ZM14 6H10C9.44772 6 9 6.44772 9 7H15C15 6.44772 14.5523 6 14 6ZM6 9H18C18.5523 9 19 9.44772 19 10V18C19 18.5523 18.5523 19 18 19H6C5.44772 19 5 18.5523 5 18V10C5 9.44772 5.44772 9 6 9Z"
+                fill="currentColor"
               />
             </svg>
           </div>
+          <div>
+            <span
+              :key="workedDays"
+              class="block text-3xl text-primary font-bold"
+              >{{ workedDays }}</span
+            >
+            <span class="block text-xl text-secondary">Días de trabajo</span>
+          </div>
         </div>
-      </div>
-    </section>
-    <!-- Attendence Display -->
-    <section
-      class="grid grid-flow-col auto-cols-max py-2 overflow-x-scroll mt-2 ml-4"
-    >
-      <ul
-        v-for="(attend, index) in attendList"
-        :key="index"
-        :class="`w-24 grid grid-flow-row grid-rows-5 glass-${theme}`"
-      >
-        <li
-          v-if="attend.data"
-          class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-gray-200 dark:bg-gray-500 rounded-lg text-primary"
-          @click="deleteAttendData(attend.id)"
-        >
-          <span
-            class="text-secondary rounded-t-lg text-base bg-primary w-full h-full text-center"
-            >{{ getDayName(attend.data.enterTime).slice(0, 3) }}</span
-          >
-          {{ attend.data.enterTime.slice(8, 10) }}
-        </li>
-        <!-- <li
-          class="mx-auto h-full flex justify-center items-center p-1 border-b-2 border-gray-600"
-        >
-          <span class="text-green-700 text-2xl">&#8595;</span>
-          <span class="text-xl text-green-800">
-            {{
-              checkEnterCreated(attend.data.enterTime, attend.data.dttm)
-            }}</span
-          >
-        </li> -->
-        <li class="mx-auto h-full flex justify-center items-center p-1 text-green-800 dark:text-green-500">
-          <span class=" text-2xl mr-1"> &#8595; </span>
-          <span class="text-xl ">
-            {{ roundTime(attend.data.enterTime.slice(11, 16), 30) }}</span
-          >
-        </li>
-        <!-- v-if="checkEnterCreated(attend.createdAt, attend.curentTime) !== 0" -->
-        <!-- <li
-          class="w-full flex justify-center items-center text-primary text-base text-center rounded-lg"
-        >
-          <span class="h-16 pt-2 px-1">{{
-            checkEnterCreated(attend.createdAt, attend.curentTime)
-          }}</span>
-        </li> -->
-        <li
-          class="mx-auto h-full flex justify-center items-center p-1 border-t-2 border-gray-600 text-red-700 dark:text-red-500"
-        >
-          <span v-if="attend.data.leaveTime" class="text-xl">
-            {{ roundTime(attend.data.leaveTime.slice(11, 16), 30) }}</span
-          >
-          <button v-else class="text-xl ">--:--</button>
-          <span class=" text-2xl">&#8593;</span>
-        </li>
-        <!-- <li
-          class="mx-auto h-full w-full flex justify-center items-center p-1 border-b-2 border-gray-600"
-        >
-          <span
-            v-if="attend.closedAt"
-            class="text-red-900 text-base text-center"
-          >
-            {{ checkLeaveUpdate(attend.closedAt, attend.data.leaveTime) }}
-          </span>
-        </li> -->
-        <li class="flex justify-center items-center text-secondary ">
-          <icon-base>
-            <icon-temp />
-          </icon-base>
-          {{ attend.data.temperature }}
-        </li>
-        <!-- Attendence Messages -->
-        <li
-          @click="showInfoMsg(attend.data.msg)"
-          class="h-10 flex justify-center items-center text-purple-800 my-2"
-        >
-          <icon-base
-            v-if="attend.data.msg"
-            class="mx-4 self-center shadow-lg text-green-700 dark:text-green-400 rounded-lg w-full p-1 h-8"
-          >
-            <icon-contact />
-          </icon-base>
-          <span class="text-xs mx-4 text-center text-secondary" v-else>No tiene Mensajes</span>
-        </li>
-        <!-- <li
-          @click="showChangeMsg(attend.data.enterChange)"
-          class="h-10 flex justify-center items-center text-purple-800 my-2 pb-2"
+        <div
+          :class="`flex items-center p-2 glass-${theme} shadow rounded-lg my-4`"
         >
           <div
-            v-if="attend.data.enterChange"
-            class="mx-4 self-center bg-yellow-300 rounded-lg w-full p-2"
+            class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-teal-600 bg-yellow-100 dark:bg-gray-300 rounded-full mr-6"
           >
-            <i class="gg-sync mx-auto"></i>
+            <svg
+              aria-hidden="true"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="h-10 w-10 text-green-500"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
           </div>
-          <span class="text-xs mx-4 text-center" v-else>No tiene Cambios</span>
-        </li> -->
-      </ul>
-    </section>
-    <!-- Worked and Extra Time Calculation -->
-    <section class="mt-8">
-      <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg`">
-        <div
-          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-yellow-600 bg-yellow-100 rounded-full mr-6"
-        >
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+          <div>
+            <span
+              :key="workedTime"
+              class="block text-3xl font-bold text-primary"
+              >{{ workedTime }}</span
+            >
+            <span class="block text-xl text-secondary">Horas de servicio</span>
+          </div>
+        </div>
+        <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg`">
+          <div
+            class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-red-600 bg-yellow-100 dark:bg-gray-300 rounded-full mr-6"
           >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M17 7C17 5.34315 15.6569 4 14 4H10C8.34315 4 7 5.34315 7 7H6C4.34315 7 3 8.34315 3 10V18C3 19.6569 4.34315 21 6 21H18C19.6569 21 21 19.6569 21 18V10C21 8.34315 19.6569 7 18 7H17ZM14 6H10C9.44772 6 9 6.44772 9 7H15C15 6.44772 14.5523 6 14 6ZM6 9H18C18.5523 9 19 9.44772 19 10V18C19 18.5523 18.5523 19 18 19H6C5.44772 19 5 18.5523 5 18V10C5 9.44772 5.44772 9 6 9Z"
-              fill="currentColor"
-            />
-          </svg>
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 4C12.5523 4 13 4.44772 13 5V8H16C16.5523 8 17 8.44772 17 9C17 9.55228 16.5523 10 16 10H13V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V10H8C7.44772 10 7 9.55228 7 9C7 8.44772 7.44772 8 8 8H11V5C11 4.44772 11.4477 4 12 4Z"
+                fill="currentColor"
+              />
+              <path
+                d="M3 19C3 18.4477 3.44772 18 4 18H20C20.5523 18 21 18.4477 21 19C21 19.5523 20.5523 20 20 20H4C3.44772 20 3 19.5523 3 19Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <div>
+            <span
+              :key="extraHors"
+              class="block text-3xl font-bold text-primary"
+              >{{ extraHors }}</span
+            >
+            <span class="block text-xl text-secondary"
+              >Horas extraordinarias</span
+            >
+          </div>
         </div>
-        <div>
-          <span :key="workedDays" class="block text-3xl text-primary font-bold">{{
-            workedDays
-          }}</span>
-          <span class="block text-xl text-secondary">Días de trabajo</span>
-        </div>
-      </div>
-      <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg my-4`">
-        <div
-          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-teal-600 bg-gray-500 rounded-full mr-6"
-        >
-          <svg
-            aria-hidden="true"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="h-10 w-10"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-        </div>
-        <div>
-          <span :key="workedTime" class="block text-3xl font-bold text-primary">{{
-            workedTime
-          }}</span>
-          <span class="block text-xl text-secondary">Horas de servicio</span>
-        </div>
-      </div>
-      <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg`">
-        <div
-          class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-red-600 bg-gray-100 rounded-full mr-6"
-        >
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 4C12.5523 4 13 4.44772 13 5V8H16C16.5523 8 17 8.44772 17 9C17 9.55228 16.5523 10 16 10H13V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V10H8C7.44772 10 7 9.55228 7 9C7 8.44772 7.44772 8 8 8H11V5C11 4.44772 11.4477 4 12 4Z"
-              fill="currentColor"
-            />
-            <path
-              d="M3 19C3 18.4477 3.44772 18 4 18H20C20.5523 18 21 18.4477 21 19C21 19.5523 20.5523 20 20 20H4C3.44772 20 3 19.5523 3 19Z"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
-        <div>
-          <span :key="extraHors" class="block text-3xl font-bold text-primary">{{
-            extraHors
-          }}</span>
-          <span class="block text-xl text-secondary">Horas extraordinarias</span>
-        </div>
-      </div>
-    </section>
-    <section>
-      <HereMap :attendance="attendList" :center="geolocation" />
-    </section>
-  </article>
+      </section>
+      <section>
+        <HereMap :attendance="attendList" :center="geolocation" />
+      </section>
+    </article>
+  </transition>
 </template>
 
 <script>
 // import Alerts from "@/components/utils/Alerts.vue";
 import { mapState, mapActions, mapGetters } from "vuex";
-import IconBase from "../components/IconBase.vue";
-import IconContact from "../components/icons/IconContact.vue";
-import IconTemp from "../components/icons/IconTemp.vue";
 import HereMap from "@/components/HereMap.vue";
 import monthSelector from "@/components/utils/monthSelector.vue";
+import attendChange from "@/components/Datos/attendChange.vue";
+import attendRow from "@/components/Datos/attendRow.vue";
 import utils from "@/mixins/utils";
 
 export default {
@@ -281,41 +231,31 @@ export default {
   name: "Datos",
   mixins: [utils],
   components: {
-    IconBase,
     monthSelector,
-    IconTemp,
     HereMap,
-    IconContact,
+    attendChange,
+    attendRow,
     // Alerts,
   },
   data() {
     return {
       selectedMes: null,
-      days: [
-        "domingo",
-        "lunes",
-        "martes",
-        "miércoles",
-        "jueves",
-        "viernes",
-        "sábado",
-        "domingo",
-      ],
       today: null,
       selectedUser: null,
       workedDays: null,
       workplace: null,
+      dataToChange: null,
     };
   },
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      d: state => state.d,
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      users: state => state.users,
-      selectedTime: state => state.selectedTime,
+      attendList: (state) => state.attendance,
+      d: (state) => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      users: (state) => state.users,
+      selectedTime: (state) => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
@@ -327,15 +267,9 @@ export default {
       "currentLocation",
       "getAsist",
       "getUsers",
-      "deleteAsist",
       "currentLocation",
       "clearLocation",
     ]),
-    deleteAttendData(val) {
-      this.$confirm("Borar assistencia?").then(() => {
-        this.deleteAsist(val);
-      });
-    },
     checkEnterCreated: (val1, val2) => {
       if (val1 && val2) {
         const created = new Date(val1.seconds * 1000);
@@ -388,9 +322,6 @@ export default {
       }
       return "--/--";
     },
-    showInfoMsg(msg) {
-      this.$alert(msg);
-    },
     showChangeMsg(data) {
       this.$fire({
         title: `
@@ -417,14 +348,12 @@ export default {
       }
       this.selectedMes--;
     },
-    getDayName(dateString) {
-      var d = new Date(dateString);
-      var dayName = this.days[d.getDay()];
-      return dayName;
+    changeAttendance(attend) {
+      this.dataToChange = attend;
     },
   },
   watch: {
-    selectedUser: function(newValue) {
+    selectedUser: function (newValue) {
       if (newValue && this.selectedTime) {
         const data = {
           user: newValue,
@@ -434,7 +363,7 @@ export default {
         this.getAsist(data);
       }
     },
-    attendList: function(newValue) {
+    attendList: function (newValue) {
       if (newValue.length > 0 && this.selectedUser) {
         const userData = this.users.find(
           ({ email }) => email === this.selectedUser

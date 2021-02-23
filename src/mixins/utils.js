@@ -4,6 +4,16 @@ export default {
       // refresh variables
       workedTime: null,
       extraHors: null,
+      days: [
+        "domingo",
+        "lunes",
+        "martes",
+        "miércoles",
+        "jueves",
+        "viernes",
+        "sábado",
+        "domingo",
+      ],
     };
   },
 
@@ -16,10 +26,13 @@ export default {
       var rhours = Math.floor(hours);
       var minutes = (hours - rhours) * 60;
       var rminutes = Math.round(minutes);
-      if (rminutes > 9) {
-        return `${rhours}h  ${Math.ceil(rminutes / 5) * 5}m `;
+      if (rminutes > 9 && rminutes < 55) {
+        return `${rhours}h ${Math.ceil(rminutes / 5) * 5}m`;
       }
-      return `${rhours}h  `;
+      if (rminutes > 55) {
+        return `${rhours + 1}h`;
+      }
+      return `${rhours}h`;
     },
     diff_minutes(dt2, dt1) {
       var diff = (dt2.getTime() - dt1.getTime()) / 1000;

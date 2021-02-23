@@ -6,16 +6,16 @@
     >
     <div class="relative flex justify-center items-center h-screen">
       <div
-        class="inline-block animate-spin ease duration-300 w-5 h-5 bg-black mx-2"
+        class="inline-block animate-spin ease duration-300 w-5 h-5 bg-primary mx-2"
       ></div>
       <div
-        class="inline-block animate-ping ease duration-300 w-5 h-5 bg-black mx-2"
+        class="inline-block animate-ping ease duration-300 w-5 h-5 bg-primary mx-2"
       ></div>
       <div
-        class="inline-block animate-pulse ease duration-300 w-5 h-5 bg-black mx-2"
+        class="inline-block animate-pulse ease duration-300 w-5 h-5 bg-primary mx-2"
       ></div>
       <div
-        class="inline-block animate-wiggle ease duration-300 w-5 h-5 bg-black mx-2"
+        class="inline-block animate-wiggle ease duration-300 w-5 h-5 bg-primary mx-2"
       ></div>
     </div>
     <div class="shadow"></div>

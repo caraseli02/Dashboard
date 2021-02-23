@@ -64,9 +64,12 @@
                   v-model="workplace"
                   id="grid-state"
                 >
-                  <option value="PMI">Palma de Mallorca</option>
-                  <option value="SVQ">Sevilla</option>
-                  <option value="VLC">Valencia</option>
+                  <option value="Palma">Palma de Mallorca</option>
+                  <option value="Sevilla">Sevilla</option>
+                  <option value="Valencia">Valencia</option>
+                  <option value="Malaga">Malaga</option>
+                  <option value="Tenerife">Tenerife</option>
+                  <option value="Ibiza">Ibiza</option>
                 </select>
                 <div
                   class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-secondary"
