@@ -21,12 +21,12 @@
               id="grid-state"
               v-model="workplace"
             >
-              <option>PMI</option>
-              <option>VLC</option>
-              <option>SVQ</option>
-              <option>AGP</option>
-              <option>TFN</option>
-              <option>IBZ</option>
+              <option value="Palma">Palma de Mallorca</option>
+              <option value="Sevilla">Sevilla</option>
+              <option value="Valencia">Valencia</option>
+              <option value="Malaga">Malaga</option>
+              <option value="Tenerife">Tenerife</option>
+              <option value="Ibiza">Ibiza</option>
             </select>
             <div
               class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
@@ -121,7 +121,7 @@
       <section class="mt-8">
         <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg`">
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-yellow-600 bg-yellow-100 dark:bg-gray-300  rounded-full mr-6"
+            class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-yellow-600 bg-yellow-100 dark:bg-gray-300 rounded-full mr-6"
           >
             <svg
               width="32"

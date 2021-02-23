@@ -11,7 +11,7 @@ service cloud.firestore {
      match /attendance/{document} {
       allow read: if (isDocOwner() && isSignedIn()) || isAdmin();
       allow create: if isSignedIn() || isAdmin();
-      allow update: if isAdmin();
+      allow update: if (isDocOwner() && isSignedIn()) || isAdmin();
       allow delete: if isAdmin();
     }
 

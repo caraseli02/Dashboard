@@ -14,8 +14,10 @@
 
 <script>
 import { mapActions } from "vuex";
+import hereMap from "@/mixins/hereMap";
 export default {
   name: "HereMap",
+  mixins: [hereMap],
   props: {
     center: Object,
     attendance: Array,
@@ -23,8 +25,6 @@ export default {
   },
   data() {
     return {
-      platform: null,
-      apikey: process.env.VUE_APP_HERE_MAP_API_KEY,
       ui: null,
       map: null,
       // You can get the API KEY from developer.here.com
