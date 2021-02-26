@@ -23,7 +23,10 @@ export const store = new Vuex.Store({
     checkDay: null,
     weekAttned: null,
     loadingMap: false,
-    geolocation: {},
+    geolocation: {
+      lng: 0,
+      lat: 0,
+    },
     d: new Date(),
     users: null,
     selectedMonth: null,

@@ -177,7 +177,7 @@
             <span class="block text-xl text-secondary">Horas de servicio</span>
           </div>
         </div>
-        <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg`">
+        <!-- <div :class="`flex items-center p-2 glass-${theme} shadow rounded-lg`">
           <div
             class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-red-600 bg-yellow-100 dark:bg-gray-300 rounded-full mr-6"
           >
@@ -208,7 +208,7 @@
               >Horas extraordinarias</span
             >
           </div>
-        </div>
+        </div> -->
       </section>
       <section>
         <HereMap :attendance="attendList" :center="geolocation" />
@@ -250,12 +250,12 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      users: (state) => state.users,
-      selectedTime: (state) => state.selectedTime,
+      attendList: state => state.attendance,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      users: state => state.users,
+      selectedTime: state => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
@@ -353,7 +353,7 @@ export default {
     },
   },
   watch: {
-    selectedUser: function (newValue) {
+    selectedUser: function(newValue) {
       if (newValue && this.selectedTime) {
         const data = {
           user: newValue,
@@ -363,7 +363,7 @@ export default {
         this.getAsist(data);
       }
     },
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       if (newValue.length > 0 && this.selectedUser) {
         const userData = this.users.find(
           ({ email }) => email === this.selectedUser

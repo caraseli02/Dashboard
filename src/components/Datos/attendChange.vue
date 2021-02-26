@@ -1,6 +1,8 @@
 <template>
   <div
-    :class="`mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10 absolute top-0 mt-64`"
+    :class="
+      `mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10 absolute top-0 mt-64`
+    "
   >
     <form class="mx-10" @submit.prevent>
       <div>
@@ -77,7 +79,7 @@ export default {
       value.data.enterTime = this.enter.slice(0, 16);
       value.data.leaveTime = this.leave.slice(0, 16);
       this.changeAttendance(value);
-      this.$emit("dataChanged")
+      this.$emit("dataChanged");
     },
   },
   components: { datetime: Datetime },
@@ -88,5 +90,4 @@ export default {
   },
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -27,9 +27,6 @@ import "./registerServiceWorker";
 
 import "./tailwind.css";
 
-// EXCEL
-import VueExcelEditor from "vue-excel-editor";
-
 export const db = firebase
   .initializeApp({
     apiKey: process.env.VUE_APP_API_KEY,
@@ -56,7 +53,6 @@ Vue.use(VueRouter);
 Vue.use(dragVerify);
 Vue.use(Datetime);
 Vue.use(VueSimpleAlert);
-Vue.use(VueExcelEditor);
 
 const router = new VueRouter({
   routes: routes,

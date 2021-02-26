@@ -9,7 +9,9 @@
         alt=""
       /> -->
       <div
-        :class="`mx-auto w-full max-w-sm flex-1 z-10 transform glass-${theme} p-2 flex justify-center items-center flex-col`"
+        :class="
+          `mx-auto w-full max-w-sm flex-1 z-10 transform glass-${theme} p-2 flex justify-center items-center flex-col`
+        "
       >
         <div>
           <h2 class="text-3xl leading-9 font-extrabold text-primary">
@@ -84,6 +86,27 @@
                     ></path>
                   </svg>
                 </div>
+              </div>
+              <div class="flex mt-6">
+                <label class="flex items-center">
+                  <input required type="checkbox" class="form-checkbox" />
+                  <span class="ml-2"
+                    >¿ Aceptas las
+                    <router-link
+                      class="font-bold text-secondary"
+                      to="/terminos-y-condiciones"
+                      >Términos y condiciones
+                    </router-link>
+                    y la
+                    <router-link
+                      class="font-bold text-secondary"
+                      to="/politica-privacidad/"
+                    >
+                      Política de privacidad</router-link
+                    >
+                    ?
+                  </span>
+                </label>
               </div>
               <div class="mt-6">
                 <span class="block w-full rounded-md shadow-sm">

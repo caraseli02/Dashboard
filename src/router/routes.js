@@ -1,14 +1,19 @@
 import { firebase } from "@firebase/app";
 import "@firebase/firestore";
 import "@firebase/auth";
-import Home from "@/pages/Home";
-import SignIn from "@/components/auth/SignIn";
-import SignUp from "@/components/auth/SignUp";
-import Error404 from "@/components/Error404";
-import Dashboard from "@/pages/Dashboard";
-import Calendar from "@/pages/Calendar";
-import Datos from "@/pages/Datos";
-import ForgotPassword from "@/components/ForgotPassword";
+import Home from "@/pages/Home.vue";
+import SignIn from "@/components/auth/SignIn.vue";
+import SignUp from "@/components/auth/SignUp.vue";
+import Error404 from "@/components/Error404.vue";
+import Dashboard from "@/pages/Dashboard.vue";
+import Calendar from "@/pages/Calendar.vue";
+import Datos from "@/pages/Datos.vue";
+import ForgotPassword from "@/components/ForgotPassword.vue";
+// LEGAL
+import avisoLegal from "@/pages/Legal/avisoLegal.vue";
+import pPrivacidad from "@/pages/Legal/pPrivacidad.vue";
+import pCookies from "@/pages/Legal/pCookies.vue";
+import terCondiciones from "@/pages/Legal/terCondiciones.vue";
 
 // This is where you add all your site routes
 // Each route is set as an object in the array
@@ -20,6 +25,26 @@ export const routes = [
     path: "",
     name: "home",
     component: Home,
+  },
+  {
+    path: "/aviso-legal",
+    name: "aviso-legal",
+    component: avisoLegal,
+  },
+  {
+    path: "/politica-privacidad",
+    name: "pPrivacidad",
+    component: pPrivacidad,
+  },
+  {
+    path: "/politica-de-cookies",
+    name: "pCookies",
+    component: pCookies,
+  },
+  {
+    path: "/terminos-y-condiciones",
+    name: "terCondiciones",
+    component: terCondiciones,
   },
   {
     path: "/sign-in",

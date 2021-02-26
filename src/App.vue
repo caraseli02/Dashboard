@@ -10,8 +10,10 @@
     </transition>
     <Sidebar />
     <updateAlert v-if="updateExists">
-      <button @click="refreshApp"
-        class="bg-transparent hover:bg-gray-100 text-gray-300 font-semibold hover:text-white py-2 px-4 border border-gray-300 hover:border-transparent rounded">
+      <button
+        @click="refreshApp"
+        class="bg-transparent hover:bg-gray-100 text-gray-300 font-semibold hover:text-white py-2 px-4 border border-gray-300 hover:border-transparent rounded"
+      >
         OK
       </button>
     </updateAlert>
@@ -25,137 +27,137 @@
 </template>
 
 <script>
-  import Alerts from "@/components/utils/Alerts.vue";
-  import updateAlert from "@/components/utils/updateAlert.vue";
-  import gpsCheck from "@/components/utils/gpsCheck.vue";
-  import gpsLoad from "@/components/utils/gpsLoad.vue";
-  import { mapActions, mapState, mapGetters } from "vuex";
-  import Footer from "./components/Navigation/Footer.vue";
-  import Header from "./components/Navigation/Header.vue";
-  import Sidebar from "./components/Sidebar.vue";
-  import update from "./mixins/update";
+import Alerts from "@/components/utils/Alerts.vue";
+import updateAlert from "@/components/utils/updateAlert.vue";
+import gpsCheck from "@/components/utils/gpsCheck.vue";
+import gpsLoad from "@/components/utils/gpsLoad.vue";
+import { mapActions, mapState, mapGetters } from "vuex";
+import Footer from "./components/Navigation/Footer.vue";
+import Header from "./components/Navigation/Header.vue";
+import Sidebar from "./components/Sidebar.vue";
+import update from "./mixins/update";
 
-  export default {
-    data() {
-      return {};
+export default {
+  data() {
+    return {};
+  },
+  name: "App",
+  mixins: [update],
+  components: {
+    Header,
+    Footer,
+    Alerts,
+    Sidebar,
+    gpsCheck,
+    updateAlert,
+    gpsLoad,
+  },
+  computed: {
+    ...mapState({
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+    }),
+    ...mapGetters({ theme: "theme/getTheme" }),
+  },
+  watch: {
+    theme(newTheme) {
+      newTheme === "light"
+        ? document.querySelector("html").classList.remove("dark")
+        : document.querySelector("html").classList.add("dark");
     },
-    name: "App",
-    mixins: [update],
-    components: {
-      Header,
-      Footer,
-      Alerts,
-      Sidebar,
-      gpsCheck,
-      updateAlert,
-      gpsLoad,
-    },
-    computed: {
-      ...mapState({
-        geolocation: (state) => state.geolocation,
-        loadingMap: (state) => state.loadingMap,
-      }),
-      ...mapGetters({ theme: "theme/getTheme" }),
-    },
-    watch: {
-      theme(newTheme) {
-        newTheme === "light"
-          ? document.querySelector("html").classList.remove("dark")
-          : document.querySelector("html").classList.add("dark");
-      },
-    },
-    methods: {
-      ...mapActions("notifi", ["showNotification"]),
-      ...mapActions("auth", ["setUser"]),
-      ...mapActions([
-        "currentLocation", // -> this['some/nested/module/bar']()
-      ]),
-    },
-    mounted() {
-      if (this.updateExists) {
-        this.$confirm("Instalar version reciente?").then(() => {
-          this.refreshApp;
-        });
-      }
-    },
-    beforeMount() {
-      this.$store.dispatch("theme/initTheme");
-    },
-    created() {
-      // when the app is created run the set user method
-      // this uses Vuex to check if a user is signed in
-      // check out mutations in the store.js file
-      this.setUser();
-      this.currentLocation();
-    },
-  };
+  },
+  methods: {
+    ...mapActions("notifi", ["showNotification"]),
+    ...mapActions("auth", ["setUser"]),
+    ...mapActions([
+      "currentLocation", // -> this['some/nested/module/bar']()
+    ]),
+  },
+  mounted() {
+    if (this.updateExists) {
+      this.$confirm("Instalar version reciente?").then(() => {
+        this.refreshApp;
+      });
+    }
+  },
+  beforeMount() {
+    this.$store.dispatch("theme/initTheme");
+  },
+  created() {
+    // when the app is created run the set user method
+    // this uses Vuex to check if a user is signed in
+    // check out mutations in the store.js file
+    this.setUser();
+    this.currentLocation();
+  },
+};
 </script>
 
 <style>
-  @import "./assets/css/icons.css";
+@import "./assets/css/icons.css";
 
-  .container {
-    min-width: 100vw;
-    min-height: 100vh;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+.container {
+  min-width: 100vw;
+  min-height: 100vh;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 
-    @media only screen and (min-width: 480px) {
-      flex-direction: row;
-    }
+  @media only screen and (min-width: 480px) {
+    flex-direction: row;
   }
+}
 
-  .dark_bg {
-    background-image: url("assets/img/dark_bg.svg");
-  }
-  .light_bg {
-    background-image: url("assets/img/light_bg.svg");
-  }
+.dark_bg {
+  background-image: url("assets/img/dark_bg.svg");
+}
+.light_bg {
+  background-image: url("assets/img/light_bg.svg");
+}
 
-  .glass-error,
-  .glass-success,
-  .glass-light,
-  .glass-gray,
-  .glass-dark {
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 10px;
-    z-index: 2;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-  }
+.glass-error,
+.glass-success,
+.glass-light,
+.glass-gray,
+.glass-dark {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  z-index: 2;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
 
-  .glass-dark {
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    background: rgba(0, 0, 0, 0.5);
-  }
+.glass-dark {
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+}
 
-  .glass-success {
-    background: rgba(1, 130, 11, 0.6);
-    border: 2px solid rgba(0, 255, 170, 0.2);
-  }
+.glass-success {
+  background: rgba(1, 130, 11, 0.6);
+  border: 2px solid rgba(0, 255, 170, 0.2);
+}
 
-  .glass-error {
-    background: rgba(216, 1, 1, 0.6);
-    border: 2px solid rgba(238, 4, 4, 0.2);
-  }
+.glass-error {
+  background: rgba(216, 1, 1, 0.6);
+  border: 2px solid rgba(238, 4, 4, 0.2);
+}
 
-  .glass-gray {
-    background: rgba(138, 136, 136, 0.2);
-    padding: 15px;
-    border: none;
-  }
+.glass-gray {
+  background: rgba(138, 136, 136, 0.2);
+  padding: 15px;
+  border: none;
+}
 
-  @import url("https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans:400,700|Material+Icons");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans:400,700|Material+Icons");
 
-  .fade-enter,
-  .fade-leave-active {
-    opacity: 0;
-  }
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
 
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.3s ease;
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
 </style>

@@ -194,6 +194,7 @@
           </div>
         </div>
       </div>
+      <legalLinks class="mt-24 ml-2" />
       <div class="fixed bottom-0 w-full">
         <button
           @click="closeSession"
@@ -209,12 +210,16 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from "vuex";
+import legalLinks from "@/pages/Legal/legalLinks.vue";
 
 export default {
   data() {
     return {
       surname: null,
     };
+  },
+  components: {
+    legalLinks,
   },
   watch: {
     showSidebar: {
@@ -229,7 +234,7 @@ export default {
     },
   },
   mounted() {
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", e => {
       if (e.keyCode == 27 && this.showSidebar) this.toggleSidebar;
     });
   },
