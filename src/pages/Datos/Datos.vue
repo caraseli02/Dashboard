@@ -222,8 +222,8 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 import HereMap from "@/components/HereMap.vue";
 import monthSelector from "@/components/utils/monthSelector.vue";
-import attendChange from "@/components/Datos/attendChange.vue";
-import attendRow from "@/components/Datos/attendRow.vue";
+import attendChange from "@/pages/Datos/attendChange.vue";
+import attendRow from "@/pages/Datos/attendRow.vue";
 import utils from "@/mixins/utils";
 
 export default {
@@ -364,7 +364,7 @@ export default {
       }
     },
     attendList: function(newValue) {
-      if (newValue.length > 0 && this.selectedUser) {
+      if (newValue.length > 0 && this.selectedUser && this.users) {
         const userData = this.users.find(
           ({ email }) => email === this.selectedUser
         );

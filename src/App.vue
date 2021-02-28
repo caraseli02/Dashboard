@@ -2,10 +2,10 @@
   <div id="app" :class="`container ${theme}_bg pb-24`">
     <Header />
     <Alerts />
-    <transition name="fade" mode="out-in">
+    <transition name="slide-fade" mode="out-in">
       <gpsCheck v-if="!geolocation.lat" />
     </transition>
-    <transition name="fade" mode="out-in">
+    <transition name="slide-fade" mode="out-in">
       <gpsLoad v-if="loadingMap" />
     </transition>
     <Sidebar />
@@ -18,7 +18,7 @@
       </button>
     </updateAlert>
     <main v-if="geolocation.lat" class="container mx-auto py-5">
-      <transition name="fade" mode="out-in">
+      <transition name="slide-fade" mode="out-in">
         <router-view></router-view>
       </transition>
     </main>
@@ -151,13 +151,15 @@ export default {
 
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans:400,700|Material+Icons");
 
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
+.slide-fade-enter-active {
+  transition: all .3s ease;
 }
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>

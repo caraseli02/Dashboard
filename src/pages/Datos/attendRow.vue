@@ -193,7 +193,7 @@ export default {
 
       const isCurentMonth = enter.getMonth() === new Date().getMonth();
 
-      if (userData.length > 0 && "eatHour" in userData) {
+      if (userData.eatHour) {
         workedMin -= 60;
       }
       const minDiff = this.diff_minutes(enter, leave);

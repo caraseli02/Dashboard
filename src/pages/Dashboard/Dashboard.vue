@@ -3,46 +3,21 @@
     <!-- Month selector  -->
     <monthSelector :bindAsistFunc="true" />
     <!-- Attendence Display -->
-    <section v-if="today" class="grid grid-flow-row auto-rows-max gap-4">
-      <ul
-        v-if="checkCalendarToday === true || checkCalendarToday === selectedMes"
-        :class="`glass-${theme} w-screen h-56 flex flex-col justify-center items-center my-4 rounded-none`"
-      >
-        <li
-          v-if="today"
-          class="rounded-lg col-span-2 text-primary w-full mx-auto flex justify-around items-center text-lg mt-2"
-        >
-          {{ getDayName(today) }} {{ today.slice(0, 10) }}
-          <span v-if="today" class="text-xl text-primary font-bold">Hoy</span>
-        </li>
-        <li class="flex justify-center items-center mb-2">
-          <label class="text-xl mb-2 text-primary" for="vol"
-            >Temperatura :</label
-          >
-          <select
-            v-model="temperature"
-            id="vol"
-            name="vol"
-            required
-            class="appearance-none block w-20 ml-2 my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus"
-          >
-            <option v-for="temp in tempList" :value="temp" :key="temp">
-              {{ temp }}
-            </option>
-          </select>
-        </li>
-        <li
-          class="mx-auto relative text-lg flex flex-col justify-center items-center p-2"
-        >
-          <btnVerify
-            v-if="gpsData[0]"
-            :enterFunc="true"
-            :temperature="temperature"
-            :gpsData="gpsData[0]"
-            text="Apuntar Entrada"
-          />
-        </li>
-      </ul>
+    <section class="grid grid-flow-row auto-rows-max gap-4">
+      <punchIn
+        v-if="dataPunchInLoaded"
+        :checkCalendarToday="checkCalendarToday"
+        :theme="theme"
+        :today="today"
+        :selectedMes="selectedMes"
+        :days="days"
+        v-model="temperature"
+        ><btnVerify
+          :enterFunc="true"
+          :temperature="temperature"
+          :gpsData="gpsData[0]"
+          text="Apuntar Entrada"
+      /></punchIn>
       <h3 v-if="actualMonthCheck" class="text-xl font-bold ml-2 text-primary">
         TU ÚLTIMA OPERACIÓN:
       </h3>
@@ -54,87 +29,20 @@
           attendList[0] ? "Sesión sin cerrar" : "No tienes sesiónes sin cerrar"
         }}
       </h3>
-      <ul
-        v-for="(attend, index) in attendList"
-        :key="index"
-        :class="`glass-${theme} w-screen h-32 flex justify-center items-center`"
-      >
-        <li
-          v-if="attend.data"
-          class="mx-auto flex flex-col justify-around text-2xl items-center p-2 text-primary capitalize rounded-lg m-2"
-        >
-          <span class="text-lg text-primary w-full text-center rounded">{{
-            getDayName(attend.data.enterTime)
-          }}</span>
-          {{ attend.data.enterTime.slice(8, 10) }}
-        </li>
-        <li
-          class="mx-auto flex flex-col justify-around text-lg items-center p-4 text-primary"
-        >
-          Entrada
-          <span class="text-2xl text-green-800 dark:text-green-500">
-            &#8595;{{ attend.data.enterTime.slice(11, 16) }}</span
-          >
-        </li>
-        <li
-          v-if="attend.data.leaveTime"
-          class="mx-auto flex flex-col justify-around text-lg items-center p-4 text-primary"
-        >
-          Salida
-          <span class="text-2xl text-red-800 dark:text-red-500">
-            &#8593;{{ attend.data.leaveTime.slice(11, 16) }}</span
-          >
-        </li>
-        <li
-          class="flex flex-col justify-center text-red-900 font-bold items-center h-full"
-          v-if="'curentTime' in attendList[0]"
-        >
-          <span
-            v-if="actualMonthCheck && !attend.data.leaveTime && attendIsToday"
-            class="block text-primary font-bold my-3 mx-auto py-2 px-4 bg-secondary dark:bg-black rounded-lg"
-          >
-            -- / --
-          </span>
-          <div
-            v-if="!attend.msgLeave && !attend.data.leaveTime && !attendIsToday"
-            class="text-secondary text-center"
-          >
-            <button
-              class="block text-primary font-bold w-20 mx-auto p-3 bg-secondary rounded-lg text-center"
-              placeholder="Avisar"
-              @click="addMsg()"
-            >
-              Dejar Nota
-            </button>
-          </div>
-        </li>
-        <li
-          v-if="attend.msgLeave"
-          class="flex flex-col justify-center text-red-900 font-bold items-center h-full"
-          @click="showMsg(attend.msgLeave)"
-        >
-          <icon-base class="mx-4 self-center bg-green-200 rounded-lg pl-1">
-            <icon-contact />
-          </icon-base>
-        </li>
-        <li
-          v-if="attend.data.temperature"
-          class="flex flex-col ml-2 justify-center items-center text-accent rounded-full my-4 mr-2 w-20 dark:text-secondary"
-        >
-          {{ attend.data.temperature
-          }}<icon-base>
-            <icon-temp />
-          </icon-base>
-        </li>
-      </ul>
+      <div v-if="attendList.length > 0">
+        <attendInfo
+          :theme="theme"
+          :actualMonthCheck="actualMonthCheck"
+          :attend="attendList[0]"
+        />
+      </div>
       <btnVerify
-        v-if="gpsData[0] && attendList[0]"
+        v-if="showPunchOut && dataPunchOutLoaded"
         :value="attendList[0]"
         :leaveFunc="true"
         :temperature="temperature"
         :gpsData="gpsData[0]"
         text="Apuntar Salida"
-        
       />
       <ul
         v-if="workedTime && actualMonthCheck"
@@ -181,12 +89,13 @@
 <script>
 // import Alerts from "@/components/utils/Alerts.vue";
 import { mapState, mapActions, mapGetters } from "vuex";
-import Options from "@/components/Dashboard/Options.vue";
-import IconBase from "@/components/IconBase.vue";
-import IconTemp from "@/components/icons/IconTemp.vue";
-import IconContact from "@/components/icons/IconContact.vue";
+import Options from "@/pages/Dashboard/Options.vue";
 import btnVerify from "@/components/btns/btnVerify.vue";
+import punchIn from "@/pages/Dashboard/punchIn.vue";
+import attendInfo from "@/pages/Dashboard/attendInfo.vue";
 import monthSelector from "@/components/utils/monthSelector.vue";
+import IconContact from "@/components/icons/IconContact.vue";
+import IconBase from "@/components/IconBase.vue";
 import utils from "@/mixins/utils";
 import hereMap from "@/mixins/hereMap";
 
@@ -195,37 +104,31 @@ export default {
   mixins: [utils, hereMap],
   components: {
     Options,
-    IconBase,
-    IconContact,
-    IconTemp,
     btnVerify,
     monthSelector,
+    punchIn,
+    attendInfo,
+    IconContact,
+    IconBase,
     // Alerts,
   },
   data() {
     return {
-      swiper: {
-        width: 300,
-        text: "Apuntar Entrada",
-        background: "#ffffff00",
-        handlerIcon: "gg-chevron-double-right",
-        successIcon: "gg-check",
-        progressBarBg: "#FFFF99",
-        completedBg: "#66cc66",
-        handlerBg: "#fff",
-        successText: "success",
-        height: 50,
-        textSize: "20px",
-        isCircle: true,
-      },
       today: null,
-      temperature: 36.6,
-      tempList: [],
+      temperature: "36.6",
+      showPunchOut: false,
     };
   },
   watch: {
     attendList: function (newValue) {
-      if (newValue.length > 0) {
+      if (newValue.length > 0 && this.users) {
+        if (
+          newValue[0].data.enterTime &&
+          newValue[0].activeSession &&
+          !this.checkCalendarToday
+        ) {
+          this.showPunchOut = true;
+        }
         const userData = this.users.find(
           ({ email }) => email === this.user.email
         );
@@ -324,34 +227,46 @@ export default {
     actualMonthCheck() {
       return this.d.getMonth() === this.selectedMes;
     },
-    attendIsToday: function () {
-      // `this` points to the vm instance
+    dataPunchInLoaded() {
       return (
-        new Date(this.attendList[0].curentTime).toISOString().slice(0, 10) ===
-        this.today.slice(0, 10)
+        this.selectedMes &&
+        this.today &&
+        this.days.length > 0 &&
+        this.gpsData.length > 0
+      );
+    },
+    dataPunchOutLoaded() {
+      return (
+        this.gpsData.length > 0 &&
+        this.attendIsToday &&
+        this.attendList.length > 0
       );
     },
   },
   methods: {
-    ...mapActions(["changeAttendance"]),
+    ...mapActions(["changeAttendance", "getUsers"]),
     getDayName(dateString) {
       var d = new Date(dateString);
       var dayName = this.days[d.getDay()];
       return dayName;
     },
-    addMsg() {
-      this.$prompt("Mensaje").then((text) => {
-        let attend = this.attendList[0];
-        attend["msgLeave"] = text;
-        attend["activeSession"] = false;
-        this.changeAttendance(attend);
-      });
+    attendIsToday() {
+      // `this` points to the vm instance
+      if (this.attendList.length > 0) {
+        return (
+          new Date(this.attendList[0].curentTime).toISOString().slice(0, 10) ===
+          this.today.slice(0, 10)
+        );
+      } else {
+        return false;
+      }
     },
     showMsg(msg) {
       this.$alert(msg);
     },
   },
   mounted() {
+    this.getUsers();
     const platform = new window.H.service.Platform({
       apikey: this.apikey,
     });
@@ -362,9 +277,6 @@ export default {
     this.today = new Date(
       date.getTime() - date.getTimezoneOffset() * 60000
     ).toISOString();
-    for (var temp = 355; temp <= 375; temp++) {
-      this.tempList.push(temp / 10);
-    }
   },
 };
 </script>

@@ -21,7 +21,7 @@
 
 <script>
 let color = document.getElementsByTagName("body")[0].style;
-color.cssText = "--paint-color: rgb(3, 9, 198)"
+color.cssText = "--paint-color: rgb(3, 9, 198)";
 export default {
   name: "gpsLoad",
 };
