@@ -117,7 +117,7 @@ export default {
   },
   computed: {
     ...mapGetters({ theme: "theme/getTheme" }),
-    gpsDataLog: function() {
+    gpsDataLog: function () {
       return this.gpsData[0].label;
     },
   },
@@ -156,26 +156,6 @@ export default {
     this.platform = platform;
     const geocoder = platform.getGeocodingService();
 
-    // if ("gpsLocLeave" in this.attend.data) {
-    //   let reverseGeocodingParameters = {
-    //     prox: `${this.coords.lat},${this.coords.lng}`,
-    //     mode: "retrieveAddresses",
-    //     maxresults: 1,
-    //   };
-
-    //   await geocoder.reverseGeocode(
-    //     reverseGeocodingParameters,
-    //     (res) => {
-    //       let results = res.Response.View;
-    //       if (results.length === 0) {
-    //         console.log("No match.");
-    //       } else {
-    //         this.gpsDataLeave = results[0].Result[0].Location.Address;
-    //       }
-    //     },
-    //     (e) => console.log(e)
-    //   );
-    // }
     this.getInfoFromGps(geocoder, this.coords);
     if (this.attend.data.leaveTime) {
       const userData = this.users.find(
@@ -193,11 +173,12 @@ export default {
 
       const isCurentMonth = enter.getMonth() === new Date().getMonth();
 
-      if (userData.eatHour) {
+      if (userData !== undefined && userData.eatHour) {
         workedMin -= 60;
       }
       const minDiff = this.diff_minutes(enter, leave);
       if (
+        userData !== undefined &&
         enter.getDay() === 5 &&
         enter.getMonth() === new Date().getMonth() &&
         userData.schedule !== "39"
