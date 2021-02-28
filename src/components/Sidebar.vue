@@ -46,34 +46,10 @@
           <h3 v-if="'surname' in userData[0]" class="text-primary text-xl">
             {{ userData[0].surname }}
           </h3>
-          <button class="flex mt-2" v-else>
-            <input
-              v-model="surname"
-              class="shadow appearance-none border rounded py-2 px-3 htext-primary leading-tight focus:outline-none focus:ring"
-              id="surname"
-              type="text"
-              placeholder="Apellidos"
-            />
-            <span
-              @click="addSurname(userData[0])"
-              class="p-2 w-10 bg-green-500 rounded"
-              >OK</span
-            >
-          </button>
           <p class="mt-2 font-sans font-light text-primary">
             {{ userData[0].email }}
           </p>
         </div>
-        <!-- <div class="flex justify-center pb-3 text-grey-dark">
-          <div class="text-center mr-3 border-r pr-3">
-            <span>Horas Exra</span>
-            <h2>0 h</h2>
-          </div>
-          <div class="text-center">
-            <span>Vacaciones</span>
-            <h2>22 d</h2>
-          </div>
-        </div> -->
       </div>
       <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-4">
         <label
@@ -246,11 +222,6 @@ export default {
     ...mapState(["showSidebar", "userData"]),
   },
   methods: {
-    addSurname() {
-      let data = this.userData[0];
-      data["surname"] = this.surname;
-      this.changeUserData(data);
-    },
     ...mapActions(["toggleSidebar", "getUserData", "changeUserData"]),
     ...mapActions("auth", ["signOut"]),
     async closeSession() {

@@ -9,9 +9,7 @@
         alt=""
       /> -->
       <div
-        :class="
-          `mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10`
-        "
+        :class="`mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10`"
       >
         <div>
           <h2 class="text-3xl leading-9 font-extrabold text-primary">
@@ -85,15 +83,26 @@
                 </div>
 
                 <div class="text-sm leading-5 mt-2">
-                  <a
-                    href="#"
-                    class="font-medium text-s hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
+                  <button
+                    class="font-medium text-xs text-primary focus:outline-none focus:underline transition ease-in-out duration-150"
+                    @click="showForgotPopUp = !showForgotPopUp"
                   >
                     ¿Has olvidado tu contraseña?
-                  </a>
+                  </button>
                 </div>
               </div>
-
+              <transition name="slide-fade">
+                <forgot-password v-on:closePopUp="showForgotPopUp = $event" v-if="showForgotPopUp" :theme="theme">
+                  <button
+                    class="bg-transparet px-4 py-2 rounded text-red-500 border border-red-600 transition duration-500 ease-in-out hover:bg-red-600 mt-4"
+                    type="button"
+                    aria-label="like"
+                    @click="showForgotPopUp = !showForgotPopUp"
+                  >
+                    Cerrar
+                  </button>
+                </forgot-password>
+              </transition>
               <div class="mt-6">
                 <span class="block w-full rounded-md shadow-sm">
                   <button
@@ -111,13 +120,11 @@
       </div>
     </div>
     <div
-      :class="
-        `glass-${theme} rounded-none text-secondary w-full h-20 text-lg flex justify-center items-center`
-      "
+      :class="`glass-${theme} rounded-none text-secondary w-full h-20 text-lg flex justify-center items-center`"
     >
       ¿No tienes cuenta?
       <router-link
-        class="bg-secondary text-primary shadow-lg p-3 rounded-lg ml-4 font-bold text-xl "
+        class="bg-secondary text-primary shadow-lg p-3 rounded-lg ml-4 font-bold text-xl"
         to="/sign-up"
       >
         Regístrate
@@ -128,6 +135,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import ForgotPassword from "@/components/ForgotPassword";
 
 export default {
   data() {
@@ -135,8 +143,10 @@ export default {
       email: "",
       password: "",
       error: null,
+      showForgotPopUp: false,
     };
   },
+  components: { ForgotPassword },
   computed: {
     // mix the getters into computed with object spread operator
     ...mapGetters("notifi", ["notificationMessage"]),
@@ -156,7 +166,7 @@ export default {
           }
           this.$router.replace("dashboard");
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
           // this.error = error.message;
         });

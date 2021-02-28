@@ -97,6 +97,10 @@ const actions = {
         window.localStorage.removeItem("picture");
       });
   },
+  resetPassword(_, email) {
+    console.log(email);
+    firebase.auth().sendPasswordResetEmail(email);
+  },
 };
 
 const getters = {

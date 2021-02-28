@@ -8,7 +8,7 @@ import Error404 from "@/components/Error404.vue";
 import Dashboard from "@/pages/Dashboard/Dashboard.vue";
 import Calendar from "@/pages/Calendar.vue";
 import Datos from "@/pages/Datos/Datos.vue";
-import ForgotPassword from "@/components/ForgotPassword.vue";
+// import ForgotPassword from "@/components/ForgotPassword.vue";
 // LEGAL
 import avisoLegal from "@/pages/Legal/avisoLegal.vue";
 import pPrivacidad from "@/pages/Legal/pPrivacidad.vue";
@@ -72,19 +72,19 @@ export const routes = [
       }
     },
   },
-  {
-    path: "/forgot-password",
-    name: "forgotPassword",
-    component: ForgotPassword,
-    beforeEnter(to, from, next) {
-      const user = firebase.auth().currentUser;
-      if (user) {
-        next({ name: "dashboard" });
-      } else {
-        next();
-      }
-    },
-  },
+  // {
+  //   path: "/forgot-password",
+  //   name: "forgotPassword",
+  //   component: ForgotPassword,
+  //   beforeEnter(to, from, next) {
+  //     const user = firebase.auth().currentUser;
+  //     if (user) {
+  //       next({ name: "dashboard" });
+  //     } else {
+  //       next();
+  //     }
+  //   },
+  // },
   {
     path: "/dashboard",
     name: "dashboard",
