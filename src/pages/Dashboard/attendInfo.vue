@@ -111,7 +111,7 @@ export default {
   },
   methods: {
     addMsg() {
-      this.$prompt("Mensaje").then((text) => {
+      this.$prompt("Mensaje").then(text => {
         let attend = this.attendList[0];
         attend["msgLeave"] = text;
         attend["activeSession"] = false;
@@ -129,5 +129,4 @@ export default {
   },
 };
 </script>
-<style lang="">
-</style>
+<style lang=""></style>

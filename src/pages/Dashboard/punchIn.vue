@@ -1,7 +1,9 @@
 <template>
   <ul
     v-if="checkCalendarToday === true || checkCalendarToday === selectedMes"
-    :class="`glass-${theme} w-screen h-56 flex flex-col justify-center items-center my-4 rounded-none`"
+    :class="
+      `glass-${theme} w-screen h-56 flex flex-col justify-center items-center my-4 rounded-none`
+    "
   >
     <li
       class="rounded-lg col-span-2 text-primary w-full mx-auto flex justify-around items-center text-lg mt-2"
@@ -82,5 +84,4 @@ export default {
   },
 };
 </script>
-<style lang="">
-</style>
+<style lang=""></style>

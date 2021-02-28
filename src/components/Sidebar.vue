@@ -29,14 +29,14 @@
         <div
           class="bg-gradient-to-r from-green-400 to-blue-500 w-full h-16 rounden-b-lg"
         ></div>
-        <div class="flex justify-center -mt-8">
+        <div class="flex justify-center">
           <img
             :src="
               getUser.photoURL
                 ? getUser.photoURL
                 : require('@/assets/img/apimosa.png')
             "
-            class="rounded-full border-solid border-white border-2 mt-3 w-24 h-auto"
+            class="rounded-lg border-solid border-white border-2 mt-3 w-20 h-20"
           />
         </div>
         <div class="text-center px-3 pb-6 pt-2">
@@ -194,13 +194,13 @@
           </div>
         </div>
       </div>
-      <legalLinks class="mt-24 ml-2" />
-      <div class="fixed bottom-0 w-full">
+      <legalLinks class="mt-4 my-2" />
+      <div class="bottom-0 absolute w-full bg-secondary">
         <button
           @click="closeSession"
-          class="flex items-center p-4 text-white bg-blue-500 hover:bg-blue-600 w-full"
+          class="flex items-center p-4 text-white w-full"
         >
-          <span class="gg-log-out mr-4 ml-2"></span>
+          <span class="gg-log-out mr-2 ml-2"></span>
           <span>Cerrar Session</span>
         </button>
       </div>

@@ -46,7 +46,9 @@
       />
       <ul
         v-if="workedTime && actualMonthCheck"
-        :class="`glass-${theme} w-screen mx-auto h-24 flex justify-center items-center`"
+        :class="
+          `glass-${theme} w-screen mx-auto h-24 flex justify-center items-center`
+        "
       >
         <li
           class="mx-auto flex justify-around text-lg items-center p-4 text-secondary w-56"
@@ -74,7 +76,9 @@
       </ul>
       <p
         v-if="attendList[0] && 'msg' in attendList[0].data && actualMonthCheck"
-        :class="`w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`"
+        :class="
+          `w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`
+        "
         @click="showMsg(attendList[0].data.msg)"
       >
         <icon-base class="mx-4 self-center bg-green-200 rounded-lg pl-1">
@@ -120,7 +124,7 @@ export default {
     };
   },
   watch: {
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       if (newValue.length > 0 && this.users) {
         if (
           newValue[0].data.enterTime &&
@@ -202,13 +206,13 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      checkDay: (state) => state.checkDay,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      selectedMes: (state) => state.selectedMonth,
-      users: (state) => state.users,
+      attendList: state => state.attendance,
+      checkDay: state => state.checkDay,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      selectedMes: state => state.selectedMonth,
+      users: state => state.users,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),

@@ -5,14 +5,14 @@
         <button
           @click="isMenuOpen = !isMenuOpen"
           type="button"
-          class="inline-flex items-center justify-between w-full rounded-md border border-gray-300 h-10 px-4 py-4 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-800 transition ease-in-out duration-150 btn-focus ml-2"
+          class="inline-flex items-center justify-between w-full rounded-md border border-gray-300 h-10 px-4 py-4 bg-primary text-sm leading-5 font-medium text-primary hover:text-primary focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-primary transition ease-in-out duration-150 btn-focus ml-2"
           id="options-menu"
           aria-haspopup="true"
           aria-expanded="true"
         >
           <span class="text-primary"> Legal </span>
           <img
-            src="https://s.svgbox.net/hero-solid.svg?ic=chevron-down&fill=grey-800"
+            src="https://s.svgbox.net/hero-solid.svg?ic=chevron-down&fill=grey-500"
             class="-mr-1 ml-2 h-5 w-5"
           />
         </button>
@@ -21,10 +21,10 @@
     <transition name="slide-fade" mode="out-in">
       <div
         v-if="isMenuOpen"
-        class="absolute right-0 w-56 rounded-md shadow-lg text-sm overflow-hidden border z-20"
+        class="absolute right-0 w-56 rounded-md shadow-lg text-sm overflow-hidden pb-4 z-20"
       >
         <div
-          class="rounded-md bg-white shadow-xs"
+          class="rounded-md bg-primary shadow-xs"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="options-menu"

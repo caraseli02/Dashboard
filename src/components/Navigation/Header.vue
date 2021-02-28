@@ -24,7 +24,6 @@
               >{{ link.name }}
             </router-link>
           </span>
-          <dropdown v-if="!user" />
           <!-- Side Bar -->
         </section>
         <!-- LOGOUT, ThemeToggler Btn -->
@@ -52,7 +51,6 @@ import IconBase from "@/components/IconBase.vue";
 import IconProfile from "@/components/icons/IconProfile.vue";
 import IconArrowRight from "@/components/icons/IconArrowRight.vue";
 import ThemeToggler from "@/components/Navigation/ThemeToggler.vue";
-import dropdown from "@/components/dropdown.vue";
 import { mapGetters, mapActions, mapState } from "vuex";
 
 export default {
@@ -75,7 +73,7 @@ export default {
       ],
     };
   },
-  components: { IconBase, IconArrowRight, IconProfile, ThemeToggler, dropdown },
+  components: { IconBase, IconArrowRight, IconProfile, ThemeToggler },
   computed: {
     ...mapGetters("auth", ["getUser"]),
     ...mapState({
