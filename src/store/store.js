@@ -91,6 +91,7 @@ export const store = new Vuex.Store({
     },
     async CHANGE_ATTENDANCE(state, { userData }) {
       const docRef = db.collection("attendance").doc(userData.id);
+      console.log(userData);
       if (userData.msgLeave) {
         return await docRef.update({
           msgLeave: userData.msgLeave,
@@ -213,7 +214,8 @@ export const store = new Vuex.Store({
           db
             .collection("attendance")
             .where("delete_flag", "==", "N")
-            .where("data.gpsData.City", "==", data.workplace)
+            // .where("data.gpsData.City", "==", data.workplace)
+            .where("data.gpsData.County", "==", data.workplace)
             // .where("data.email", "==", data.user)
             .where("curentTime", ">=", data.time.start)
             .where("curentTime", "<=", data.time.end - 1)

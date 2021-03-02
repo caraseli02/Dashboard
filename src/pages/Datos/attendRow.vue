@@ -78,7 +78,7 @@
     <li v-if="users.length > 1" class="w-full">
       <button
         class="bg-blue-500 hover:bg-blue-400 text-sm text-white py-2 px-4 w-full rounded-b-lg"
-        v-on:click="$emit('passRowToChange', attend)"
+        v-on:click="$emit('passRowToChange', { attend, gpsData: gpsData[0] })"
       >
         Cambiar<br />
       </button>
@@ -101,7 +101,6 @@ export default {
       coords: this.attend.data.gpsLocLeave
         ? [this.attend.data.gpsLoc, this.attend.data.gpsLocLeave]
         : [this.attend.data.gpsLoc],
-      gpsData: null,
     };
   },
   props: {
@@ -117,7 +116,7 @@ export default {
   },
   computed: {
     ...mapGetters({ theme: "theme/getTheme" }),
-    gpsDataLog: function () {
+    gpsDataLog: function() {
       return this.gpsData[0].label;
     },
   },

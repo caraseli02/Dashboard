@@ -80,7 +80,7 @@ export default {
           this.$emit("closePopUp", false);
           this.$alert("Enviando");
         })
-        .catch((error) => {
+        .catch(error => {
           this.emailSending = false;
           this.error = error.message;
         });

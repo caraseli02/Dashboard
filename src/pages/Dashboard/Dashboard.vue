@@ -37,7 +37,7 @@
         />
       </div>
       <btnVerify
-        v-if="showPunchOut && dataPunchOutLoaded"
+        v-if="showPunchOut && dataPunchOutLoaded && this.actualMonthCheck"
         :value="attendList[0]"
         :leaveFunc="true"
         :temperature="temperature"

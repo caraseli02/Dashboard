@@ -6,21 +6,21 @@
 </template>
 
 <script>
-  import NavSet from "./NavSet.vue";
-  import legalLinks from "@/pages/Legal/legalLinks";
+import NavSet from "./NavSet.vue";
+import legalLinks from "@/pages/Legal/legalLinks";
 
-  export default {
-    name: "Footer",
-    components: {
-      NavSet,
-      legalLinks
+export default {
+  name: "Footer",
+  components: {
+    NavSet,
+    legalLinks,
+  },
+  computed: {
+    user() {
+      return this.$store.getters["auth/getUser"];
     },
-    computed: {
-      user() {
-        return this.$store.getters["auth/getUser"];
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

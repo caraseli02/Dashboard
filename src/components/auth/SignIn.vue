@@ -9,7 +9,9 @@
         alt=""
       /> -->
       <div
-        :class="`mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10`"
+        :class="
+          `mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10`
+        "
       >
         <div>
           <h2 class="text-3xl leading-9 font-extrabold text-primary">
@@ -124,7 +126,9 @@
       </div>
     </div>
     <div
-      :class="`glass-${theme} rounded-none text-secondary w-full h-20 text-lg flex justify-center items-center`"
+      :class="
+        `glass-${theme} rounded-none text-secondary w-full h-20 text-lg flex justify-center items-center`
+      "
     >
       ¿No tienes cuenta?
       <router-link
@@ -170,7 +174,7 @@ export default {
           }
           this.$router.replace("dashboard");
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
           // this.error = error.message;
         });
