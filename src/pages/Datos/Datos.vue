@@ -93,7 +93,9 @@
         class="grid grid-flow-col auto-cols-max py-2 overflow-x-scroll mt-2 ml-4"
       >
         <attendRow
-          v-on:passRowToChange="dataToChange = $event"
+          v-on:passRowToChange="
+            (dataToChange = $event.attend), (gpsData = $event.gpsData)
+          "
           :selectedUser="selectedUser"
           :users="users"
           v-for="(attend, index) in filtredAttends"
@@ -105,15 +107,16 @@
       <transition name="fade" mode="out-in">
         <div
           class="w-full h-full z-10 absolute top-0 bg-gray-800 dark:bg-gray-600 bg-opacity-75"
-          v-if="dataToChange"
+          v-if="dataToChange && gpsData"
         >
           <attendChange
-            v-on:dataChanged="dataToChange = null"
+            v-on:dataChanged="(dataToChange = null), (gpsData = null)"
             :dataToChange="dataToChange"
+            :gpsData="gpsData"
           />
           <button
             class="flex justify-center py-2 px-4 border border-transparent text-lg font-medium rounded-md text-primary bg-red-800 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out mt-32 z-10 w-1/2 mx-auto"
-            @click="dataToChange = null"
+            @click="(dataToChange = null), (gpsData = null)"
           >
             X
           </button>
@@ -214,7 +217,7 @@
         </div> -->
       </section>
       <section>
-        <HereMap :attendance="attendList" :center="geolocation" />
+        <HereMap :attendance="filtredAttends" :center="geolocation" />
       </section>
     </article>
   </transition>
@@ -248,6 +251,7 @@ export default {
       workedDays: null,
       workplace: null,
       dataToChange: null,
+      gpsData: null,
       workplaceUsers: [],
       filtredAttends: [],
     };
@@ -255,12 +259,12 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      users: (state) => state.users,
-      selectedTime: (state) => state.selectedTime,
+      attendList: state => state.attendance,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      users: state => state.users,
+      selectedTime: state => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
     ...mapState(["showSidebar", "userData"]),
@@ -269,7 +273,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      "changeAttendance",
       "currentLocation",
       "getAsist",
       "getUsers",
@@ -355,40 +358,108 @@ export default {
       }
       this.selectedMes--;
     },
-    changeAttendance(attend) {
-      this.dataToChange = attend;
-    },
-    attendFilter(val) {
-      val.find(({ email }) => email === this.selectedUser);
-    },
-  },
-  watch: {
-    selectedUser: function (newValue) {
+    getUsersAttends(val) {
       this.filtredAttends = [];
 
-      const dataList = this.attendList.filter(
-        ({ data }) => data.email === newValue
-      );
-      console.log(dataList);
+      const dataList = this.attendList.filter(({ data }) => data.email === val);
 
       this.filtredAttends = dataList;
     },
-    workplace: function (newValue) {
+    generateAttendInfo(newValue) {
+      if (newValue.length > 0 && this.selectedUser && this.users) {
+        const userData = this.users.find(
+          ({ email }) => email === this.selectedUser
+        );
+        this.extraHors = 0;
+        this.workedTime = 0;
+        this.workedDays = 0;
+        var minutes = 0;
+        for (let i = 0; i < newValue.length; i++) {
+          if (newValue[i].data.leaveTime) {
+            let enter = new Date(
+              String(newValue[i].data.enterTime).slice(0, 16)
+            );
+            let leave = new Date(
+              String(newValue[i].data.leaveTime).slice(0, 16)
+            );
+            let workedMin = (leave.getTime() - enter.getTime()) / 60000;
+
+            const isWeekends = enter.getDay() === 0 || enter.getDay() === 6;
+
+            const isCurentMonth = enter.getMonth() === new Date().getMonth();
+
+            if ("eatHour" in userData) {
+              workedMin -= 60;
+            }
+            const minDiff = this.diff_minutes(enter, leave);
+            if (
+              enter.getDay() === 5 &&
+              enter.getMonth() === new Date().getMonth() &&
+              userData.schedule !== "39"
+            ) {
+              if (workedMin > 440) {
+                this.extraHors += minDiff - 420;
+                // this.extraHors = this.timeConvert(
+                //   this.diff_minutes(enter, leave) - 420
+                // );
+              }
+            }
+            if (enter.getDay() !== 5 && isCurentMonth) {
+              if (workedMin > 500) {
+                this.extraHors += minDiff - 480;
+                minutes = minDiff % 60;
+                if (minutes < 30) {
+                  this.extraHors -= minutes;
+                }
+              }
+            }
+            if (isWeekends && isCurentMonth) {
+              this.extraHors += minDiff;
+              this.workedTime += minDiff;
+              minutes = minDiff % 60;
+              if (minutes < 30) {
+                this.extraHors -= minutes;
+                this.workedTime -= minutes;
+              }
+            }
+            if (Math.sign(workedMin) && !isWeekends) {
+              minutes = workedMin % 60;
+              if (minutes < 30) {
+                workedMin -= minutes;
+              }
+              this.workedTime += workedMin;
+              // this.workedTime = this.timeConvert(workedMin);
+            }
+            this.workedDays += 1;
+          }
+        }
+        this.extraHors = this.timeConvert(this.extraHors + 1);
+        this.workedTime = this.timeConvert(this.workedTime + 1);
+      }
+    },
+  },
+  watch: {
+    selectedUser: function(newValue) {
+      this.getUsersAttends(newValue);
+      this.generateAttendInfo(this.filtredAttends);
+    },
+    workplace: function(newValue) {
       if (newValue && this.selectedTime) {
         const data = {
           workplace: this.workplace,
           time: this.selectedTime,
           uid: this.user.uid,
         };
+        this.workplaceUsers = null;
         this.getAsist(data);
       }
     },
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       this.filtredAttends = newValue;
-      const data = [...new Set(newValue.map((o) => o.data.email))];
+      const data = [...new Set(newValue.map(o => o.data.email))];
       if (data.length > 0) {
         this.workplaceUsers = [];
-        data.forEach((o) => {
+        data.forEach(o => {
           let user = this.users.find(({ email }) => email === o);
           if (user) {
             this.workplaceUsers.push(user);
