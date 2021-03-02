@@ -176,7 +176,7 @@
           @click="closeSession"
           class="flex items-center p-4 text-white w-full"
         >
-          <span class="gg-log-out mr-2 ml-2"></span>
+          <span class="gg-log-out text-primary mr-4 ml-2"></span>
           <span class="text-primary">Cerrar Session</span>
         </button>
       </div>

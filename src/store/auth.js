@@ -70,6 +70,12 @@ const actions = {
       .auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(res => {
+        if (!res.user.emailVerified) {
+          const actionCodeSettings = {
+            url: `${process.env.VUE_APP_HOST_NAME}sign-in/?email=${res.user.email}`,
+          };
+          res.user.sendEmailVerification(actionCodeSettings);
+        }
         window.localStorage.setItem("uid", res.user.uid);
         window.localStorage.setItem("displayName", res.user.displayName);
         window.localStorage.setItem("email", res.user.email);

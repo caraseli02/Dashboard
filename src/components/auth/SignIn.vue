@@ -29,92 +29,96 @@
         </transition> -->
         <div class="mt-8">
           <div class="mt-6">
-            <form @submit.prevent>
-              <div>
-                <label
-                  for="email"
-                  class="block text-sm font-medium leading-5 text-secondary"
-                >
-                  Email address
-                </label>
-                <div class="mt-1 rounded-md shadow-sm">
-                  <input
-                    type="email"
-                    placeholder="apimosa@apimosa.com"
-                    v-model="email"
-                    id="email"
-                    required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                  />
-                </div>
-              </div>
-
-              <div class="mt-6">
-                <label
-                  for="password"
-                  class="block text-sm font-medium leading-5 text-secondary"
-                >
-                  Password
-                </label>
-                <div class="mt-1 rounded-md shadow-sm">
-                  <input
-                    type="password"
-                    v-model="password"
-                    id="password"
-                    required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                  />
-                </div>
-              </div>
-
-              <div class="mt-6 flex flex-col items-center justify-between">
-                <div class="flex items-center">
-                  <input
-                    id="remember_me"
-                    type="checkbox"
-                    class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                  />
+            <transition name="slide-fade">
+              <form v-if="!showForgotPopUp" @submit.prevent>
+                <div>
                   <label
-                    for="remember_me"
-                    class="ml-2 block text-sm leading-5 text-secondary"
+                    for="email"
+                    class="block text-sm font-medium leading-5 text-secondary"
                   >
-                    Remember me
+                    Email address
                   </label>
+                  <div class="mt-1 rounded-md shadow-sm">
+                    <input
+                      type="email"
+                      placeholder="apimosa@apimosa.com"
+                      v-model="email"
+                      id="email"
+                      required
+                      class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    />
+                  </div>
                 </div>
 
-                <div class="text-sm leading-5 mt-2">
-                  <button
-                    class="font-medium text-xs text-primary focus:outline-none focus:underline transition ease-in-out duration-150"
-                    @click="showForgotPopUp = !showForgotPopUp"
+                <div class="mt-6">
+                  <label
+                    for="password"
+                    class="block text-sm font-medium leading-5 text-secondary"
                   >
-                    ¿Has olvidado tu contraseña?
-                  </button>
+                    Password
+                  </label>
+                  <div class="mt-1 rounded-md shadow-sm">
+                    <input
+                      type="password"
+                      v-model="password"
+                      id="password"
+                      required
+                      class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    />
+                  </div>
                 </div>
-              </div>
-              <transition name="slide-fade">
-                <forgot-password v-on:closePopUp="showForgotPopUp = $event" v-if="showForgotPopUp" :theme="theme">
-                  <button
-                    class="bg-transparet px-4 py-2 rounded text-red-500 border border-red-600 transition duration-500 ease-in-out hover:bg-red-600 mt-4"
-                    type="button"
-                    aria-label="like"
-                    @click="showForgotPopUp = !showForgotPopUp"
-                  >
-                    Cerrar
-                  </button>
-                </forgot-password>
-              </transition>
-              <div class="mt-6">
-                <span class="block w-full rounded-md shadow-sm">
-                  <button
-                    type="submit"
-                    @click="signIn"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent text-lg font-medium rounded-md text-primary bg-secondary hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
-                  >
-                    Inicia sesión
-                  </button>
-                </span>
-              </div>
-            </form>
+
+                <div class="mt-6 flex flex-col items-center justify-between">
+                  <div class="flex items-center">
+                    <input
+                      id="remember_me"
+                      type="checkbox"
+                      class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                    />
+                    <label
+                      for="remember_me"
+                      class="ml-2 block text-sm leading-5 text-secondary"
+                    >
+                      Remember me
+                    </label>
+                  </div>
+
+                  <div class="text-sm leading-5 mt-2">
+                    <button
+                      class="font-medium text-xs text-primary focus:outline-none focus:underline transition ease-in-out duration-150"
+                      @click="showForgotPopUp = !showForgotPopUp"
+                    >
+                      ¿Has olvidado tu contraseña?
+                    </button>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <span class="block w-full rounded-md shadow-sm">
+                    <button
+                      type="submit"
+                      @click="signIn"
+                      class="w-full flex justify-center py-2 px-4 border border-transparent text-lg font-medium rounded-md text-primary bg-secondary hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
+                    >
+                      Inicia sesión
+                    </button>
+                  </span>
+                </div>
+              </form>
+              <forgot-password
+                v-on:closePopUp="showForgotPopUp = $event"
+                v-if="showForgotPopUp"
+                :theme="theme"
+              >
+                <button
+                  class="bg-transparet px-4 py-2 rounded text-red-500 border border-red-600 transition duration-500 ease-in-out hover:bg-red-600 mt-4"
+                  type="button"
+                  aria-label="like"
+                  @click="showForgotPopUp = !showForgotPopUp"
+                >
+                  Cerrar
+                </button>
+              </forgot-password>
+            </transition>
           </div>
         </div>
       </div>

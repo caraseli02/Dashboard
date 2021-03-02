@@ -207,12 +207,14 @@ export const store = new Vuex.Store({
             .orderBy("curentTime", "desc")
         );
       } else {
+        console.log(data);
         return bindFirestoreRef(
           "attendance",
           db
             .collection("attendance")
             .where("delete_flag", "==", "N")
-            .where("data.email", "==", data.user)
+            .where("data.gpsData.City", "==", data.workplace)
+            // .where("data.email", "==", data.user)
             .where("curentTime", ">=", data.time.start)
             .where("curentTime", "<=", data.time.end - 1)
             .orderBy("curentTime", "desc")

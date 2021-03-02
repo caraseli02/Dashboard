@@ -2,7 +2,12 @@
   <transition name="slide-fade" mode="out-in">
     <article v-if="geolocation.lat && geolocation.lng">
       <!-- Month selector  -->
-      <monthSelector :pasedUser="selectedUser" :getAsistFunc="true" />
+      <monthSelector
+        v-if="userData.length > 0"
+        :workplace="userData[0].workplace"
+        :pasedUser="selectedUser"
+        :getAsistFunc="true"
+      />
       <!-- User Selector if login like admin -->
       <section
         v-if="users !== null && users.length > 1"
@@ -17,16 +22,18 @@
           </label>
           <div class="relative">
             <select
+              v-if="userData[0]"
               class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-state"
               v-model="workplace"
             >
-              <option value="Palma">Palma de Mallorca</option>
-              <option value="Sevilla">Sevilla</option>
-              <option value="Valencia">Valencia</option>
-              <option value="Malaga">Malaga</option>
-              <option value="Tenerife">Tenerife</option>
-              <option value="Ibiza">Ibiza</option>
+              <option
+                v-for="place in userData[0].workplace"
+                :key="place"
+                :value="place"
+              >
+                {{ place }}
+              </option>
             </select>
             <div
               class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
@@ -50,7 +57,7 @@
           >
             Empleado
           </label>
-          <div class="relative">
+          <div v-if="workplaceUsers" class="relative">
             <select
               class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-state"
@@ -59,15 +66,11 @@
               <option disabled>Seleccionar</option>
               <option
                 :value="user.email"
-                v-for="(user, index) in users"
+                v-for="(user, index) in workplaceUsers"
                 :key="index"
-                :class="user.workplace === workplace ? '' : 'hidden'"
               >
                 {{ user.name }} {{ user.surname ? user.surname : "" }}
               </option>
-              <!-- <option v-for="(user, index) in users" :key="index">
-              {{ user.email }}
-            </option> -->
             </select>
             <div
               class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-primary"
@@ -93,7 +96,7 @@
           v-on:passRowToChange="dataToChange = $event"
           :selectedUser="selectedUser"
           :users="users"
-          v-for="(attend, index) in attendList"
+          v-for="(attend, index) in filtredAttends"
           :key="index"
           :attend="attend"
         />
@@ -245,19 +248,22 @@ export default {
       workedDays: null,
       workplace: null,
       dataToChange: null,
+      workplaceUsers: [],
+      filtredAttends: [],
     };
   },
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      d: state => state.d,
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      users: state => state.users,
-      selectedTime: state => state.selectedTime,
+      attendList: (state) => state.attendance,
+      d: (state) => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      users: (state) => state.users,
+      selectedTime: (state) => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
+    ...mapState(["showSidebar", "userData"]),
     ...mapGetters(["checkCalendarToday"]),
     ...mapGetters({ theme: "theme/getTheme" }),
   },
@@ -269,6 +275,7 @@ export default {
       "getUsers",
       "currentLocation",
       "clearLocation",
+      "getUserData",
     ]),
     checkEnterCreated: (val1, val2) => {
       if (val1 && val2) {
@@ -351,19 +358,43 @@ export default {
     changeAttendance(attend) {
       this.dataToChange = attend;
     },
+    attendFilter(val) {
+      val.find(({ email }) => email === this.selectedUser);
+    },
   },
   watch: {
-    selectedUser: function(newValue) {
+    selectedUser: function (newValue) {
+      this.filtredAttends = [];
+
+      const dataList = this.attendList.filter(
+        ({ data }) => data.email === newValue
+      );
+      console.log(dataList);
+
+      this.filtredAttends = dataList;
+    },
+    workplace: function (newValue) {
       if (newValue && this.selectedTime) {
         const data = {
-          user: newValue,
+          workplace: this.workplace,
           time: this.selectedTime,
           uid: this.user.uid,
         };
         this.getAsist(data);
       }
     },
-    attendList: function(newValue) {
+    attendList: function (newValue) {
+      this.filtredAttends = newValue;
+      const data = [...new Set(newValue.map((o) => o.data.email))];
+      if (data.length > 0) {
+        this.workplaceUsers = [];
+        data.forEach((o) => {
+          let user = this.users.find(({ email }) => email === o);
+          if (user) {
+            this.workplaceUsers.push(user);
+          }
+        });
+      }
       if (newValue.length > 0 && this.selectedUser && this.users) {
         const userData = this.users.find(
           ({ email }) => email === this.selectedUser
@@ -436,14 +467,15 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     var date = new Date(); // Or the date you'd like converted.
     this.today = new Date(
       date.getTime() - date.getTimezoneOffset() * 60000
     ).toISOString();
     this.selectedMes = date.getMonth();
-    this.getUsers();
     this.selectedUser = this.user.email;
+    await this.getUsers();
+    await this.getUserData();
   },
 };
 </script>
