@@ -252,7 +252,6 @@ export default {
         isCircle: true,
       },
       enterModal: true,
-      showMap: false,
       userData: {
         email: localStorage.getItem("email"),
         uid: localStorage.getItem("uid"),

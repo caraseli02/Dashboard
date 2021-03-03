@@ -17,7 +17,6 @@ Vue.use(VueSimpleAlert);
 
 export const store = new Vuex.Store({
   state: {
-    showMap: false,
     showSidebar: false,
     attendance: [],
     checkDay: null,
@@ -64,9 +63,6 @@ export const store = new Vuex.Store({
     },
     CHANGE_GEOLOCATION(state, payload) {
       state.geolocation = payload;
-    },
-    SHOW_MAP(state) {
-      state.showMap = !state.showMap;
     },
     async SET_ATTENDANCE(state, { userData }) {
       const id = uuidv4();
@@ -151,9 +147,6 @@ export const store = new Vuex.Store({
     },
     clearLocation({ commit }) {
       commit("CHANGE_GEOLOCATION", {});
-    },
-    showMapAction(context) {
-      context.commit("SHOW_MAP");
     },
     toggleSidebar(context) {
       context.commit("TOGGLE_SIDEBAR");
