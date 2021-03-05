@@ -16,6 +16,7 @@
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "autoprefixer": "^9.8.6",
     "core-js": "^3.6.5",
+    "easytimer.js": "^4.3.2",
     "firebase": "^7.24.0",
     "luxon": "^1.25.0",
     "postcss": "^7.0.35",

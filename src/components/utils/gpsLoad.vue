@@ -5,194 +5,20 @@
     >
       APIMOSA APP
     </h1>
-    <div class="load">
-      <div class="paint">
-        <div class="stroke"></div>
-        <h2 class="text-2xl mx-auto">Preparando...</h2>
-      </div>
-      <div class="roller">
-        <div class="roller-top"></div>
-        <div class="roller-handle"></div>
-      </div>
-    </div>
-    <div class="shadow"></div>
+    <paitLoader>
+      <h1 class="text-3xl text-primary mt-6">Preparando...</h1>
+    </paitLoader>
   </section>
 </template>
 
 <script>
-let color = document.getElementsByTagName("body")[0].style;
-color.cssText = "--paint-color: rgb(3, 9, 198)";
+import paitLoader from "@/components/utils/paitLoader.vue";
 export default {
   name: "gpsLoad",
+  components: {
+    paitLoader,
+  },
 };
 </script>
 
-<style scoped>
-body {
-  background-color: Gainsboro;
-  --paint-color: rgb(10, 18, 248);
-  overflow: hidden;
-}
-
-.load {
-  position: absolute;
-  width: 50vw;
-  height: 156px;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-}
-
-/* Paint */
-
-.paint {
-  position: absolute;
-  height: 155px;
-  width: calc(100% - 349px);
-  overflow: hidden;
-  animation: animate-paint 10s ease-in-out infinite alternate;
-}
-
-.stroke,
-.stroke:before,
-.stroke:after {
-  position: absolute;
-  height: 20px;
-  width: calc(100% + 5px);
-  border-radius: 5px;
-  background-color: var(--paint-color);
-  z-index: 1;
-}
-
-.stroke {
-  top: 17px;
-  box-shadow: 10px 20px var(--paint-color);
-}
-
-.stroke:before {
-  content: "";
-  top: 40px;
-  left: 5px;
-  box-shadow: 5px 20px var(--paint-color);
-}
-
-.stroke:after {
-  content: "";
-  top: 80px;
-  left: 5px;
-  box-shadow: -5px 20px var(--paint-color);
-}
-
-h2 {
-  position: absolute;
-  top: 25px;
-  left: calc(25vw - 65px);
-  z-index: 2;
-  color: white;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
-    1px 1px 0 #000;
-}
-
-/* Roller */
-
-.roller {
-  position: absolute;
-  width: 361px;
-  height: 161px;
-  animation: animate-roller 10s ease-in-out infinite alternate;
-  z-index: 3;
-}
-
-.roller-top {
-  position: absolute;
-  height: 60px;
-  width: 60px;
-  border-left: 5px solid #666666;
-  border-bottom: 5px solid #666666;
-  border-right: 5px solid #666666;
-  top: 96px;
-  left: 31px;
-  border-bottom-left-radius: 15%;
-  border-bottom-right-radius: 15%;
-}
-
-.roller-top:before {
-  position: absolute;
-  content: "";
-  background-color: #666666;
-  width: 25px;
-  height: 153px;
-  border-radius: 5px;
-  left: -14px;
-  top: -96px;
-}
-
-.roller-top:after {
-  content: "";
-  position: absolute;
-  height: 135px;
-  width: 60px;
-  background-color: #fcf4e9;
-  border-radius: 10%;
-  top: -92px;
-  left: -36px;
-  border: 5px solid #f1e7da;
-}
-
-.roller-handle {
-  position: absolute;
-  width: 100px;
-  height: 40px;
-  border-top: 5px solid #666666;
-  border-left: 5px solid #666666;
-  border-top-left-radius: 30px;
-  top: 70px;
-  left: 86px;
-}
-
-.roller-handle:before {
-  position: absolute;
-  content: "";
-  width: 200px;
-  height: 40px;
-  background-color: #999999;
-  border: 5px solid #666666;
-  left: 50px;
-  top: -27px;
-  border-radius: 10%;
-}
-
-.roller-handle:after {
-  position: absolute;
-  content: "";
-  width: 180px;
-  height: 40px;
-  background-color: sandybrown;
-  border: 5px solid #a6593b;
-  left: 60px;
-  top: -27px;
-  border-radius: 5%;
-}
-
-/* Animations */
-
-@keyframes animate-paint {
-  0% {
-    width: 0%;
-  }
-
-  100% {
-    width: 100%;
-  }
-}
-
-@keyframes animate-roller {
-  0% {
-    left: 0px;
-  }
-
-  100% {
-    left: 100%;
-  }
-}
-</style>
+<style scoped></style>

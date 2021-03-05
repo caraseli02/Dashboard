@@ -3,7 +3,10 @@
     <Header />
     <Alerts />
     <transition name="slide-fade" mode="out-in">
-      <gpsCheck v-if="!geolocation.lat" />
+      <gpsCheck
+        class="h-full w-screen z-50 fixed top-0 bg-primary"
+        v-if="!geolocation.lat && user"
+      />
     </transition>
     <transition name="slide-fade" mode="out-in">
       <gpsLoad v-if="loadingMap" />
@@ -17,7 +20,7 @@
         OK
       </button>
     </updateAlert>
-    <main v-if="geolocation.lat" class="container mx-auto py-5">
+    <main class="container mx-auto py-5">
       <transition name="slide-fade" mode="out-in">
         <router-view></router-view>
       </transition>
@@ -57,7 +60,7 @@ export default {
       geolocation: state => state.geolocation,
       loadingMap: state => state.loadingMap,
     }),
-    ...mapGetters({ theme: "theme/getTheme" }),
+    ...mapGetters({ theme: "theme/getTheme", user: "auth/getUser" }),
   },
   watch: {
     theme(newTheme) {
@@ -82,13 +85,15 @@ export default {
   },
   beforeMount() {
     this.$store.dispatch("theme/initTheme");
+    if (this.user && !this.geolocation.lng && !this.geolocation.lat) {
+      this.currentLocation();
+    }
   },
-  created() {
+  async created() {
     // when the app is created run the set user method
     // this uses Vuex to check if a user is signed in
     // check out mutations in the store.js file
-    this.setUser();
-    this.currentLocation();
+    await this.setUser();
   },
 };
 </script>
@@ -111,6 +116,7 @@ export default {
 .dark_bg {
   background-image: url("assets/img/dark_bg.svg");
 }
+
 .light_bg {
   background-image: url("assets/img/light_bg.svg");
 }
@@ -154,11 +160,16 @@ export default {
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
+
 .slide-fade-leave-active {
   transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active below version 2.1.8 */ {
+
+.slide-fade-enter,
+  .slide-fade-leave-to
+
+  /* .slide-fade-leave-active below version 2.1.8 */
+ {
   transform: translateY(10px);
   opacity: 0;
 }

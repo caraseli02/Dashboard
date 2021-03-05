@@ -66,7 +66,6 @@ export default {
   },
   methods: {
     sendEmail() {
-      console.log(this.email);
       if (!this.email) {
         this.error = "Please type in a valid email address.";
         return;

@@ -9,7 +9,7 @@ service cloud.firestore {
     }
     
 		function isStaff(){
-      return request.auth.token.email.matches('.*apimosa[.]es$')
+      return request.auth.token.email.matches('.*apimosa[.]es$') && request.auth.token.email_verified;
     }
      match /attendance/{document} {
       allow read: if (isDocOwner() && isSignedIn()) || isAdmin() || isStaff();

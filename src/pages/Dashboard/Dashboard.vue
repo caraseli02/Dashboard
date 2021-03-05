@@ -1,5 +1,5 @@
 <template>
-  <article v-if="geolocation.lat && geolocation.lng">
+  <article>
     <!-- Month selector  -->
     <monthSelector :bindAsistFunc="true" />
     <!-- Attendence Display -->
@@ -12,12 +12,15 @@
         :selectedMes="selectedMes"
         :days="days"
         v-model="temperature"
-        ><btnVerify
+      >
+        <btnVerify
           :enterFunc="true"
           :temperature="temperature"
           :gpsData="gpsData[0]"
-          text="Apuntar Entrada"
-      /></punchIn>
+          text="Entrada"
+          v-on:startTimer="showTimeCounter = $event"
+        />
+      </punchIn>
       <h3 v-if="actualMonthCheck" class="text-xl font-bold ml-2 text-primary">
         TU ÚLTIMA OPERACIÓN:
       </h3>
@@ -37,43 +40,36 @@
         />
       </div>
       <btnVerify
+        class="mb-8 mt-4"
+        :class="
+          showTimeCounter ? 'z-50 fixed bottom-0 mb-16 mx-auto w-full' : ''
+        "
         v-if="showPunchOut && dataPunchOutLoaded && this.actualMonthCheck"
         :value="attendList[0]"
         :leaveFunc="true"
         :temperature="temperature"
         :gpsData="gpsData[0]"
-        text="Apuntar Salida"
+        text="Salida"
       />
-      <ul
-        v-if="workedTime && actualMonthCheck"
-        :class="
-          `glass-${theme} w-screen mx-auto h-24 flex justify-center items-center`
-        "
+      <timeCounterAnimation
+        v-if="showTimeCounter && attendList[0].data.enterTime"
+        :theme="theme"
+        v-on:closeTimer="showTimeCounter = $event"
+        ><timeCounter
+          :seconds="generateTimeData(attendList[0].data.enterTime)"
+        />
+      </timeCounterAnimation>
+
+      <workedTime
+        v-if="attendList[0] && 'activeSession' in attendList[0]"
+        :workedTime="workedTime"
+        :actualMonthCheck="actualMonthCheck"
+        :theme="theme"
+        :checkCalendarToday="checkCalendarToday"
+        :showCounter="attendList[0].activeSession"
       >
-        <li
-          class="mx-auto flex justify-around text-lg items-center p-4 text-secondary w-56"
-        >
-          <i class="gg-time mb-2 text-green-800 dark:text-green-500"></i>
-          <div class="flex flex-col justify-around">
-            Has trabajado
-            <span class="text-2xl text-green-800 dark:text-green-500">
-              {{ workedTime }}</span
-            >
-          </div>
-        </li>
-        <!-- <li
-          class="w-full text-secondary mx-auto flex justify-around text-lg items-center p-4"
-          v-if="extraHors"
-        >
-          <i class="gg-insert-after text-red-800 dark:text-red-500 mb-2 "></i>
-          <div class="flex flex-col justify-around">
-            Horas Extra
-            <span class="text-2xl text-red-800 dark:text-red-500"
-              >{{ extraHors }}
-            </span>
-          </div>
-        </li> -->
-      </ul>
+        <timeCounter :seconds="generateTimeData(attendList[0].data.enterTime)"
+      /></workedTime>
       <p
         v-if="attendList[0] && 'msg' in attendList[0].data && actualMonthCheck"
         :class="
@@ -95,8 +91,11 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 import Options from "@/pages/Dashboard/Options.vue";
 import btnVerify from "@/components/btns/btnVerify.vue";
+import workedTime from "@/pages/Dashboard/workedTime.vue";
 import punchIn from "@/pages/Dashboard/punchIn.vue";
 import attendInfo from "@/pages/Dashboard/attendInfo.vue";
+import timeCounter from "@/pages/Dashboard/timeCounter.vue";
+import timeCounterAnimation from "@/pages/Dashboard/timeCounterAnimation.vue";
 import monthSelector from "@/components/utils/monthSelector.vue";
 import IconContact from "@/components/icons/IconContact.vue";
 import IconBase from "@/components/IconBase.vue";
@@ -114,6 +113,9 @@ export default {
     attendInfo,
     IconContact,
     IconBase,
+    timeCounter,
+    timeCounterAnimation,
+    workedTime,
     // Alerts,
   },
   data() {
@@ -121,6 +123,7 @@ export default {
       today: null,
       temperature: "36.6",
       showPunchOut: false,
+      showTimeCounter: false,
     };
   },
   watch: {
@@ -248,7 +251,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["changeAttendance", "getUsers"]),
+    ...mapActions(["changeAttendance", "getUsers", "currentLocation"]),
     getDayName(dateString) {
       var d = new Date(dateString);
       var dayName = this.days[d.getDay()];
@@ -268,14 +271,23 @@ export default {
     showMsg(msg) {
       this.$alert(msg);
     },
+    generateTimeData(data) {
+      if (this.checkCalendarToday) {
+        return 0;
+      }
+      return Math.abs((new Date().getTime() - new Date(data).getTime()) / 1000);
+    },
   },
-  mounted() {
+  async mounted() {
     this.getUsers();
     const platform = new window.H.service.Platform({
       apikey: this.apikey,
     });
     this.platform = platform;
     const geocoder = platform.getGeocodingService();
+    if (!this.geolocation.lat && !this.geolocation.lng) {
+      await this.currentLocation();
+    }
     this.getInfoFromGps(geocoder, [this.geolocation]);
     var date = new Date(); // Or the date you'd like converted.
     this.today = new Date(

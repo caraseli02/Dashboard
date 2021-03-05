@@ -87,7 +87,6 @@ export const store = new Vuex.Store({
     },
     async CHANGE_ATTENDANCE(state, { userData }) {
       const docRef = db.collection("attendance").doc(userData.id);
-      console.log(userData);
       if (userData.msgLeave) {
         return await docRef.update({
           msgLeave: userData.msgLeave,
@@ -103,7 +102,6 @@ export const store = new Vuex.Store({
       }
     },
     async CHANGE_USER_DATA(state, { userData }) {
-      console.log(userData);
       const docRef = db.collection("attendanceUsers").doc(userData.id);
       return await docRef.update({
         surname: userData.surname,
@@ -201,7 +199,6 @@ export const store = new Vuex.Store({
             .orderBy("curentTime", "desc")
         );
       } else {
-        console.log(data);
         return bindFirestoreRef(
           "attendance",
           db

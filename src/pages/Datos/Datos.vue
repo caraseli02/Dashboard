@@ -1,5 +1,5 @@
 <template>
-  <article name="list" v-if="geolocation.lat && geolocation.lng">
+  <article>
     <!-- Month selector  -->
     <monthSelector
       v-if="userData.length > 0"
@@ -182,7 +182,6 @@ export default {
       workedDays: null,
       workplace: null,
       dataToChange: null,
-      gpsData: null,
       workplaceUsers: [],
       filtredAttends: [],
     };
@@ -190,13 +189,12 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      users: (state) => state.users,
-      selectedTime: (state) => state.selectedTime,
-      showMap: (state) => state.showMap,
+      attendList: state => state.attendance,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      users: state => state.users,
+      selectedTime: state => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
     ...mapState(["showSidebar", "userData"]),
@@ -212,84 +210,6 @@ export default {
       "clearLocation",
       "getUserData",
     ]),
-    checkEnterCreated: (val1, val2) => {
-      if (val1 && val2) {
-        const created = new Date(val1.seconds * 1000);
-        const inserted = new Date(val2);
-        const diffMs = created - inserted; // milliseconds between now & Christmas
-        const diffDays = Math.floor(diffMs / 86400000); // days
-        const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-        const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-        // console.log(
-        //   diffDays + " days, " + diffHrs + " hours, " + diffMins + " diff =)"
-        // );
-        if (diffDays > 0) {
-          return created.toString().slice(7, 21);
-        }
-        if (diffMins > 30 || diffHrs > 1) {
-          if (diffHrs > 1) {
-            return `Retraso de ${diffHrs} Horas`;
-          }
-          return `Retraso de ${diffMins} Minutes`;
-        }
-        return "--/--";
-      }
-    },
-    checkLeaveUpdate: (closedAt, leaveTime) => {
-      if (closedAt && leaveTime) {
-        const leave = new Date(leaveTime.replace("Z", ""));
-        const closed = new Date(closedAt.seconds * 1000);
-
-        const diffMs = leave - closed;
-        // console.log(diffMs);
-        // milliseconds between now & Christmas
-        // const diffDays = Math.floor(diffMs / 86400000); // days
-        // const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-        // const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-        // console.log(
-        //   leave.toString().slice(7, 21),
-        //   updated.toString().slice(7, 21)
-        // );
-
-        if (diffMs < -900000) {
-          return closed.toString().slice(7, 21);
-        }
-        // if (diffMins > 30 || diffHrs > 0.5) {
-        //   if (diffHrs > 0.5) {
-        //     return `Antes con ${diffHrs} Horas`;
-        //   }
-        //   return `Antes con ${diffMins} Minutes`;
-        // }
-        return "--/--";
-      }
-      return "--/--";
-    },
-    showChangeMsg(data) {
-      this.$fire({
-        title: `
-        <ul>
-          <li>Cambiado de Entrada</li>
-          <li>Antes : ${data.oldValue}</li>
-          <li>Ahora : ${data.newValue}</li>
-          <li>Fecha de Cambiado : ${data.changeTime}</li>
-        </ul>
-        `,
-        text: `${data.msg}`,
-        type: "info",
-      });
-    },
-    nextMonth() {
-      if (this.selectedMes > 12) {
-        this.selectedMes = 0;
-      }
-      this.selectedMes++;
-    },
-    prevMonth() {
-      if (this.selectedMes < 0) {
-        this.selectedMes = 12;
-      }
-      this.selectedMes--;
-    },
     getUsersAttends(val) {
       this.filtredAttends = [];
 
@@ -320,7 +240,11 @@ export default {
 
             const isCurentMonth = enter.getMonth() === new Date().getMonth();
 
-            if ("eatHour" in userData) {
+            if (
+              userData &&
+              "eatHour" in userData &&
+              userData.eatHour === true
+            ) {
               workedMin -= 60;
             }
             const minDiff = this.diff_minutes(enter, leave);
@@ -371,11 +295,13 @@ export default {
     },
   },
   watch: {
-    selectedUser: function (newValue) {
+    // Watch selected user to return Attends of specified User
+    selectedUser: function(newValue) {
       this.getUsersAttends(newValue);
       this.generateAttendInfo(this.filtredAttends);
     },
-    workplace: function (newValue) {
+    //Get all Attends from selected workplace
+    workplace: function(newValue) {
       if (newValue && this.selectedTime) {
         const data = {
           workplace: this.workplace,
@@ -386,88 +312,20 @@ export default {
         this.getAsist(data);
       }
     },
-    attendList: function (newValue) {
+    // Vuex function to get attendList
+    attendList: function(newValue) {
       this.filtredAttends = newValue;
-      const data = [...new Set(newValue.map((o) => o.data.email))];
+      const data = [...new Set(newValue.map(o => o.data.email))];
       if (data.length > 0) {
         this.workplaceUsers = [];
-        data.forEach((o) => {
+        data.forEach(o => {
           let user = this.users.find(({ email }) => email === o);
           if (user) {
             this.workplaceUsers.push(user);
           }
         });
       }
-      if (newValue.length > 0 && this.selectedUser && this.users) {
-        const userData = this.users.find(
-          ({ email }) => email === this.selectedUser
-        );
-        this.extraHors = 0;
-        this.workedTime = 0;
-        this.workedDays = 0;
-        var minutes = 0;
-        for (let i = 0; i < newValue.length; i++) {
-          if (newValue[i].data.leaveTime) {
-            let enter = new Date(
-              String(newValue[i].data.enterTime).slice(0, 16)
-            );
-            let leave = new Date(
-              String(newValue[i].data.leaveTime).slice(0, 16)
-            );
-            let workedMin = (leave.getTime() - enter.getTime()) / 60000;
-
-            const isWeekends = enter.getDay() === 0 || enter.getDay() === 6;
-
-            const isCurentMonth = enter.getMonth() === new Date().getMonth();
-
-            if ("eatHour" in userData) {
-              workedMin -= 60;
-            }
-            const minDiff = this.diff_minutes(enter, leave);
-            if (
-              enter.getDay() === 5 &&
-              enter.getMonth() === new Date().getMonth() &&
-              userData.schedule !== "39"
-            ) {
-              if (workedMin > 440) {
-                this.extraHors += minDiff - 420;
-                // this.extraHors = this.timeConvert(
-                //   this.diff_minutes(enter, leave) - 420
-                // );
-              }
-            }
-            if (enter.getDay() !== 5 && isCurentMonth) {
-              if (workedMin > 500) {
-                this.extraHors += minDiff - 480;
-                minutes = minDiff % 60;
-                if (minutes < 30) {
-                  this.extraHors -= minutes;
-                }
-              }
-            }
-            if (isWeekends && isCurentMonth) {
-              this.extraHors += minDiff;
-              this.workedTime += minDiff;
-              minutes = minDiff % 60;
-              if (minutes < 30) {
-                this.extraHors -= minutes;
-                this.workedTime -= minutes;
-              }
-            }
-            if (Math.sign(workedMin) && !isWeekends) {
-              minutes = workedMin % 60;
-              if (minutes < 30) {
-                workedMin -= minutes;
-              }
-              this.workedTime += workedMin;
-              // this.workedTime = this.timeConvert(workedMin);
-            }
-            this.workedDays += 1;
-          }
-        }
-        this.extraHors = this.timeConvert(this.extraHors + 1);
-        this.workedTime = this.timeConvert(this.workedTime + 1);
-      }
+      this.generateAttendInfo(newValue);
     },
   },
   async mounted() {
@@ -504,11 +362,17 @@ export default {
   display: inline-block;
   margin-right: 10px;
 }
+
 .list-enter-active,
 .list-leave-active {
   transition: all 1s;
 }
-.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+
+.list-enter,
+  .list-leave-to
+
+  /* .list-leave-active below version 2.1.8 */
+ {
   opacity: 0;
   transform: translateY(30px);
 }

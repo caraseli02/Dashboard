@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col justify-center items-center">
-    <span class="text-primary m-1 w-full flex justify-center"
-      >Desliza a la Derecha</span
+    <span class="text-secondary text-bold m-1 mb-3 w-full flex justify-center"
+      >Desliza a la derecha para apuntar</span
     >
     <drag-verify
       v-on:passcallback="punchIn()"
@@ -60,8 +60,8 @@ export default {
     return {
       swiper: {
         width: 300,
-        color: "#1D4ED8",
-        background: "#ffffff50",
+        color: "0000ff",
+        background: "#ffffff60",
         handlerIcon: "gg-chevron-double-right",
         successIcon: "gg-check",
         progressBarBg: "#FFFF99",
@@ -113,10 +113,9 @@ export default {
               dttm: new Date(),
               enterTime: this.getRoundedDate(1),
               temperature: this.temperature,
-            });
+            }).then(this.$emit("startTimer", true));
           }
           if (this.leaveFunc) {
-            console.log(this.value);
             if (
               this.deepEqual(
                 this.value.data.gpsLoc,
@@ -139,4 +138,8 @@ export default {
   },
 };
 </script>
-<style lang=""></style>
+<style lang="">
+/* i {
+    color:#0000ff
+  } */
+</style>

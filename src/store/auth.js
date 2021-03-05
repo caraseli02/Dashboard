@@ -104,7 +104,6 @@ const actions = {
       });
   },
   resetPassword(_, email) {
-    console.log(email);
     firebase.auth().sendPasswordResetEmail(email);
   },
 };

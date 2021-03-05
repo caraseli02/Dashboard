@@ -36,7 +36,7 @@ export default {
     };
   },
   watch: {
-    attendance: function () {
+    attendance: function() {
       this.addInfoBubble(this.map);
       // watch it
     },
@@ -69,13 +69,13 @@ export default {
       var group = new H.map.Group();
       var self = this;
 
-      map.getObjects().forEach((bub) => map.removeObject(bub));
+      map.getObjects().forEach(bub => map.removeObject(bub));
       map.addObject(group);
 
       // add 'tap' event listener, that opens info bubble, to the group
       group.addEventListener(
         "tap",
-        function (evt) {
+        function(evt) {
           // event target is the marker itself, group is a parent event target
           // for all objects that it contains
           var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
@@ -116,7 +116,7 @@ export default {
       }
     },
     removeInfoBubble() {
-      this.ui.getBubbles().forEach((bub) => this.ui.removeBubble(bub));
+      this.ui.getBubbles().forEach(bub => this.ui.removeBubble(bub));
     },
     initializeHereMap() {
       // rendering map
@@ -145,7 +145,7 @@ export default {
     mapTest() {
       let bubbles = this.ui.getBubbles();
       if (bubbles.length > 1) {
-        this.ui.removeBubble(bubbles[0])
+        this.ui.removeBubble(bubbles[0]);
       }
     },
   },

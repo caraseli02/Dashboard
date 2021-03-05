@@ -79,7 +79,6 @@ export default {
     dataChange(value) {
       value.data.enterTime = this.enter.slice(0, 16);
       if (this.leave) {
-        console.log(this.leave);
         value.data.leaveTime = this.leave.slice(0, 16);
         value.activeSession = false;
       }
