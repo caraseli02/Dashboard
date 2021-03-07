@@ -3,7 +3,7 @@
     <!-- Month selector  -->
     <monthSelector :bindAsistFunc="true" />
     <!-- Attendence Display -->
-    <section class="grid grid-flow-row auto-rows-max gap-4">
+    <section v-if="awaitData" class="grid grid-flow-row auto-rows-max gap-4">
       <punchIn
         v-if="dataPunchInLoaded"
         :checkCalendarToday="checkCalendarToday"
@@ -44,7 +44,7 @@
         :class="
           showTimeCounter ? 'z-50 fixed bottom-0 mb-16 mx-auto w-full' : ''
         "
-        v-if="showPunchOut && dataPunchOutLoaded && this.actualMonthCheck"
+        v-if="showPunchOut && dataPunchOutLoaded && actualMonthCheck"
         :value="attendList[0]"
         :leaveFunc="true"
         :temperature="temperature"
@@ -52,7 +52,11 @@
         text="Salida"
       />
       <timeCounterAnimation
-        v-if="showTimeCounter && attendList[0].data.enterTime"
+        v-if="
+          showTimeCounter &&
+          attendList[0].data.enterTime &&
+          !attendList[0].data.leaveTime
+        "
         :theme="theme"
         v-on:closeTimer="showTimeCounter = $event"
         ><timeCounter
@@ -72,16 +76,14 @@
       /></workedTime>
       <p
         v-if="attendList[0] && 'msg' in attendList[0].data && actualMonthCheck"
-        :class="
-          `w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`
-        "
+        :class="`w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`"
         @click="showMsg(attendList[0].data.msg)"
       >
         <icon-base class="mx-4 self-center bg-green-200 rounded-lg pl-1">
           <icon-contact />
         </icon-base>
       </p>
-      <Options v-if="!checkCalendarToday && actualMonthCheck" />
+      <Options :theme="theme" v-if="!checkCalendarToday && actualMonthCheck" />
     </section>
   </article>
 </template>
@@ -123,12 +125,14 @@ export default {
       today: null,
       temperature: "36.6",
       showPunchOut: false,
-      showTimeCounter: false,
+      showTimeCounter: true,
+      awaitData: false,
     };
   },
   watch: {
-    attendList: function(newValue) {
+    attendList: function (newValue) {
       if (newValue.length > 0 && this.users) {
+        this.awaitData = true;
         if (
           newValue[0].data.enterTime &&
           newValue[0].activeSession &&
@@ -157,7 +161,12 @@ export default {
 
             const isCurentMonth = enter.getMonth() === new Date().getMonth();
 
-            if (userData.eatHour) {
+            if (
+              userData !== undefined &&
+              "eatHour" in userData &&
+              userData.eatHour == true &&
+              workedMin > 540
+            ) {
               workedMin -= 60;
             }
             const minDiff = this.diff_minutes(enter, leave);
@@ -209,13 +218,13 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      checkDay: state => state.checkDay,
-      d: state => state.d,
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      selectedMes: state => state.selectedMonth,
-      users: state => state.users,
+      attendList: (state) => state.attendance,
+      checkDay: (state) => state.checkDay,
+      d: (state) => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      selectedMes: (state) => state.selectedMonth,
+      users: (state) => state.users,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
@@ -249,6 +258,9 @@ export default {
         this.attendList.length > 0
       );
     },
+    getUserData: function () {
+      return this.users.find((user) => user.email === this.user.email);
+    },
   },
   methods: {
     ...mapActions(["changeAttendance", "getUsers", "currentLocation"]),
@@ -272,8 +284,23 @@ export default {
       this.$alert(msg);
     },
     generateTimeData(data) {
+      const timeDuration = Math.abs(
+        new Date().getHours() - new Date(data).getHours()
+      );
+      const hasEatHour = () => {
+        this.userData !== undefined &&
+          "eatHour" in this.userData &&
+          this.userData.eatHour == true &&
+          this.workedMin > 540;
+      };
       if (this.checkCalendarToday) {
         return 0;
+      }
+      if (timeDuration > 8 && hasEatHour) {
+        return (
+          Math.abs((new Date().getTime() - new Date(data).getTime()) / 1000) -
+          3600
+        );
       }
       return Math.abs((new Date().getTime() - new Date(data).getTime()) / 1000);
     },

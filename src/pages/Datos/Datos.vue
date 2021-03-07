@@ -109,8 +109,8 @@
         "
         :selectedUser="selectedUser"
         :users="users"
-        v-for="(attend, index) in filtredAttends"
-        :key="index"
+        v-for="attend in filtredAttends"
+        :key="attend.id"
         :attend="attend"
       />
     </transition-group>

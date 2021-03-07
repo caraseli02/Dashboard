@@ -1,5 +1,5 @@
 <template>
-  <span class="text-3xl flex justify-center items-center mt-6">{{
+  <span class="text-3xl flex justify-center items-center text-green-700 dark:text-green-500">{{
     timer
   }}</span>
 </template>

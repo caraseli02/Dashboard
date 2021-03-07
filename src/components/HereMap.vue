@@ -95,7 +95,7 @@ export default {
               { lat: data.gpsLoc.lat, lng: data.gpsLoc.lng },
               `<div style="color: green; width: 150px;" > 
               ⬇${new Date(data.enterTime).toLocaleDateString("es-ES", options)}
-                ⏰${data.enterTime.slice(11, 16)}
+                ⏰ ${data.enterTime.slice(11, 16)}
               </div>`
             );
           }
@@ -105,10 +105,10 @@ export default {
               { lat: data.gpsLocLeave.lat, lng: data.gpsLocLeave.lng },
               `<div style="color: green; width: 150px;" > 
               ⬇${new Date(data.enterTime).toLocaleDateString("es-ES", options)}
-                ⏰${data.enterTime.slice(11, 16)}
+                ⏰ ${data.enterTime.slice(11, 16)}
               </div><div style="color: red; width: 150px;" > 
               ⬆${new Date(data.leaveTime).toLocaleDateString("es-ES", options)}
-                ⏰${data.leaveTime.slice(11, 16)}
+                ⏰ ${data.leaveTime.slice(11, 16)}
               </div>`
             );
           }

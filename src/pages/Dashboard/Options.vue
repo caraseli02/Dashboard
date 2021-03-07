@@ -1,5 +1,5 @@
 <template>
-  <ul class="w-screen flex justify-around items-center mb-4 flex-wrap">
+  <ul class="w-screen flex justify-around items-center mb-4 flex-wrap text-primary">
     <!-- <li class="glass-light h-40 w-2/5 text-center p-2 text-lg">
           <div class="flex justify-center items-center w-full p-2 text-red-600 mb-2"> <i class="gg-alarm"></i></div>
           ¿Llegaste Tarde?
@@ -31,7 +31,7 @@
     <li
       v-for="option in options"
       :key="option.icon"
-      class="glass-light h-40 w-2/5 text-center p-2 text-base mt-4"
+      :class="`glass-${theme} h-40 w-2/5 text-center p-2 text-base mt-4`"
     >
       <div class="flex justify-center items-center w-full p-2 mb-2">
         <i :class="option.icon"></i>
@@ -40,13 +40,13 @@
       <button
         v-if="option.funcMsg"
         @click="setMsg(attendList[0])"
-        class="bg-gray-200 shadow-lg rounded-lg w-full mt-3 p-3 text-lg"
+        class="bg-primary text-primary shadow-lg rounded-lg w-full mt-3 p-3 text-lg"
       >
         {{ option.btnText }}
       </button>
       <button
         v-else
-        class="bg-gray-200 shadow-lg rounded-lg w-full mt-3 p-3 text-lg"
+        class="bg-primary text-primary shadow-lg rounded-lg w-full mt-3 p-3 text-lg"
       >
         {{ option.btnText }}
       </button>
@@ -60,7 +60,12 @@ import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   watch: {},
-  props: {},
+  props: {
+    theme: {
+      type: String,
+      default: "Light",
+    },
+  },
   name: "Options",
   data() {
     return {
@@ -92,15 +97,15 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      checkDay: state => state.checkDay,
+      attendList: (state) => state.attendance,
+      checkDay: (state) => state.checkDay,
     }),
     ...mapGetters(["checkCalendarToday"]),
   },
   methods: {
     ...mapActions(["changeAttendance"]),
     setMsg(attend) {
-      this.$prompt("Escríbeme un mensaje").then(text => {
+      this.$prompt("Escríbeme un mensaje").then((text) => {
         attend["data"]["msg"] = text;
         this.changeAttendance(attend);
       });

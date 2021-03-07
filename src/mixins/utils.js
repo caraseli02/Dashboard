@@ -26,7 +26,7 @@ export default {
       var rhours = Math.floor(hours);
       var minutes = (hours - rhours) * 60;
       var rminutes = Math.round(minutes);
-      if (rminutes > 9 && rminutes < 55) {
+      if (rminutes > 9 && rminutes <= 55) {
         return `${rhours}h ${Math.ceil(rminutes / 5) * 5}m`;
       }
       if (rminutes > 55) {

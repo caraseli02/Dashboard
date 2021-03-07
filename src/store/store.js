@@ -90,14 +90,13 @@ export const store = new Vuex.Store({
       if (userData.msgLeave) {
         return await docRef.update({
           msgLeave: userData.msgLeave,
-          activeSession: userData.activeSession,
-          closedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
       } else {
         return await docRef.update({
           data: userData.data,
           activeSession: userData.activeSession,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          closedAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
       }
     },
