@@ -1,13 +1,12 @@
 <template>
   <section @click="$emit('closeTimer', false)" :class="
-      `glass-${theme} z-30 h-screen w-screen fixed top-0 flex justify-center items-start p-24`
+      `glass-${theme} z-30 h-screen w-screen fixed top-0 flex flex-col justify-start items-center p-24`
     ">
-    <button class="bg-red-600 text-primary shadow-lg rounded-lg w-full mt-3 p-3 text-lg">
+    <button class="bg-red-600 text-primary shadow-lg rounded-lg w-full mt-3 mb-16 p-3 text-lg">
       Cerrar
     </button>
-    <paitLoader>
-      <slot></slot>
-    </paitLoader>
+    <paitLoader/>
+    <slot></slot>
   </section>
 </template>
 

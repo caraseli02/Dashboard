@@ -3,24 +3,24 @@
     <!-- Month selector  -->
     <monthSelector :bindAsistFunc="true" />
     <!-- Attendence Display -->
+    <punchIn
+      v-if="dataPunchInLoaded"
+      :checkCalendarToday="checkCalendarToday"
+      :theme="theme"
+      :today="today"
+      :selectedMes="selectedMes"
+      :days="days"
+      v-model="temperature"
+    >
+      <btnVerify
+        :enterFunc="true"
+        :temperature="temperature"
+        :gpsData="gpsData[0]"
+        text="Entrada"
+        v-on:startTimer="showTimeCounter = $event"
+      />
+    </punchIn>
     <section v-if="awaitData" class="grid grid-flow-row auto-rows-max gap-4">
-      <punchIn
-        v-if="dataPunchInLoaded"
-        :checkCalendarToday="checkCalendarToday"
-        :theme="theme"
-        :today="today"
-        :selectedMes="selectedMes"
-        :days="days"
-        v-model="temperature"
-      >
-        <btnVerify
-          :enterFunc="true"
-          :temperature="temperature"
-          :gpsData="gpsData[0]"
-          text="Entrada"
-          v-on:startTimer="showTimeCounter = $event"
-        />
-      </punchIn>
       <h3 v-if="actualMonthCheck" class="text-xl font-bold ml-2 text-primary">
         TU ÚLTIMA OPERACIÓN:
       </h3>

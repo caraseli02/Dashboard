@@ -10,6 +10,11 @@ import VueRouter from "vue-router";
 import { store } from "./store/store";
 import { routes } from "./router/routes";
 
+//axios
+import axios from "axios";
+import VueAxios from "vue-axios";
+Vue.use(VueAxios, axios);
+
 // DatePicker
 import { Datetime } from "vue-datetime";
 // You need a specific loader for CSS files
