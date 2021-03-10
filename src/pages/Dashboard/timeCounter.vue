@@ -1,7 +1,8 @@
 <template>
-  <span class="text-3xl flex justify-center items-center text-green-700 dark:text-green-500">{{
-    timer
-  }}</span>
+  <span
+    class="text-3xl flex justify-center items-center text-green-700 dark:text-green-500"
+    >{{ timer }}</span
+  >
 </template>
 
 <script>

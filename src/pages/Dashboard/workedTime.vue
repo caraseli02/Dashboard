@@ -1,20 +1,32 @@
 <template>
-  <ul v-if="workedTime && actualMonthCheck" :class="
+  <ul
+    v-if="workedTime && actualMonthCheck"
+    :class="
       `glass-${theme} w-screen mx-auto h-24 
               flex justify-center items-center`
-    ">
-    <li class="mx-auto flex justify-around text-lg items-center p-4 text-secondary w-64">
+    "
+  >
+    <li
+      class="mx-auto flex justify-around text-lg items-center p-4 text-secondary w-64"
+    >
       <!-- Please refer: https://github.com/shubhamjain/svg-loader -->
-      <icon-base class="w-12 h-12 animate-pulse font-bold dark:text-gray-300 text-gray-700" name="iconTime">
-        <icon-time  />
+      <icon-base
+        class="w-12 h-12 animate-pulse font-bold dark:text-gray-300 text-gray-700"
+        name="iconTime"
+      >
+        <icon-time />
       </icon-base>
-      <div v-if="!checkCalendarToday && showCounter" class="flex flex-col justify-around w-40 ml-2">
+      <div
+        v-if="!checkCalendarToday && showCounter"
+        class="flex flex-col justify-around w-40 ml-2"
+      >
         <slot></slot>
       </div>
       <div v-else class="flex flex-col justify-around">
         Tiempo aproximado:
         <span class="text-3xl text-center text-green-800 dark:text-green-500">
-          {{ workedTime }}</span>
+          {{ workedTime }}</span
+        >
       </div>
     </li>
     <!-- <li
@@ -32,36 +44,36 @@
   </ul>
 </template>
 <script>
-  import iconBase from "@/components/IconBase"
-  import iconTime from "@/components/icons/IconTime"
-  export default {
-    name: "workedTime",
-    props: {
-      workedTime: {
-        type: String,
-        default: "0h",
-      },
-      actualMonthCheck: {
-        type: Boolean,
-        required: true,
-      },
-      checkCalendarToday: {
-        type: [Boolean, Number],
-        required: true,
-      },
-      theme: {
-        type: String,
-        default: "Light",
-      },
-      showCounter: {
-        type: Boolean,
-        required: true,
-      },
+import iconBase from "@/components/IconBase";
+import iconTime from "@/components/icons/IconTime";
+export default {
+  name: "workedTime",
+  props: {
+    workedTime: {
+      type: String,
+      default: "0h",
     },
-    components: {
-      iconBase,
-      iconTime,
-    }
-  };
+    actualMonthCheck: {
+      type: Boolean,
+      required: true,
+    },
+    checkCalendarToday: {
+      type: [Boolean, Number],
+      required: true,
+    },
+    theme: {
+      type: String,
+      default: "Light",
+    },
+    showCounter: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  components: {
+    iconBase,
+    iconTime,
+  },
+};
 </script>
 <style lang=""></style>

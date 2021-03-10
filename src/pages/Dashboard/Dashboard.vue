@@ -54,9 +54,9 @@
       <timeCounterAnimation
         v-if="
           !checkCalendarToday &&
-          showTimeCounter &&
-          attendList[0].data.enterTime &&
-          !attendList[0].data.leaveTime
+            showTimeCounter &&
+            attendList[0].data.enterTime &&
+            !attendList[0].data.leaveTime
         "
         :theme="theme"
         v-on:closeTimer="showTimeCounter = $event"
@@ -77,7 +77,9 @@
       /></workedTime>
       <p
         v-if="attendList[0] && 'msg' in attendList[0].data && actualMonthCheck"
-        :class="`w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`"
+        :class="
+          `w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`
+        "
         @click="showMsg(attendList[0].data.msg)"
       >
         <icon-base class="mx-4 self-center bg-green-200 rounded-lg pl-1">
@@ -131,7 +133,7 @@ export default {
     };
   },
   watch: {
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       if (newValue.length > 0 && this.users) {
         this.awaitData = true;
         if (
@@ -219,13 +221,13 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      checkDay: (state) => state.checkDay,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      selectedMes: (state) => state.selectedMonth,
-      users: (state) => state.users,
+      attendList: state => state.attendance,
+      checkDay: state => state.checkDay,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      selectedMes: state => state.selectedMonth,
+      users: state => state.users,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
@@ -259,8 +261,8 @@ export default {
         this.attendList.length > 0
       );
     },
-    getUserData: function () {
-      return this.users.find((user) => user.email === this.user.email);
+    getUserData: function() {
+      return this.users.find(user => user.email === this.user.email);
     },
   },
   methods: {

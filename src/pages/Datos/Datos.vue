@@ -142,7 +142,7 @@
       :workedTime="workedTime"
     />
     <!-- Attendence Display On Map-->
-    <HereMap :attendance="filtredAttends" :center="geolocation" />
+    <HereMap v-if="users && filtredAttends && geolocation" :users="users" :attendance="filtredAttends" :center="geolocation" />
   </article>
 </template>
 

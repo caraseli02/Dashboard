@@ -1,5 +1,7 @@
 <template>
-  <ul class="w-screen flex justify-around items-center mb-4 flex-wrap text-primary">
+  <ul
+    class="w-screen flex justify-around items-center mb-4 flex-wrap text-primary"
+  >
     <!-- <li class="glass-light h-40 w-2/5 text-center p-2 text-lg">
           <div class="flex justify-center items-center w-full p-2 text-red-600 mb-2"> <i class="gg-alarm"></i></div>
           ¿Llegaste Tarde?
@@ -97,15 +99,15 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      checkDay: (state) => state.checkDay,
+      attendList: state => state.attendance,
+      checkDay: state => state.checkDay,
     }),
     ...mapGetters(["checkCalendarToday"]),
   },
   methods: {
     ...mapActions(["changeAttendance"]),
     setMsg(attend) {
-      this.$prompt("Escríbeme un mensaje").then((text) => {
+      this.$prompt("Escríbeme un mensaje").then(text => {
         attend["data"]["msg"] = text;
         this.changeAttendance(attend);
       });

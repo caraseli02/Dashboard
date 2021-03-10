@@ -1,7 +1,12 @@
 <template>
   <div class="flex flex-col justify-around items-center" id="map">
     <!--In the following div the HERE Map will render-->
-    <div @click="mapTest()" id="mapContainer" class="h-64 w-full rounded-lg" ref="hereMap"></div>
+    <div
+      @click="mapTest()"
+      id="mapContainer"
+      class="h-64 w-full rounded-lg"
+      ref="hereMap"
+    ></div>
     <!-- <button class="my-3 mx-auto w-full">
       <span
         class="bg-gradient-to-r from-red-600 via-pink-500 to-red-700 hover:bg-green-400 text-white py-2 px-4 text-lg rounded"
@@ -13,147 +18,155 @@
 </template>
 
 <script>
-  import { mapActions } from "vuex";
-  import hereMap from "@/mixins/hereMap";
-  export default {
-    name: "HereMap",
-    mixins: [hereMap],
-    props: {
-      center: Object,
-      attendance: Array,
-      // center object { lat: 40.730610, lng: -73.935242 }
+import { mapActions } from "vuex";
+import hereMap from "@/mixins/hereMap";
+export default {
+  name: "HereMap",
+  mixins: [hereMap],
+  props: {
+    center: Object,
+    attendance: Array,
+    users: {
+      type: Array,
+      required: true,
     },
-    data() {
-      return {
-        ui: null,
-        map: null,
-        // You can get the API KEY from developer.here.com
+    // center object { lat: 40.730610, lng: -73.935242 }
+  },
+  data() {
+    return {
+      ui: null,
+      map: null,
+      // You can get the API KEY from developer.here.com
+    };
+  },
+  watch: {
+    attendance: function () {
+      this.addInfoBubble(this.map);
+      // watch it
+    },
+  },
+  async mounted() {
+    // Initialize the platform object:
+    const platform = new window.H.service.Platform({
+      apikey: this.apikey,
+    });
+    this.platform = platform;
+    this.initializeHereMap();
+  },
+
+  methods: {
+    ...mapActions(["showMapAction"]),
+    addMarkerToGroup(group, coordinate, html, icon) {
+      const H = window.H;
+
+      var svgIcon = new H.map.Icon(icon);
+      var marker = new H.map.Marker(coordinate, { icon: svgIcon });
+
+      // add custom data to the marker
+      marker.setData(html);
+      group.addObject(marker);
+    },
+    async addInfoBubble(map) {
+      const H = window.H;
+      const options = {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
       };
-    },
-    watch: {
-      attendance: function () {
-        this.addInfoBubble(this.map);
-        // watch it
-      },
-    },
-    async mounted() {
-      // Initialize the platform object:
-      const platform = new window.H.service.Platform({
-        apikey: this.apikey,
-      });
-      this.platform = platform;
-      this.initializeHereMap();
-    },
+      var group = new H.map.Group();
+      var self = this;
 
-    methods: {
-      ...mapActions(["showMapAction"]),
-      addMarkerToGroup(group, coordinate, html, icon) {
-        const H = window.H;
+      map.getObjects().forEach((bub) => map.removeObject(bub));
+      map.addObject(group);
 
-        var icon = new H.map.Icon(icon);
-        var marker = new H.map.Marker(coordinate, { icon: icon });
-
-        // add custom data to the marker
-        marker.setData(html);
-        group.addObject(marker);
-      },
-      async addInfoBubble(map) {
-        const H = window.H;
-        const options = {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-        };
-        var group = new H.map.Group();
-        var self = this;
-
-        map.getObjects().forEach(bub => map.removeObject(bub));
-        map.addObject(group);
-
-        // add 'tap' event listener, that opens info bubble, to the group
-        group.addEventListener(
-          "tap",
-          function (evt) {
-            // event target is the marker itself, group is a parent event target
-            // for all objects that it contains
-            var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
-              // read custom data
-              content: evt.target.getData(),
-            });
-            // show info bubble
-            self.ui.addBubble(bubble);
-          },
-          false
-        );
-        if (this.attendance) {
-          this.attendance.forEach(({ data }) => {
-            if (data.gpsLoc) {
-              this.addMarkerToGroup(
-                group,
-                { lat: data.gpsLoc.lat, lng: data.gpsLoc.lng },
-                `<div style="color: green; width: 150px;" > 
+      // add 'tap' event listener, that opens info bubble, to the group
+      group.addEventListener(
+        "tap",
+        function (evt) {
+          // event target is the marker itself, group is a parent event target
+          // for all objects that it contains
+          var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+            // read custom data
+            content: evt.target.getData(),
+          });
+          // show info bubble
+          self.ui.addBubble(bubble);
+        },
+        false
+      );
+      if (this.attendance) {
+        this.attendance.forEach(({ data }) => {
+          let userData = this.users.find((user) => user.email === data.email);
+          if (data.gpsLoc) {
+            this.addMarkerToGroup(
+              group,
+              { lat: data.gpsLoc.lat, lng: data.gpsLoc.lng },
+              `<small>${userData.name} ${userData.surname}</small>
+                <div style="color: green; width: 150px;" > 
               ${new Date(data.enterTime).toLocaleDateString("es-ES", options)}
                 ⏰ ${data.enterTime.slice(11, 16)}
-              </div>`, '<svg width="32px" height="32px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" color="#1bc03c"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"></path></svg>'
-              );
-            }
-            if (data.gpsLocLeave) {
-              this.addMarkerToGroup(
-                group,
-                { lat: data.gpsLocLeave.lat, lng: data.gpsLocLeave.lng },
-                `<div style="color: red; width: 150px;" > 
+              </div>`,
+              '<svg width="32px" height="32px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" color="#1bc03c"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"></path></svg>'
+            );
+          }
+          if (data.gpsLocLeave) {
+            this.addMarkerToGroup(
+              group,
+              { lat: data.gpsLocLeave.lat, lng: data.gpsLocLeave.lng },
+              `<small>${userData.name} ${userData.surname}</small>
+                <div style="color: red; width: 150px;" > 
               ${new Date(data.leaveTime).toLocaleDateString("es-ES", options)}
                 ⏰ ${data.leaveTime.slice(11, 16)}
               </div>`,
-                '<svg width="32px" height="32px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" color="#eb0000"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path></svg>'
-              );
-            }
-          });
-        }
-      },
-      removeInfoBubble() {
-        this.ui.getBubbles().forEach(bub => this.ui.removeBubble(bub));
-      },
-      initializeHereMap() {
-        // rendering map
-
-        const mapContainer = this.$refs.hereMap;
-        const H = window.H;
-        // Obtain the default map types from the platform object
-        var maptypes = this.platform.createDefaultLayers();
-
-        // Instantiate (and display) a map object:
-        var map = new H.Map(mapContainer, maptypes.vector.normal.map, {
-          zoom: 10,
-          center: this.center,
-          // center object { lat: 40.730610, lng: -73.935242 }
+              '<svg width="32px" height="32px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" color="#eb0000"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path></svg>'
+            );
+          }
         });
-        this.map = map;
-        addEventListener("resize", () => map.getViewPort().resize());
-
-        // add behavior control
-        new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-
-        // add UI
-        this.ui = H.ui.UI.createDefault(map, maptypes, "es-ES");
-        // End rendering the initial map
-      },
-      mapTest() {
-        let bubbles = this.ui.getBubbles();
-        if (bubbles.length > 1) {
-          this.ui.removeBubble(bubbles[0]);
-        }
-      },
+      }
     },
-  };
+    removeInfoBubble() {
+      this.ui.getBubbles().forEach((bub) => this.ui.removeBubble(bub));
+    },
+    initializeHereMap() {
+      // rendering map
+
+      const mapContainer = this.$refs.hereMap;
+      const H = window.H;
+      // Obtain the default map types from the platform object
+      var maptypes = this.platform.createDefaultLayers();
+
+      // Instantiate (and display) a map object:
+      var map = new H.Map(mapContainer, maptypes.vector.normal.map, {
+        zoom: 10,
+        center: this.center,
+        // center object { lat: 40.730610, lng: -73.935242 }
+      });
+      this.map = map;
+      addEventListener("resize", () => map.getViewPort().resize());
+
+      // add behavior control
+      new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+      // add UI
+      this.ui = H.ui.UI.createDefault(map, maptypes, "es-ES");
+      // End rendering the initial map
+    },
+    mapTest() {
+      let bubbles = this.ui.getBubbles();
+      if (bubbles.length > 1) {
+        this.ui.removeBubble(bubbles[0]);
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
-  #map {
-    height: 50vh;
-    width: 100vw;
-    margin: 0 auto;
-    min-width: 360px;
-    text-align: center;
-  }
+#map {
+  height: 50vh;
+  width: 100vw;
+  margin: 0 auto;
+  min-width: 360px;
+  text-align: center;
+}
 </style>
