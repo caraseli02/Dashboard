@@ -53,7 +53,7 @@
       />
       <timeCounterAnimation
         v-if="
-          checkCalendarToday &&
+          !checkCalendarToday &&
           showTimeCounter &&
           attendList[0].data.enterTime &&
           !attendList[0].data.leaveTime
