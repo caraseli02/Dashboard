@@ -266,7 +266,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["changeAttendance", "getUsers", "currentLocation"]),
+    ...mapActions(["changeAttendance", "getUsers", "currentLocation", "clearLocation"]),
     getDayName(dateString) {
       var d = new Date(dateString);
       var dayName = this.days[d.getDay()];
@@ -324,6 +324,9 @@ export default {
       date.getTime() - date.getTimezoneOffset() * 60000
     ).toISOString();
   },
+  async beforeMount(){
+    await this.clearLocation()
+  }
 };
 </script>
 

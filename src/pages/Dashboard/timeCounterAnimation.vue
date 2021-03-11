@@ -10,13 +10,13 @@
     >
       Cerrar
     </button>
-    <paitLoader />
+    <!-- <paitLoader /> -->
     <slot></slot>
   </section>
 </template>
 
 <script>
-import paitLoader from "@/components/utils/paitLoader.vue";
+// import paitLoader from "@/components/utils/paitLoader.vue";
 export default {
   name: "timeCounterAnimation",
   props: {
@@ -25,6 +25,6 @@ export default {
       default: "Light",
     },
   },
-  components: { paitLoader },
+  // components: { paitLoader },
 };
 </script>
