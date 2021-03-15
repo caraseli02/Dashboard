@@ -17,7 +17,6 @@
         :temperature="temperature"
         :gpsData="gpsData[0]"
         text="Entrada"
-        v-on:startTimer="showTimeCounter = $event"
       />
     </punchIn>
     <section v-if="awaitData" class="grid grid-flow-row auto-rows-max gap-4">
@@ -41,9 +40,6 @@
       </div>
       <btnVerify
         class="mb-8 mt-4"
-        :class="
-          showTimeCounter ? 'z-50 fixed bottom-0 mb-16 mx-auto w-full' : ''
-        "
         v-if="showPunchOut && dataPunchOutLoaded && actualMonthCheck"
         :value="attendList[0]"
         :leaveFunc="true"
@@ -51,7 +47,7 @@
         :gpsData="gpsData[0]"
         text="Salida"
       />
-      <timeCounterAnimation
+      <!-- <timeCounterAnimation
         v-if="
           !checkCalendarToday &&
             showTimeCounter &&
@@ -63,7 +59,7 @@
         ><timeCounter
           :seconds="generateTimeData(attendList[0].data.enterTime)"
         />
-      </timeCounterAnimation>
+      </timeCounterAnimation> -->
 
       <workedTime
         v-if="attendList[0] && 'activeSession' in attendList[0]"
@@ -73,13 +69,13 @@
         :checkCalendarToday="checkCalendarToday"
         :showCounter="attendList[0].activeSession"
       >
-        <timeCounter :seconds="generateTimeData(attendList[0].data.enterTime)"
-      /></workedTime>
+        <timeCounter
+          :seconds="generateTimeData(attendList[0].data.enterTime)"
+        />
+      </workedTime>
       <p
         v-if="attendList[0] && 'msg' in attendList[0].data && actualMonthCheck"
-        :class="
-          `w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`
-        "
+        :class="`w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`"
         @click="showMsg(attendList[0].data.msg)"
       >
         <icon-base class="mx-4 self-center bg-green-200 rounded-lg pl-1">
@@ -100,7 +96,7 @@ import workedTime from "@/pages/Dashboard/workedTime.vue";
 import punchIn from "@/pages/Dashboard/punchIn.vue";
 import attendInfo from "@/pages/Dashboard/attendInfo.vue";
 import timeCounter from "@/pages/Dashboard/timeCounter.vue";
-import timeCounterAnimation from "@/pages/Dashboard/timeCounterAnimation.vue";
+// import timeCounterAnimation from "@/pages/Dashboard/timeCounterAnimation.vue";
 import monthSelector from "@/components/utils/monthSelector.vue";
 import IconContact from "@/components/icons/IconContact.vue";
 import IconBase from "@/components/IconBase.vue";
@@ -119,7 +115,7 @@ export default {
     IconContact,
     IconBase,
     timeCounter,
-    timeCounterAnimation,
+    // timeCounterAnimation,
     workedTime,
     // Alerts,
   },
@@ -128,12 +124,12 @@ export default {
       today: null,
       temperature: "36.6",
       showPunchOut: false,
-      showTimeCounter: true,
+      // showTimeCounter: true,
       awaitData: false,
     };
   },
   watch: {
-    attendList: function(newValue) {
+    attendList: function (newValue) {
       if (newValue.length > 0 && this.users) {
         this.awaitData = true;
         if (
@@ -221,13 +217,13 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      checkDay: state => state.checkDay,
-      d: state => state.d,
-      geolocation: state => state.geolocation,
-      loadingMap: state => state.loadingMap,
-      selectedMes: state => state.selectedMonth,
-      users: state => state.users,
+      attendList: (state) => state.attendance,
+      checkDay: (state) => state.checkDay,
+      d: (state) => state.d,
+      geolocation: (state) => state.geolocation,
+      loadingMap: (state) => state.loadingMap,
+      selectedMes: (state) => state.selectedMonth,
+      users: (state) => state.users,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
@@ -261,12 +257,17 @@ export default {
         this.attendList.length > 0
       );
     },
-    getUserData: function() {
-      return this.users.find(user => user.email === this.user.email);
+    getUserData: function () {
+      return this.users.find((user) => user.email === this.user.email);
     },
   },
   methods: {
-    ...mapActions(["changeAttendance", "getUsers", "currentLocation", "clearLocation"]),
+    ...mapActions([
+      "changeAttendance",
+      "getUsers",
+      "currentLocation",
+      "clearLocation",
+    ]),
     getDayName(dateString) {
       var d = new Date(dateString);
       var dayName = this.days[d.getDay()];
@@ -324,9 +325,9 @@ export default {
       date.getTime() - date.getTimezoneOffset() * 60000
     ).toISOString();
   },
-  async beforeMount(){
-    await this.clearLocation()
-  }
+  async beforeMount() {
+    await this.clearLocation();
+  },
 };
 </script>
 

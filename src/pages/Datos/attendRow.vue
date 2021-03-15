@@ -209,7 +209,6 @@ export default {
         minutes = minDiff % 60;
         if (minutes < 30) {
           this.extraHors -= minutes;
-          this.workedTime -= minutes;
         }
       }
       if (Math.sign(workedMin) && !isWeekends) {
