@@ -1,8 +1,6 @@
 <template>
   <div
-    :class="
-      `mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10 absolute top-0 mt-64`
-    "
+    :class="`mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10 absolute top-0 mt-64`"
   >
     <form class="mx-10" @submit.prevent>
       <div>
@@ -77,15 +75,16 @@ export default {
     ...mapGetters({ theme: "theme/getTheme" }),
   },
   methods: {
-    ...mapActions(["changeAttendance"]),
+    ...mapActions(["changeAttendanceAdmin"]),
     dataChange(value) {
       value.data.enterTime = this.enter.slice(0, 16);
-      if (this.leave) {
+      if (this.leave !== null && this.leave.length > 0) {
         value.data.leaveTime = this.leave.slice(0, 16);
         value.activeSession = false;
       }
       value.data.gpsData = this.gpsData;
-      this.changeAttendance(value);
+      // value.data['adminChange'] = true;
+      this.changeAttendanceAdmin(value);
       this.$emit("dataChanged");
     },
   },
@@ -93,7 +92,7 @@ export default {
 
   mounted() {
     this.enter = this.dataToChange.data.enterTime.slice(0, 16);
-    if (this.dataToChange.data.leaveTime !== undefined) {
+    if (this.dataToChange.data.leaveTime !==  null) {
       this.leave = this.dataToChange.data.leaveTime.slice(0, 16);
     }
   },

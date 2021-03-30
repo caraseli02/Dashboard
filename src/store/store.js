@@ -4,7 +4,7 @@ import { db } from "../main";
 import { firebase } from "@firebase/app";
 import "@firebase/auth";
 import { vuexfireMutations, firestoreAction } from "vuexfire";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 //ALERTS
 import VueSimpleAlert from "vue-simple-alert";
 
@@ -14,6 +14,8 @@ import theme from "./theme";
 
 Vue.use(Vuex);
 Vue.use(VueSimpleAlert);
+
+const path = `${process.env.VUE_APP_BACKEND_API}/attend`;
 
 export const store = new Vuex.Store({
   state: {
@@ -63,48 +65,6 @@ export const store = new Vuex.Store({
     },
     CHANGE_GEOLOCATION(state, payload) {
       state.geolocation = payload;
-    },
-    async SET_ATTENDANCE(state, { userData }) {
-      const id = uuidv4();
-      const docRef = db.collection("attendance").doc(id);
-      return await docRef
-        .set({
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          curentTime: new Date(userData.enterTime).getTime(),
-          data: userData,
-          author: state.auth.user.uid,
-          delete_flag: "N",
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          id: id,
-          activeSession: true,
-        })
-        .then(() => {
-          console.log("Enviado");
-        })
-        .catch(error => {
-          this.error = error.message;
-        });
-    },
-    async CHANGE_ATTENDANCE(state, { userData }) {
-      const docRef = db.collection("attendance").doc(userData.id);
-      if (userData.msgLeave) {
-        return await docRef.update({
-          msgLeave: userData.msgLeave,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
-      } else {
-        return await docRef.update({
-          data: userData.data,
-          activeSession: userData.activeSession,
-          closedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
-      }
-    },
-    async CHANGE_USER_DATA(state, { userData }) {
-      const docRef = db.collection("attendanceUsers").doc(userData.id);
-      return await docRef.update({
-        surname: userData.surname,
-      });
     },
   },
 
@@ -243,14 +203,80 @@ export const store = new Vuex.Store({
         .doc(asistId)
         .delete();
     }),
-    setAttendance(context, userData) {
-      context.commit("SET_ATTENDANCE", { userData });
+    setAttendance({ state, commit }, userData) {
+      const playload = {
+        data: userData,
+        author: state.auth.user.uid,
+      };
+      // const options = {
+      //   headers: { uid: state.auth.user.uid },
+      // };
+      // console.log(playload);
+      Vue.axios.post(path, playload).catch(err => {
+        console.log(err);
+        commit("notifi/SET_NOTIFICATION", {
+          notificationMessage: err,
+          notificationType: "error",
+        });
+        // setTimeout(() => window.location.reload(), 2000);
+      });
     },
-    changeAttendance(context, userData) {
-      context.commit("CHANGE_ATTENDANCE", { userData });
+    changeAttendance({ state, commit }, userData) {
+      const playload = {
+        data: userData.data,
+        author: state.auth.user.uid,
+        attend_id: userData.id,
+      };
+      // const options = {
+      //   headers: { uid: state.auth.user.uid },
+      // };
+      Vue.axios
+        .put(path, playload)
+        // .then(response => {
+        //   console.log(response);
+        // })
+        .catch(err => {
+          console.log(err);
+          commit("notifi/SET_NOTIFICATION", {
+            notificationMessage: err,
+            notificationType: "error",
+          });
+          // setTimeout(() => window.location.reload(), 2000);
+        });
     },
-    changeUserData(context, userData) {
-      context.commit("CHANGE_USER_DATA", { userData });
+    addAttendMsg({ state, commit }, userData) {
+      const playload = {
+        data: userData.data.msg,
+        author: state.auth.user.uid,
+        attend_id: userData.id,
+      };
+      // const options = {
+      //   headers: { uid: state.auth.user.uid },
+      // };
+      Vue.axios
+        .put(path, playload)
+        // .then(response => {
+        //   console.log(response);
+        // })
+        .catch(err => {
+          console.log(err);
+          commit("notifi/SET_NOTIFICATION", {
+            notificationMessage: err,
+            notificationType: "error",
+          });
+          // setTimeout(() => window.location.reload(), 2000);
+        });
+    },
+    async changeAttendanceAdmin(state, userData) {
+      const docRef = db.collection("attendance").doc(userData.id);
+      return await docRef.update({
+        data: userData.data,
+        activeSession: userData.activeSession,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        closedAt: userData.data.leaveTime
+          ? firebase.firestore.FieldValue.serverTimestamp()
+          : "",
+      });
     },
     selectMonth(context, userData) {
       context.commit("SET_MONTH", userData);

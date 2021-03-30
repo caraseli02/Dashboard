@@ -201,7 +201,7 @@ export default {
     ...mapState(["showSidebar", "userData"]),
   },
   methods: {
-    ...mapActions(["toggleSidebar", "getUserData", "changeUserData"]),
+    ...mapActions(["toggleSidebar", "getUserData"]),
     ...mapActions("auth", ["signOut"]),
     async closeSession() {
       await this.toggleSidebar();

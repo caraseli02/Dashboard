@@ -3,11 +3,6 @@
     <div
       class="flex-1 flex flex-col md:flex-row justify-center pb-4 md:px-16 p-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
     >
-      <!-- <img
-        class="h-full w-full md:w-2/3 contain z-0"
-        src="@/assets/img/asistSvg.svg"
-        alt=""
-      /> -->
       <div
         :class="
           `mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10`
@@ -21,14 +16,6 @@
             Inicia sesión
           </span>
         </div>
-        <!-- <transition name="fade">
-          <p
-            class="bg-red-100 p-5 my-5 border border-red-200 rounded text-red-500"
-            v-if="error"
-          >
-            {{ error }}
-          </p>
-        </transition> -->
         <div class="mt-8">
           <div class="mt-6">
             <transition name="slide-fade">

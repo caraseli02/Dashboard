@@ -83,7 +83,12 @@ router.beforeEach((to, from, next) => {
 // Wrap the vue instance in a Firebase onAuthStateChanged method
 // This stops the execution of the navigation guard 'beforeEach'
 // method until the Firebase initialization ends
-firebase.auth().onAuthStateChanged(() => {
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    user.getIdToken().then(function (idToken) {
+      axios.defaults.headers.common["Authorization"] = "Bearer " + idToken;
+    });
+  }
   new Vue({
     el: "#app",
     store: store,

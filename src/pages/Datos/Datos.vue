@@ -256,6 +256,7 @@ export default {
             if (
               enter.getDay() === 5 &&
               enter.getMonth() === new Date().getMonth() &&
+              userData !== undefined &&
               userData.schedule !== "39"
             ) {
               if (workedMin > 440) {

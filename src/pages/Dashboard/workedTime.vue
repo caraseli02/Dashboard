@@ -17,10 +17,10 @@
         <icon-time />
       </icon-base>
       <div
-        v-if="!checkCalendarToday && showCounter"
+        v-if="!checkCalendarToday && showCurrentSession"
         class="flex flex-col justify-around w-40 ml-2"
       >
-        <slot></slot>
+        <h3 class="text-xl font-bold">Sesión en curso</h3>
       </div>
       <div v-else class="flex flex-col justify-around">
         Tiempo aproximado:
@@ -65,7 +65,7 @@ export default {
       type: String,
       default: "Light",
     },
-    showCounter: {
+    showCurrentSession: {
       type: Boolean,
       required: true,
     },

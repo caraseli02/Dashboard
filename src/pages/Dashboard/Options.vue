@@ -105,11 +105,11 @@ export default {
     ...mapGetters(["checkCalendarToday"]),
   },
   methods: {
-    ...mapActions(["changeAttendance"]),
+    ...mapActions(["addAttendMsg"]),
     setMsg(attend) {
       this.$prompt("Escríbeme un mensaje").then(text => {
         attend["data"]["msg"] = text;
-        this.changeAttendance(attend);
+        this.addAttendMsg(attend);
       });
     },
   },
