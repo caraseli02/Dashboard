@@ -90,7 +90,7 @@
       <section class="fixed top-0 w-screen h-64 z-10 bg-gray-50">
 
         <button
-          class="flex justify-center py-2 px-4 border border-transparent text-lg font-medium text-primary bg-red-800 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out z-10 w-full mx-auto"
+          class="flex justify-center py-2 px-4 border border-transparent text-xl font-medium text-primary bg-secondary hover:bg-red-500 focus:outline-none focus:border-red-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out z-10 w-full mx-auto"
           @click="gMapMarker = null">
           Cerrar
         </button>

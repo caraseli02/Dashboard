@@ -42,6 +42,11 @@
       </p>
       <Options :theme="theme" v-if="!checkCalendarToday && actualMonthCheck" />
     </section>
+    <transition name="slide-fade" mode="out-in">
+      <section class="w-screen h-64 z-10 bg-gray-50">
+        <gMaps :markers="[geolocation]" />
+      </section>
+    </transition>
   </article>
 </template>
 
@@ -57,6 +62,7 @@
   // EXTERNAL COMPONENTs
   import btnVerify from "@/components/btns/btnVerify.vue";
   import monthSelector from "@/components/utils/monthSelector.vue";
+  import gMaps from "@/components/gMaps.vue";
   import IconBase from "@/components/IconBase.vue";
   import IconContact from "@/components/icons/IconContact.vue";
   // INTERNAL COMPONENTS
@@ -81,6 +87,7 @@
       IconBase,
       workedTime,
       Loading,
+      gMaps
       // Alerts,
     },
     data() {

@@ -1,7 +1,7 @@
 <template>
   <GmapMap
-    :center="markers? markers[0] : center"
-    :zoom="14"
+    :center="markers ? markers[0] : center"
+    :zoom="16"
     map-type-id="terrain"
     style="width: 100%; height: 220px"
   >
@@ -9,8 +9,6 @@
       :key="index"
       v-for="(m, index) in markers"
       :position="m"
-      :clickable="true"
-      @click="center = m"
     />
   </GmapMap>
 </template>
@@ -19,7 +17,7 @@ export default {
   props: {
     center: {
       type: Object,
-      required: true,
+      required: false,
       default: function () {
         return { lat: 10, lng: 10 };
       },
