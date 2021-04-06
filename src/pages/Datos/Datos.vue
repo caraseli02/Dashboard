@@ -135,7 +135,9 @@
         v-if="dataToChange && gpsData"
       >
         <attendChange
-          v-on:dataChanged="(dataToChange = null), (gpsData = null)"
+          v-on:dataChanged="
+            (dataToChange = null), (gpsData = null), (adminChange = true)
+          "
           :dataToChange="dataToChange"
           :gpsData="gpsData"
         />
@@ -206,6 +208,7 @@ export default {
       workplaceUsers: [],
       filtredAttends: [],
       gMapMarker: null,
+      adminChange: false,
     };
   },
   computed: {
@@ -331,7 +334,7 @@ export default {
           time: this.selectedTime,
           uid: this.user.uid,
         };
-        this.workplaceUsers = null;
+
         this.selectedUser = null;
         this.getAsist(data);
       }

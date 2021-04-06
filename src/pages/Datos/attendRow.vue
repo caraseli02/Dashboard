@@ -63,147 +63,147 @@
   </ul>
 </template>
 <script>
-  import { mapActions, mapGetters } from "vuex";
-  import IconBase from "@/components/IconBase.vue";
-  import IconContact from "@/components/icons/IconContact.vue";
-  import IconTemp from "@/components/icons/IconTemp.vue";
-  import utils from "@/mixins/utils";
-  import hereMap from "@/mixins/hereMap";
+import { mapActions, mapGetters } from "vuex";
+import IconBase from "@/components/IconBase.vue";
+import IconContact from "@/components/icons/IconContact.vue";
+import IconTemp from "@/components/icons/IconTemp.vue";
+import utils from "@/mixins/utils";
+import hereMap from "@/mixins/hereMap";
 
-  export default {
-    name: "attendRow",
-    mixins: [utils, hereMap],
-    data() {
-      return {
-        coords: this.attend.data.gpsLocLeave
-          ? [this.attend.data.gpsLoc, this.attend.data.gpsLocLeave]
-          : [this.attend.data.gpsLoc],
-      };
+export default {
+  name: "attendRow",
+  mixins: [utils, hereMap],
+  data() {
+    return {
+      coords: this.attend.data.gpsLocLeave
+        ? [this.attend.data.gpsLoc, this.attend.data.gpsLocLeave]
+        : [this.attend.data.gpsLoc],
+    };
+  },
+  props: {
+    attend: Object,
+    users: Array,
+    selectedUser: String,
+  },
+  components: {
+    IconBase,
+    IconTemp,
+    IconContact,
+    // Alerts,
+  },
+  computed: {
+    ...mapGetters({ theme: "theme/getTheme" }),
+    gpsDataLog: function () {
+      return this.gpsData[0].label;
     },
-    props: {
-      attend: Object,
-      users: Array,
-      selectedUser: String,
+  },
+  methods: {
+    ...mapActions(["deleteAsist"]),
+    sendMarkers() {
+      this.$emit("markersToDisplay", this.coords);
     },
-    components: {
-      IconBase,
-      IconTemp,
-      IconContact,
-      // Alerts,
+    deleteAttendData(val) {
+      this.$confirm("Borar assistencia?").then(() => {
+        this.deleteAsist(val);
+      });
     },
-    computed: {
-      ...mapGetters({ theme: "theme/getTheme" }),
-      gpsDataLog: function () {
-        return this.gpsData[0].label;
-      },
+    showInfoMsg(msg) {
+      this.$alert(msg);
     },
-    methods: {
-      ...mapActions(["deleteAsist"]),
-      sendMarkers(){
-        this.$emit("markersToDisplay", this.coords)
-      },
-      deleteAttendData(val) {
-        this.$confirm("Borar assistencia?").then(() => {
-          this.deleteAsist(val);
-        });
-      },
-      showInfoMsg(msg) {
-        this.$alert(msg);
-      },
-      getDayName(dateString) {
-        var d = new Date(dateString);
-        var dayName = this.days[d.getDay()];
-        return dayName;
-      },
-      showGpsMsg(data) {
-        this.$fire({
-          title: `
+    getDayName(dateString) {
+      var d = new Date(dateString);
+      var dayName = this.days[d.getDay()];
+      return dayName;
+    },
+    showGpsMsg(data) {
+      this.$fire({
+        title: `
         <ul>
           <li>Entrada : ${data[0].Label}</li>
           <li>Salida : ${data[1] ? data[1].Label : "-"}</li>
         </ul>
         `,
-          text: "Info",
-          type: "info",
-        });
-      },
-    },
-    async mounted() {
-      const platform = await new window.H.service.Platform({
-        apikey: this.apikey,
+        text: "Info",
+        type: "info",
       });
-      this.platform = platform;
-      const geocoder = platform.getGeocodingService();
+    },
+  },
+  async mounted() {
+    const platform = await new window.H.service.Platform({
+      apikey: this.apikey,
+    });
+    this.platform = platform;
+    const geocoder = platform.getGeocodingService();
 
-      this.getInfoFromGps(geocoder, this.coords);
-      if (this.attend.data.leaveTime) {
-        const userData = this.users.find(
-          ({ email }) => email === this.selectedUser
-        );
-        this.extraHors = 0;
-        this.workedTime = 0;
-        var minutes = 0;
+    this.getInfoFromGps(geocoder, this.coords);
+    if (this.attend.data.leaveTime) {
+      const userData = this.users.find(
+        ({ email }) => email === this.attend.data.email
+      );
+      this.extraHors = 0;
+      this.workedTime = 0;
+      var minutes = 0;
 
-        let enter = new Date(String(this.attend.data.enterTime).slice(0, 16));
-        let leave = new Date(String(this.attend.data.leaveTime).slice(0, 16));
-        let workedMin = (leave.getTime() - enter.getTime()) / 60000;
+      let enter = new Date(String(this.attend.data.enterTime).slice(0, 16));
+      let leave = new Date(String(this.attend.data.leaveTime).slice(0, 16));
+      let workedMin = (leave.getTime() - enter.getTime()) / 60000;
 
-        const isWeekends = enter.getDay() === 0 || enter.getDay() === 6;
+      const isWeekends = enter.getDay() === 0 || enter.getDay() === 6;
 
-        const isCurentMonth = enter.getMonth() === new Date().getMonth();
+      const isCurentMonth = enter.getMonth() === new Date().getMonth();
 
-        if (
-          userData !== undefined &&
-          "eatHour" in userData &&
-          userData.eatHour == true &&
-          workedMin > 540
-        ) {
-          workedMin -= 60;
+      if (
+        userData !== undefined &&
+        "eatHour" in userData &&
+        userData.eatHour == true &&
+        workedMin > 540
+      ) {
+        workedMin -= 60;
+      }
+      const minDiff = this.diff_minutes(enter, leave);
+      if (
+        userData !== undefined &&
+        enter.getDay() === 5 &&
+        enter.getMonth() === new Date().getMonth() &&
+        userData.schedule !== "39"
+      ) {
+        if (workedMin > 440) {
+          this.extraHors += minDiff - 420;
+          // this.extraHors = this.timeConvert(
+          //   this.diff_minutes(enter, leave) - 420
+          // );
         }
-        const minDiff = this.diff_minutes(enter, leave);
-        if (
-          userData !== undefined &&
-          enter.getDay() === 5 &&
-          enter.getMonth() === new Date().getMonth() &&
-          userData.schedule !== "39"
-        ) {
-          if (workedMin > 440) {
-            this.extraHors += minDiff - 420;
-            // this.extraHors = this.timeConvert(
-            //   this.diff_minutes(enter, leave) - 420
-            // );
-          }
-        }
-        if (enter.getDay() !== 5 && isCurentMonth) {
-          if (workedMin > 500) {
-            this.extraHors += minDiff - 480;
-            minutes = minDiff % 60;
-            if (minutes < 30) {
-              this.extraHors -= minutes;
-            }
-          }
-        }
-        if (isWeekends && isCurentMonth) {
-          this.extraHors += minDiff;
-          this.workedTime += minDiff;
+      }
+      if (enter.getDay() !== 5 && isCurentMonth) {
+        if (workedMin > 500) {
+          this.extraHors += minDiff - 480;
           minutes = minDiff % 60;
           if (minutes < 30) {
             this.extraHors -= minutes;
           }
         }
-        if (Math.sign(workedMin) && !isWeekends) {
-          minutes = workedMin % 60;
-          if (minutes < 30) {
-            workedMin -= minutes;
-          }
-          this.workedTime += workedMin;
-          // this.workedTime = this.timeConvert(workedMin);
-        }
-
-        this.extraHors = this.timeConvert(this.extraHors + 1);
-        this.workedTime = this.timeConvert(this.workedTime + 1);
       }
-    },
-  };
+      if (isWeekends && isCurentMonth) {
+        this.extraHors += minDiff;
+        this.workedTime += minDiff;
+        minutes = minDiff % 60;
+        if (minutes < 30) {
+          this.extraHors -= minutes;
+        }
+      }
+      if (Math.sign(workedMin) && !isWeekends) {
+        minutes = workedMin % 60;
+        if (minutes < 30) {
+          workedMin -= minutes;
+        }
+        this.workedTime += workedMin;
+        // this.workedTime = this.timeConvert(workedMin);
+      }
+
+      this.extraHors = this.timeConvert(this.extraHors + 1);
+      this.workedTime = this.timeConvert(this.workedTime + 1);
+    }
+  },
+};
 </script>
 <style lang="" scoped></style>

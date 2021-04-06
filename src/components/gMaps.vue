@@ -1,7 +1,7 @@
 <template>
   <GmapMap
     :center="markers ? markers[0] : center"
-    :zoom="16"
+    :zoom="15"
     map-type-id="terrain"
     :style="`width: ${width}%; height: ${height}px;`"
     :options="{
