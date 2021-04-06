@@ -6,7 +6,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "builDeploy": "vue-cli-service build && firebase deploy",
+    "builDeploy": "vue-cli-service build && firebase deploy -P default",
+    "builTest": "vue-cli-service build && firebase deploy -P staging",
     "serveHttps": "vue-cli-service serve --https",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"

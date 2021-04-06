@@ -3,13 +3,18 @@
     :center="markers ? markers[0] : center"
     :zoom="16"
     map-type-id="terrain"
-    style="width: 100%; height: 220px"
+    :style="`width: ${width}%; height: ${height}px;`"
+    :options="{
+      zoomControl: false,
+      mapTypeControl: false,
+      scaleControl: false,
+      streetViewControl: false,
+      rotateControl: false,
+      fullscreenControl: true,
+      disableDefaultUI: false,
+    }"
   >
-    <GmapMarker
-      :key="index"
-      v-for="(m, index) in markers"
-      :position="m"
-    />
+    <GmapMarker :key="index" v-for="(m, index) in markers" :position="m" />
   </GmapMap>
 </template>
 <script>
@@ -25,6 +30,14 @@ export default {
     markers: {
       type: Array,
       required: false,
+    },
+    width: {
+      type: String,
+      default: "100%",
+    },
+    height: {
+      type: String,
+      default: "220",
     },
   },
 };

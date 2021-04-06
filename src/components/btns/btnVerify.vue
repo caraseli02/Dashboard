@@ -86,8 +86,6 @@ export default {
       "clearLocation",
     ]),
     async punchIn() {
-      await this.clearLocation();
-      await this.currentLocation();
       await this.$fire({
         title: `<ul>
                     <li style="font-size:20px">¿Quedará registrada al fichar la hora y ubicación?</li>

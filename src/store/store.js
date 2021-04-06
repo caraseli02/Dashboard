@@ -212,14 +212,24 @@ export const store = new Vuex.Store({
       //   headers: { uid: state.auth.user.uid },
       // };
       // console.log(playload);
-      Vue.axios.post(path, playload).catch(err => {
-        console.log(err);
-        commit("notifi/SET_NOTIFICATION", {
-          notificationMessage: err,
-          notificationType: "error",
+      Vue.axios
+        .post(path, playload)
+        .then(response => {
+          if (response.statusCode !== 201) {
+            commit("notifi/SET_NOTIFICATION", {
+              notificationMessage: response.data.msg,
+              notificationType: "success",
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          commit("notifi/SET_NOTIFICATION", {
+            notificationMessage: err,
+            notificationType: "error",
+          });
+          // setTimeout(() => window.location.reload(), 2000);
         });
-        // setTimeout(() => window.location.reload(), 2000);
-      });
     },
     changeAttendance({ state, commit }, userData) {
       const playload = {
@@ -232,9 +242,14 @@ export const store = new Vuex.Store({
       // };
       Vue.axios
         .put(path, playload)
-        // .then(response => {
-        //   console.log(response);
-        // })
+        .then(response => {
+          if (response.statusCode !== 201) {
+            commit("notifi/SET_NOTIFICATION", {
+              notificationMessage: "Sesión cerrada con éxito",
+              notificationType: "success",
+            });
+          }
+        })
         .catch(err => {
           console.log(err);
           commit("notifi/SET_NOTIFICATION", {
