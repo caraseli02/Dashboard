@@ -23,7 +23,7 @@ export default {
     center: {
       type: Object,
       required: false,
-      default: function () {
+      default: function() {
         return { lat: 10, lng: 10 };
       },
     },
@@ -42,5 +42,4 @@ export default {
   },
 };
 </script>
-<style lang="">
-</style>
+<style lang=""></style>

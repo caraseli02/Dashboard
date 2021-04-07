@@ -7,7 +7,9 @@
     <transition name="slide-fade" mode="out-in">
       <!-- Maps Location-->
       <section
-        :class="`glass-${theme} w-screen z-10 pt-4 flex flex-col justify-center items-center`"
+        :class="
+          `glass-${theme} w-screen z-10 pt-4 flex flex-col justify-center items-center`
+        "
       >
         <gMaps width="80" height="200" :markers="[geolocation]" />
         <punchIn
@@ -72,7 +74,9 @@
       </workedTime>
       <p
         v-if="attendList[0] && 'msg' in attendList[0].data && actualMonthCheck"
-        :class="`w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`"
+        :class="
+          `w-24 mx-auto glass-${theme} h-auto p-3 flex justify-start items-start overflow-y-auto`
+        "
         @click="showMsg(attendList[0].data.msg)"
       >
         <icon-base class="mx-4 self-center bg-green-200 rounded-lg pl-1">
@@ -141,7 +145,7 @@ export default {
     };
   },
   watch: {
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       if (newValue.length > 0 && this.users) {
         this.awaitData = true;
         this.isLoading = false;
@@ -231,13 +235,13 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      checkDay: (state) => state.checkDay,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      selectedMes: (state) => state.selectedMonth,
-      users: (state) => state.users,
+      attendList: state => state.attendance,
+      checkDay: state => state.checkDay,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      selectedMes: state => state.selectedMonth,
+      users: state => state.users,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
@@ -265,14 +269,14 @@ export default {
     ...mapActions(["getUsers", "currentLocation"]),
     startLocationUpdates() {
       navigator.geolocation.watchPosition(
-        (position) => {
+        position => {
           const currentPosition = {
             lng: position.coords.longitude,
             lat: position.coords.latitude,
           };
           this.$store.commit("CHANGE_GEOLOCATION", currentPosition);
         },
-        (error) => {
+        error => {
           console.log(error.message);
         }
       );

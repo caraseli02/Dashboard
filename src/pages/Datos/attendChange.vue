@@ -1,6 +1,8 @@
 <template>
   <div
-    :class="`mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10 absolute top-0 mt-64`"
+    :class="
+      `mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10 absolute top-0 mt-64`
+    "
   >
     <form class="mx-10" @submit.prevent>
       <div>
@@ -92,7 +94,7 @@ export default {
 
   mounted() {
     this.enter = this.dataToChange.data.enterTime.slice(0, 16);
-    if (this.dataToChange.data.leaveTime !==  null) {
+    if (this.dataToChange.data.leaveTime !== null) {
       this.leave = this.dataToChange.data.leaveTime.slice(0, 16);
     }
   },

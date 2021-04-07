@@ -1,30 +1,41 @@
 <template lang="">
   <ul :class="`w-24 grid grid-flow-row grid-rows-5 glass-${theme}`">
-    <li v-if="attend.data"
+    <li
+      v-if="attend.data"
       class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-gray-200 dark:bg-gray-500 rounded-lg text-primary"
-      @click="deleteAttendData(attend.id)">
-      <span class="text-secondary rounded-t-lg text-base bg-primary w-full h-full text-center">{{
-        getDayName(attend.data.enterTime).slice(0, 3) }}</span>
+      @click="deleteAttendData(attend.id)"
+    >
+      <span
+        class="text-secondary rounded-t-lg text-base bg-primary w-full h-full text-center"
+        >{{ getDayName(attend.data.enterTime).slice(0, 3) }}</span
+      >
       {{ attend.data.enterTime.slice(8, 10) }}
     </li>
-    <li class="mx-auto h-full flex justify-center items-center p-1 text-green-800 dark:text-green-500">
+    <li
+      class="mx-auto h-full flex justify-center items-center p-1 text-green-800 dark:text-green-500"
+    >
       <span class="text-2xl mr-1"> &#8595; </span>
       <span class="text-xl">
-        {{ roundTime(attend.data.enterTime.slice(11, 16), 1) }}</span>
+        {{ roundTime(attend.data.enterTime.slice(11, 16), 1) }}</span
+      >
     </li>
     <li
-      class="mx-auto h-full flex justify-center items-center p-1 border-t-2 border-gray-600 text-red-700 dark:text-red-500">
+      class="mx-auto h-full flex justify-center items-center p-1 border-t-2 border-gray-600 text-red-700 dark:text-red-500"
+    >
       <span v-if="attend.data.leaveTime" class="text-xl">
-        {{ roundTime(attend.data.leaveTime.slice(11, 16), 1) }}</span>
+        {{ roundTime(attend.data.leaveTime.slice(11, 16), 1) }}</span
+      >
       <button v-else class="text-xl">--:--</button>
       <span class="text-2xl">&#8593;</span>
     </li>
-    <li class="mx-auto h-18 w-full flex justify-around items-center p-1 border-gray-600">
+    <li
+      class="mx-auto h-18 w-full flex justify-around items-center p-1 border-gray-600"
+    >
       <div class=" flex flex-col justify-center items-center">
         <i class="gg-time mb-2 text-green-800 dark:text-green-500"></i>
         <span class="text-gray-700 dark:text-gray-300 mr-1 text-center">{{
           workedTime
-          }}</span>
+        }}</span>
       </div>
       <!-- <div class=" flex flex-col justify-center items-center" v-if="extraHors">
         <i class="gg-insert-after text-red-800 dark:text-red-500 mb-2 "></i>
@@ -41,22 +52,34 @@
       {{ attend.data.temperature }}
     </li>
     <!-- Attendence Messages -->
-    <li @click="sendMarkers()" v-if="users.length > 1"
-      class="h-10 flex flex-col justify-center items-center text-purple-400 my-2">
+    <li
+      @click="sendMarkers()"
+      v-if="users.length > 1"
+      class="h-10 flex flex-col justify-center items-center text-purple-400 my-2"
+    >
       <i class="gg-track"></i>
       <span>GPS INFO</span>
     </li>
-    <li @click="showInfoMsg(attend.data.msg)" class="h-10 flex justify-center items-center text-purple-800 my-2">
-      <icon-base v-if="attend.data.msg"
-        class="mx-4 self-center shadow-lg text-green-700 dark:text-green-400 rounded-lg w-full p-1 h-8">
+    <li
+      @click="showInfoMsg(attend.data.msg)"
+      class="h-10 flex justify-center items-center text-purple-800 my-2"
+    >
+      <icon-base
+        v-if="attend.data.msg"
+        class="mx-4 self-center shadow-lg text-green-700 dark:text-green-400 rounded-lg w-full p-1 h-8"
+      >
         <icon-contact />
       </icon-base>
-      <span class="text-xs mx-4 text-center text-secondary" v-else>No tiene Mensajes</span>
+      <span class="text-xs mx-4 text-center text-secondary" v-else
+        >No tiene Mensajes</span
+      >
     </li>
 
     <li v-if="users.length > 1" class="w-full">
-      <button class="bg-blue-500 hover:bg-blue-400 text-sm text-white py-2 px-4 w-full rounded-b-lg"
-        v-on:click="$emit('passRowToChange', { attend, gpsData: gpsData[0] })">
+      <button
+        class="bg-blue-500 hover:bg-blue-400 text-sm text-white py-2 px-4 w-full rounded-b-lg"
+        v-on:click="$emit('passRowToChange', { attend, gpsData: gpsData[0] })"
+      >
         Cambiar<br />
       </button>
     </li>
@@ -93,7 +116,7 @@ export default {
   },
   computed: {
     ...mapGetters({ theme: "theme/getTheme" }),
-    gpsDataLog: function () {
+    gpsDataLog: function() {
       return this.gpsData[0].label;
     },
   },

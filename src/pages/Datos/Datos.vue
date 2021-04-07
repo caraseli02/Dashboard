@@ -214,12 +214,12 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      users: (state) => state.users,
-      selectedTime: (state) => state.selectedTime,
+      attendList: state => state.attendance,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      users: state => state.users,
+      selectedTime: state => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
     ...mapState(["showSidebar", "userData"]),
@@ -322,12 +322,12 @@ export default {
   },
   watch: {
     // Watch selected user to return Attends of specified User
-    selectedUser: function (newValue) {
+    selectedUser: function(newValue) {
       this.getUsersAttends(newValue);
       this.generateAttendInfo(this.filtredAttends);
     },
     //Get all Attends from selected workplace
-    workplace: function (newValue) {
+    workplace: function(newValue) {
       if (newValue && this.selectedTime) {
         const data = {
           workplace: this.workplace,
@@ -340,12 +340,12 @@ export default {
       }
     },
     // Vuex function to get attendList
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       this.filtredAttends = newValue;
-      const data = [...new Set(newValue.map((o) => o.data.email))];
+      const data = [...new Set(newValue.map(o => o.data.email))];
       if (data.length > 0) {
         this.workplaceUsers = [];
-        data.forEach((o) => {
+        data.forEach(o => {
           let user = this.users.find(({ email }) => email === o);
           if (user) {
             this.workplaceUsers.push(user);
