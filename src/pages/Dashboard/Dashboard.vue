@@ -15,7 +15,6 @@
         <punchIn
           v-if="dataPunchInLoaded"
           :checkCalendarToday="checkCalendarToday"
-          :theme="theme"
           :today="today"
           :selectedMes="selectedMes"
           :days="days"

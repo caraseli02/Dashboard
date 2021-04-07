@@ -14,10 +14,6 @@ export default {
       type: Number,
       default: 0,
     },
-    theme: {
-      type: String,
-      default: "Light",
-    },
   },
   data() {
     return {

@@ -222,8 +222,7 @@ export default {
       selectedTime: state => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
-    ...mapState(["showSidebar", "userData"]),
-    ...mapGetters(["checkCalendarToday"]),
+    ...mapState(["userData"]),
     ...mapGetters({ theme: "theme/getTheme" }),
   },
   methods: {
@@ -232,7 +231,6 @@ export default {
       "getAsist",
       "getUsers",
       "currentLocation",
-      "clearLocation",
       "getUserData",
     ]),
     getUsersAttends(val) {

@@ -106,7 +106,6 @@ export default {
   props: {
     attend: Object,
     users: Array,
-    selectedUser: String,
   },
   components: {
     IconBase,
@@ -116,9 +115,6 @@ export default {
   },
   computed: {
     ...mapGetters({ theme: "theme/getTheme" }),
-    gpsDataLog: function() {
-      return this.gpsData[0].label;
-    },
   },
   methods: {
     ...mapActions(["deleteAsist"]),
@@ -137,18 +133,6 @@ export default {
       var d = new Date(dateString);
       var dayName = this.days[d.getDay()];
       return dayName;
-    },
-    showGpsMsg(data) {
-      this.$fire({
-        title: `
-        <ul>
-          <li>Entrada : ${data[0].Label}</li>
-          <li>Salida : ${data[1] ? data[1].Label : "-"}</li>
-        </ul>
-        `,
-        text: "Info",
-        type: "info",
-      });
     },
   },
   async mounted() {

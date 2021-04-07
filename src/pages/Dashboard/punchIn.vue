@@ -52,10 +52,6 @@ export default {
       required: true,
       default: 0,
     },
-    theme: {
-      type: String,
-      required: true,
-    },
     today: {
       type: String,
       required: true,

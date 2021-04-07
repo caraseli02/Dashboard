@@ -58,7 +58,7 @@
 
 <script>
 // import Alerts from "@/components/utils/Alerts.vue";
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   watch: {},
@@ -102,7 +102,6 @@ export default {
       attendList: state => state.attendance,
       checkDay: state => state.checkDay,
     }),
-    ...mapGetters(["checkCalendarToday"]),
   },
   methods: {
     ...mapActions(["addAttendMsg"]),
