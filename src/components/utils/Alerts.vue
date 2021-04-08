@@ -1,6 +1,7 @@
 <template>
   <transition name="fade">
     <div v-click-outside-app="defocusApp" @click="clearNotification" v-if="showNotification"
+      id="alertMsg"
       class="top-0 mt-20 flex flex-col justify-around items-center h-64 w-full bg-gray-700 setSuperZindex"
       :class="[`glass-${notificationType}`]">
       <span class="w-2/3 h-20 mx-auto text-gray-100 text-2xl text-center">

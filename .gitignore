@@ -27,3 +27,9 @@ pnpm-debug.log*
 .nyc_output/
 coverage/
 test
+
+#Keys
+apimosa-staging.json
+apimosa-dev.json
+serviceAccount.json
+cypress.env.json

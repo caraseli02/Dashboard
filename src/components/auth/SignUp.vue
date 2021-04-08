@@ -40,7 +40,7 @@
                   :for="field.id"
                   class="block text-sm font-medium leading-5 text-secondary"
                 >
-                  {{ field.id }}
+                  {{ field.placeholder }}
                 </label>
                 <div class="mt-1 rounded-md shadow-sm">
                   <input
@@ -65,6 +65,7 @@
                   class="block appearance-none w-full bg-primary border border-gray-200 text-secondary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   v-model="workplace"
                   id="grid-state"
+                  required
                 >
                   <option value="Palma">Palma de Mallorca</option>
                   <option value="Sevilla">Sevilla</option>
@@ -143,7 +144,7 @@ export default {
       inputs: [
         {
           type: "email",
-          placeholder: "apimosa@apimosa.es",
+          placeholder: "Email",
           model: "",
           id: "Email",
           pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$",
@@ -158,7 +159,7 @@ export default {
           type: "password",
           placeholder: "Repetir contraseña",
           model: "",
-          id: "Repetir contraseña",
+          id: "Contraseña2",
         },
         {
           type: "text",
@@ -174,9 +175,9 @@ export default {
         },
         {
           type: "text",
-          placeholder: "DNI/NIE",
+          placeholder: "DNI NIE",
           model: "",
-          id: "DNI/NIE",
+          id: "DNI",
         },
       ],
       error: null,

@@ -7,6 +7,7 @@
     <transition name="slide-fade" mode="out-in">
       <!-- Maps Location-->
       <section
+        v-if="user"
         :class="
           `glass-${theme} w-screen z-10 pt-4 flex flex-col justify-center items-center`
         "
