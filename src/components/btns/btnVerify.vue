@@ -100,7 +100,7 @@ export default {
         showCancelButton: true,
         confirmButtonText: "Aceptar",
         cancelButtonText: "Cancelar",
-      }).then(result => {
+      }).then((result) => {
         this.$emit("toggleLoading", true);
         if (result.value) {
           try {
