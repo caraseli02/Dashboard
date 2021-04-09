@@ -38,6 +38,7 @@
           :temperature="temperature"
           :gpsData="gpsData[0]"
           text="Salida"
+          v-on:toggleLoading="isLoading = $event"
           v-on:togglePunchOut="showPunchOut = $event"
         />
       </section>

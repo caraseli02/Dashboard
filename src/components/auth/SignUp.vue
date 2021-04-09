@@ -199,7 +199,7 @@ export default {
       if (!(data[1] === data[2])) {
         this.$store.commit("notifi/SET_NOTIFICATION", {
           notificationMessage: "Las contraseñas no son iguales",
-          notificationType: "error",
+          notificationType: "warning",
         });
         this.error = true;
         return;
