@@ -137,7 +137,7 @@ export default {
   },
   async mounted() {
     const platform = await new window.H.service.Platform({
-      apikey: this.apikey,
+      apikey: process.env.VUE_APP_HERE_MAP_API_KEY,
     });
     this.platform = platform;
     const geocoder = platform.getGeocodingService();

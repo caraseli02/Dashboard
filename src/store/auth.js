@@ -54,7 +54,6 @@ const actions = {
           });
       })
       .catch(error => {
-        console.log(error);
         dispatch(
           "notifi/showNotification",
           {

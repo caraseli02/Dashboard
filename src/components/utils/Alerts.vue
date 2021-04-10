@@ -1,9 +1,9 @@
 <template>
   <transition name="slide-fade" mode="out-in">
     <div v-click-outside-app="defocusApp" @click="clearNotification" v-if="showNotification" id="alertMsg"
-      class="top-0 flex justify-center items-start h-24 w-full bg-gray-700 setSuperZindex"
+      class="top-0 flex justify-center items-start w-full bg-gray-200 dark:bg-gray-700 setSuperZindex rounded-none"
       :class="[`glass-${notificationType}`]">
-      <span class="w-3/5 mt-8 ml-4 h-20 text-gray-100 text-xl text-left rounded-full">
+      <span class="w-3/5 ml-4 my-6 text-primary text-xl text-left rounded-full">
         {{ notificationMessage }}</span>
       <div class="self-center mr-8">
         <svg v-show="notificationType === 'success'" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">

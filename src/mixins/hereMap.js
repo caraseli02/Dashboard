@@ -1,7 +1,6 @@
 export default {
   data() {
     return {
-      apikey: process.env.VUE_APP_HERE_MAP_API_KEY,
       platform: null,
       gpsData: [],
     };
