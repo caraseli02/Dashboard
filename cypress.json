@@ -1,3 +1,11 @@
 {
-    "baseUrl": "http://localhost:8080"
+    "apiKey": "AIzaSyAFAUAhb2MTtYjupZg-POCBiz3kntzVA1k",
+    "authDomain": "apimosa-staging-f7962.firebaseapp.com",
+    "projectId": "apimosa-staging",
+    "storageBucket": "apimosa-staging.appspot.com",
+    "messagingSenderId": "316372537878",
+    "appId": "1:316372537878:web:e7232c2e54f0e161f4db37",
+    "baseUrl": "http://localhost:8080",
+    "TEST_UID": "dZV7eoFcCGZz2uOXZlq3cvIpzLK2",
+    "video": false
 }

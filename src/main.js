@@ -107,3 +107,8 @@ firebase.auth().onAuthStateChanged(user => {
     render: h => h(App),
   });
 });
+
+// Utilizing Logic & State for Cypress
+if (window.Cypress) {
+  window.__store__ = store
+}

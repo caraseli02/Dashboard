@@ -33,3 +33,4 @@ apimosa-staging.json
 apimosa-dev.json
 serviceAccount.json
 cypress.env.json
+cypress.json

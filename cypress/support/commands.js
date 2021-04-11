@@ -30,14 +30,13 @@ import "firebase/firestore";
 import { attachCustomCommands } from "cypress-firebase";
 
 const fbConfig = {
-  apiKey: "AIzaSyAdhtu6PnQs80oem0zmBxNxMwYDQW_hl8Y",
-  authDomain: "apimosa-930ed.firebaseapp.com",
-  databaseURL: "https://apimosa-930ed.firebaseio.com",
-  projectId: "apimosa-930ed",
-  storageBucket: "apimosa-930ed.appspot.com",
-  messagingSenderId: "534638874660",
-  appId: "1:534638874660:web:8656465847f9b575c7c8b1",
-  measurementId: "G-BFVBEHK5YR",
+  apiKey: Cypress.config("apiKey"),
+  authDomain: Cypress.config("authDomain"),
+  databaseURL: Cypress.config("databaseURL"),
+  projectId: Cypress.config("projectId"),
+  storageBucket: Cypress.config("storageBucket"),
+  messagingSenderId: Cypress.config("messagingSenderId"),
+  appId: Cypress.config("appId"),
 };
 
 firebase.initializeApp(fbConfig);
