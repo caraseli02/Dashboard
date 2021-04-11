@@ -17,7 +17,7 @@ Vue.use(VueSimpleAlert);
 
 const path = `${process.env.VUE_APP_BACKEND_API}/attend`;
 
-const store = new Vuex.Store({
+export const store = new Vuex.Store({
   state: {
     showSidebar: false,
     attendance: [],
@@ -307,9 +307,3 @@ const store = new Vuex.Store({
     theme,
   },
 });
-
-if (window.Cypress) {
-  window.__store__ = store;
-}
-
-export default store;
