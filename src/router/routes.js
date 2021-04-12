@@ -5,7 +5,8 @@ import Home from "@/pages/Home.vue";
 import SignIn from "@/components/auth/SignIn.vue";
 import SignUp from "@/components/auth/SignUp.vue";
 import Error404 from "@/components/Error404.vue";
-import Dashboard from "@/pages/Dashboard/Dashboard.vue";
+// import Dashboard from "@/pages/Dashboard/Dashboard.vue";
+import Dashboard from "@/pages/Admin/Dashboard.vue";
 // import Calendar from "@/pages/Calendar.vue";
 import Datos from "@/pages/Datos/Datos.vue";
 // import ForgotPassword from "@/components/ForgotPassword.vue";
@@ -25,26 +26,6 @@ export const routes = [
     path: "",
     name: "home",
     component: Home,
-  },
-  {
-    path: "/aviso-legal",
-    name: "aviso-legal",
-    component: avisoLegal,
-  },
-  {
-    path: "/politica-privacidad",
-    name: "pPrivacidad",
-    component: pPrivacidad,
-  },
-  {
-    path: "/politica-de-cookies",
-    name: "pCookies",
-    component: pCookies,
-  },
-  {
-    path: "/terminos-y-condiciones",
-    name: "terCondiciones",
-    component: terCondiciones,
   },
   {
     path: "/sign-in",
@@ -117,5 +98,25 @@ export const routes = [
   {
     path: "*",
     redirect: "/404",
+  },
+  {
+    path: "/aviso-legal",
+    name: "aviso-legal",
+    component: avisoLegal,
+  },
+  {
+    path: "/politica-privacidad",
+    name: "pPrivacidad",
+    component: pPrivacidad,
+  },
+  {
+    path: "/politica-de-cookies",
+    name: "pCookies",
+    component: pCookies,
+  },
+  {
+    path: "/terminos-y-condiciones",
+    name: "terCondiciones",
+    component: terCondiciones,
   },
 ];
