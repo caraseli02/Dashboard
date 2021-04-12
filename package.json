@@ -7,8 +7,8 @@
     "serve": "vue-cli-service serve",
     "serveStaging": "vue-cli-service serve --mode staging",
     "build": "vue-cli-service build",
-    "builDeploy": "vue-cli-service build && firebase deploy -P default",
-    "builStaging": "vue-cli-service build --mode staging && firebase deploy -P staging",
+    "builDeploy": "vue-cli-service build && npx vue-asset-generate -a dist/img/vladweb-512x512.png -o dist/img/icons --no-manifest &&  firebase deploy -P default",
+    "builStaging": "vue-cli-service build --mode staging  && firebase deploy -P staging",
     "serveHttps": "vue-cli-service serve --https",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
@@ -34,6 +34,7 @@
     "vue-datetime": "^1.0.0-beta.14",
     "vue-drag-verify": "^1.0.6",
     "vue-loading-overlay": "^3.4.2",
+    "vue-pwa-asset-generator": "^1.6.0",
     "vue-router": "^3.2.0",
     "vue-simple-alert": "^1.1.1",
     "vue2-google-maps": "^0.10.7",
