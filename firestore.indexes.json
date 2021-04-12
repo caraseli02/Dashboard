@@ -5,20 +5,6 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "delete_flag",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "curentTime",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "attendance",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
           "fieldPath": "activeSession",
           "order": "ASCENDING"
         },
@@ -131,12 +117,44 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "data.gpsData.County",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "delete_flag",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "curentTime",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "attendance",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "delete_flag",
           "order": "ASCENDING"
         },
         {
           "fieldPath": "curentTime",
           "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "attendance",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "delete_flag",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "curentTime",
+          "order": "DESCENDING"
         }
       ]
     }
