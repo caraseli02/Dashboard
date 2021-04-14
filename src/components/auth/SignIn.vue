@@ -75,7 +75,10 @@
       </div>
     </div>
     <div :class="
-        `glass-${theme} rounded-none text-secondary w-full h-20 text-lg flex justify-center items-center`
+        `glass-${theme} rounded-none text-secondary w-full  h-20 text-lg flex justify-center items-center 
+        sm:w-1/3 sm:mx-auto sm:rounded-xl
+        xl:w-1/5
+        `
       ">
       ¿No tienes cuenta?
       <router-link class="bg-secondary text-primary shadow-lg p-3 rounded-lg ml-4 font-bold text-xl" to="/sign-up">

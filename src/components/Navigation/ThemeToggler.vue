@@ -33,10 +33,7 @@ export default {
 }
 
 #page {
-  background: #dee6ed;
-}
-#page.theme-dark {
-  background: #090d11;
+  background: transparent;
 }
 
 #theme-toggle {

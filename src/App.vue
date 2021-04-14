@@ -1,13 +1,7 @@
 <template>
-  <div id="app" :class="`container ${theme}_bg pb-24`">
+  <div id="app" :class="`container ${theme}_bg pb-12`">
     <Header />
     <Alerts />
-    <transition name="slide-fade" mode="out-in">
-      <gpsCheck
-        class="h-full w-screen z-50 fixed top-0 bg-primary"
-        v-if="!geolocation.lat && user"
-      />
-    </transition>
     <transition name="slide-fade" mode="out-in">
       <gpsLoad v-if="loadingMap" />
     </transition>
@@ -25,17 +19,17 @@
         <router-view></router-view>
       </transition>
     </main>
-    <Footer />
+    <!-- <Footer /> -->
+    <a class="text-primary absolute bottom-0 right-0 bg-primary p-2 rounded mr-2 -mb-24" href="http://www.freepik.com"> Image Designed by pikisuperstar / Freepik</a>
   </div>
 </template>
 
 <script>
 import Alerts from "@/components/utils/Alerts.vue";
 import updateAlert from "@/components/utils/updateAlert.vue";
-import gpsCheck from "@/components/utils/gpsCheck.vue";
 import gpsLoad from "@/components/utils/gpsLoad.vue";
 import { mapActions, mapState, mapGetters } from "vuex";
-import Footer from "./components/Navigation/Footer.vue";
+// import Footer from "./components/Navigation/Footer.vue";
 import Header from "./components/Navigation/Header.vue";
 import Sidebar from "./components/Sidebar.vue";
 import update from "./mixins/update";
@@ -48,10 +42,9 @@ export default {
   mixins: [update],
   components: {
     Header,
-    Footer,
+    // Footer,
     Alerts,
     Sidebar,
-    gpsCheck,
     updateAlert,
     gpsLoad,
   },
@@ -81,12 +74,6 @@ export default {
       this.$confirm("Instalar version reciente?").then(() => {
         this.refreshApp;
       });
-    }
-  },
-  beforeMount() {
-    this.$store.dispatch("theme/initTheme");
-    if (this.user && !this.geolocation.lng && !this.geolocation.lat) {
-      this.currentLocation();
     }
   },
   async created() {
