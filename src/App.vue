@@ -20,7 +20,7 @@
       </transition>
     </main>
     <!-- <Footer /> -->
-    <a class="text-primary absolute bottom-0 right-0 bg-primary p-2 rounded mr-2 -mb-24" href="http://www.freepik.com"> Image Designed by pikisuperstar / Freepik</a>
+    <a class="text-primary fixed bottom-0 right-0 bg-primary p-2 rounded mr-2 -mb-24" href="http://www.freepik.com"> Image Designed by pikisuperstar / Freepik</a>
   </div>
 </template>
 

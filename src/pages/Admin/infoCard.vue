@@ -11,13 +11,12 @@
     </div>
 </template>
 <script>
+    import { mapGetters } from "vuex";
     export default {
         name: "infoCard",
-        props: {
-            theme: {
-                type: String,
-            },
-        },
+        computed: {
+            ...mapGetters({ theme: "theme/getTheme" }),
+        }
     }
 </script>
 <style lang="">
