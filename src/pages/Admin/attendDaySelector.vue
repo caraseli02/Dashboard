@@ -1,22 +1,25 @@
 <template>
-  <div class="rounded-xl flex justify-center w-full mx-auto border-none mt-4">
+  <div
+    class="rounded-xl flex items-centerw-full mx-auto border-none mt-4 overflow-y-scroll"
+    :class="workedDaysList.length > 5 ? 'justify-start' : 'justify-center'"
+  >
     <div
-      @click="(selectedDay = day), $emit('sendDay', day)"
+      @click="$emit('sendDay', day)"
       v-for="(day, index) in workedDaysList"
       :key="index"
       :class="`w-12 h-16 rounded-full flex flex-col justify-center items-center ml-2 text-primary border-none  font-semibold text-xl glass-${theme}`"
     >
       <span
-        class="rounded-full py-1 px-2"
+        class="rounded-full py-1 px-2 w-10 flex justify-center items-center"
         :class="
-          selectedDay === day
-            ? 'bg-blue-800 w-full h-full flex justify-center items-center text-3xl p-0'
+          filtredAttendsDay === day
+            ? 'bg-blue-800 w-12 h-full text-3xl p-0'
             : ''
         "
         >{{ day.getDate() }}</span
       >
       <span
-        v-if="selectedDay !== day"
+        v-if="filtredAttendsDay !== day"
         class="text-secondary text-sm pb-1 rounded-full"
         >{{ getDayName(day).slice(0, 3) }}</span
       >
@@ -37,6 +40,12 @@ export default {
   props: {
     workedDaysList: {
       type: Array,
+    },
+    filtredAttendsDay: {
+      type: Date,
+      default: function () {
+        return new Date(this.d.setHours(2, 0, 0, 0));
+      },
     },
   },
   computed: {

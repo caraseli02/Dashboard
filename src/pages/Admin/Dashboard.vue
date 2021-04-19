@@ -30,7 +30,7 @@
       />
       <section
         v-if="users !== null && users.length > 1"
-        class="flex justify-between items-center overflow-hidden"
+        class="flex justify-between items-center overflow-hidden max-w-lg xl:mt-4 mx-auto"
       >
         <attendAdminPlaces
           v-if="userData[0] && 'workplace' in userData[0]"
@@ -45,10 +45,10 @@
       </section>
       <!-- <Tools /> -->
       <!-- Sidebar Toggler -->
-      <section class="flex">
+      <section class="flex md:mt-4">
         <div
           @click="showSidebar = !showSidebar"
-          :class="`glass-${theme} rounded-xl lg:hidden flex justify-around w-32 mx-auto shadow-lg border-none`"
+          :class="`glass-${theme} lg:hidden rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none`"
         >
           <!-- Please refer: https://github.com/shubhamjain/svg-loader -->
           <!-- Please refer: https://github.com/shubhamjain/svg-loader -->
@@ -58,8 +58,7 @@
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            color="#FFFFFF"
-            class="rounded-lg w-16 p-2"
+            class="rounded-lg w-16 p-2 text-primary"
             :class="!showSidebar ? 'bg-blue-800' : ''"
           >
             <path
@@ -72,8 +71,7 @@
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            color="#FFFFFF"
-            class="rounded-lg w-16 p-2"
+            class="rounded-lg w-16 p-2 text-primary"
             :class="showSidebar ? 'bg-blue-800' : ''"
           >
             <path
@@ -84,15 +82,20 @@
           </svg>
         </div>
         <div
-          @click="showMonthAttends = !showMonthAttends"
-          :class="`glass-${theme} rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none lg:mt-4`"
+          v-if="!selectedUser"
+          :class="`glass-${theme} rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none lg:h-10`"
         >
           <span
+            @click="
+              (filtredAttendsDay = new Date(d.setHours(2, 0, 0, 0))),
+                (showMonthAttends = false)
+            "
             class="w-full h-full rounded-xl flex justify-center items-center text-primary font-semibold text-xl"
             :class="!showMonthAttends ? 'bg-blue-800' : ''"
-            >Hoy</span
+            >{{ filtredAttendsDay ? filtredAttendsDay.getDate() : "Hoy" }}</span
           >
           <span
+            @click="(filtredAttendsDay = null), (showMonthAttends = true)"
             class="w-full h-full rounded-xl flex justify-center items-center text-primary font-semibold text-xl"
             :class="showMonthAttends ? 'bg-blue-800' : ''"
             >Mes</span
@@ -106,13 +109,13 @@
         >
           <div class="flex mt-4 lg:mt-10 lg:space-x-10">
             <div
-              class="w-full flex-shrink-0 lg:w-3/4 lg:flex-shrink rounded-xl"
+              class="w-full flex-shrink-0 lg:w-2/3 lg:flex-shrink rounded-xl"
             >
               <div
                 v-if="filtredAttends.length > 0"
                 class="flex space-x-4 lg:space-x-10"
               >
-                <infoCard>
+                <infoCard v-if="!selectedUser">
                   <template v-slot:svg>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -205,8 +208,10 @@
               </div>
               <!-- Attend Day Selector -->
               <attendDaySelector
+                v-if="!selectedUser"
                 :workedDaysList="workedDaysList"
                 :theme="theme"
+                :filtredAttendsDay="filtredAttendsDay"
                 v-on:sendDay="filtredAttendsDay = $event"
               />
               <!-- Attend Rows -->
@@ -251,12 +256,12 @@
                 </div>
               </transition>
               <!-- AttendChange -->
-              <Blog />
+              <!-- <msgBlog /> -->
             </div>
             <div
-              class="w-full flex-shrink-0 lg:w-1/4 lg:flex-shrink bg-gray-300 rounded-xl h-52"
+              class="w-full h-64 flex-shrink-0 lg:w-1/3 lg:flex-shrink rounded-xl"
             >
-              sidebar
+              <gMaps height="500" :markers="markers" />
             </div>
           </div>
         </div>
@@ -273,7 +278,7 @@ import infoCard from "@/pages/Admin/infoCard.vue";
 import attendDaySelector from "@/pages/Admin/attendDaySelector.vue";
 // import MainNav from "@/pages/Admin/MainNav.vue";
 // import Tools from "@/pages/Admin/Tools.vue";
-import Blog from "@/pages/Admin/Blog.vue";
+// import msgBlog from "@/pages/Admin/msgBlog.vue";
 // Workpace & User selectors
 import attendAdminUsers from "@/pages/Datos/attendAdminUsers.vue";
 import attendAdminPlaces from "@/pages/Datos/attendAdminPlaces.vue";
@@ -284,6 +289,8 @@ import utils from "@/mixins/utils";
 // Attend List && change popup
 import attendChange from "@/pages/Datos/attendChange.vue";
 import attendRow from "@/pages/Datos/attendRow.vue";
+//gMaps
+import gMaps from "@/components/gMaps.vue";
 
 export default {
   name: "Admin",
@@ -291,7 +298,7 @@ export default {
   components: {
     // MainNav,
     // Tools,
-    Blog,
+    // msgBlog,
     infoCard,
     monthSelector,
     attendAdminUsers,
@@ -299,6 +306,7 @@ export default {
     attendChange,
     attendRow,
     attendDaySelector,
+    gMaps,
   },
   data: function () {
     return {
@@ -313,6 +321,7 @@ export default {
       workplaceUsers: [],
       filtredAttends: [],
       workedDaysList: [],
+      msgList: [],
       filtredAttendsDay: null,
       gMapMarker: null,
       showMonthAttends: true,
@@ -344,6 +353,20 @@ export default {
         return counter;
       }, 0);
     },
+    markers() {
+      return [
+        ...this.filtredAttends.map((item) => ({
+          gps: item["data"]["gpsLoc"],
+          time: item["data"]["enterTime"],
+          author: this.users.find(({ author }) => author === item["author"]),
+        })),
+        ...this.filtredAttends.map((item) => ({
+          gps: item["data"]["gpsLocLeave"],
+          time: item["data"]["leaveTime"],
+          author: this.users.find(({ author }) => author === item["author"]),
+        })),
+      ];
+    },
   },
   methods: {
     ...mapActions([
@@ -359,6 +382,15 @@ export default {
       this.filtredAttends = [];
 
       const dataList = this.attendList.filter(({ data }) => data.email === val);
+
+      this.filtredAttends = dataList;
+    },
+    async getDaysAttends(val) {
+      this.filtredAttends = [];
+
+      const dataList = await this.attendList.filter(
+        ({ curentTime }) => curentTime === new Date(val).getTime()
+      );
 
       this.filtredAttends = dataList;
     },
@@ -481,61 +513,62 @@ export default {
   },
   watch: {
     filtredAttendsDay: function (newValue) {
-      const Data = {
-        workplace: this.workplace,
-        time: this.setStartEnd(newValue),
-        uid: this.user.uid,
-      };
-      this.selectedUser = null;
-      this.getAsist(Data);
+      if (newValue) {
+        this.getDaysAttends(newValue);
+      }
     },
     // Watch selected user to return Attends of specified User
     selectedUser: function (newValue) {
-      this.getUsersAttends(newValue);
-      this.generateAttendInfo(this.filtredAttends);
+      if (newValue === "Todos") {
+        this.selectedUser = null;
+        this.getMonthAttend(this.workplace);
+      } else {
+        this.getUsersAttends(newValue);
+        this.generateAttendInfo(this.filtredAttends);
+      }
     },
     //Get all Attends from selected workplace for this day o month
     showMonthAttends: function (newValue) {
-      if (newValue === false) {
-        const Data = {
-          workplace: this.workplace,
-          time: this.setStartEnd(),
-          uid: this.user.uid,
-        };
-        this.selectedUser = null;
-        this.getAsist(Data);
-        let data = [];
-        this.workplaceUsers.forEach((element) => {
-          let time = this.filtredAttends.find(
-            (attend) => attend.author === element.author
-          );
-          let multipleEnterMinutes = parseInt(
-            new Date(time.data.enterTime).getMinutes()
-          );
-          let multipleLeaveMinutes = parseInt(
-            new Date(time.data.leaveTime).getMinutes()
-          );
-          let enter = this.roundWithPrecision(
-            `${new Date(
-              time.data.enterTime
-            ).getHours()}.${multipleEnterMinutes}`,
-            1
-          );
-          let leave = null;
-          if (time.data.leaveTime) {
-            leave = this.roundWithPrecision(
-              `${new Date(
-                time.data.leaveTime
-              ).getHours()}.${multipleLeaveMinutes}`,
-              1
-            );
-            data.push({
-              x: `${element.name} ${element.surname}`,
-              y: [enter, leave],
-            });
-          }
-        });
-      }
+      // if (newValue === false) {
+      //   const Data = {
+      //     workplace: this.workplace,
+      //     time: this.setStartEnd(),
+      //     uid: this.user.uid,
+      //   };
+      //   this.selectedUser = null;
+      //   this.getAsist(Data);
+      //   let data = [];
+      //   this.workplaceUsers.forEach((element) => {
+      //     let time = this.filtredAttends.find(
+      //       (attend) => attend.author === element.author
+      //     );
+      //     let multipleEnterMinutes = parseInt(
+      //       new Date(time.data.enterTime).getMinutes()
+      //     );
+      //     let multipleLeaveMinutes = parseInt(
+      //       new Date(time.data.leaveTime).getMinutes()
+      //     );
+      //     let enter = this.roundWithPrecision(
+      //       `${new Date(
+      //         time.data.enterTime
+      //       ).getHours()}.${multipleEnterMinutes}`,
+      //       1
+      //     );
+      //     let leave = null;
+      //     if (time.data.leaveTime) {
+      //       leave = this.roundWithPrecision(
+      //         `${new Date(
+      //           time.data.leaveTime
+      //         ).getHours()}.${multipleLeaveMinutes}`,
+      //         1
+      //       );
+      //       data.push({
+      //         x: `${element.name} ${element.surname}`,
+      //         y: [enter, leave],
+      //       });
+      //     }
+      //   });
+      // }
       if (newValue === true) {
         this.getMonthAttend(this.workplace);
       }

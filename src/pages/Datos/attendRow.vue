@@ -1,6 +1,18 @@
 <template lang="">
   <ul :class="`w-24 grid grid-flow-row grid-rows-4 glass-${theme}  ml-1`">
     <li
+      v-if="attend.data && $attrs.selectedUser"
+      class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-gray-200 dark:bg-gray-500 rounded-lg text-primary"
+      @click="deleteAttendData(attend.id)"
+    >
+      <span
+        class="text-secondary rounded-t-lg text-base bg-primary w-full h-full text-center"
+        >{{ getDayName(attend.data.enterTime).slice(0, 3) }}</span
+      >
+      {{ attend.data.enterTime.slice(8, 10) }}
+    </li>
+    <li
+    v-if="!$attrs.selectedUser"
       class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-lg border-none text-primary relative"
       @click="deleteAttendData(attend.id)"
     >
@@ -49,7 +61,7 @@
       <i class="gg-track"></i>
       <span>GPS INFO</span>
     </li> -->
-    <!-- <li
+    <li
       @click="showInfoMsg(attend.data.msg)"
       class="h-10 flex justify-center items-center text-purple-800 my-2"
     >
@@ -62,7 +74,7 @@
       <span class="text-xs mx-4 text-center text-secondary" v-else
         >No tiene Mensajes</span
       >
-    </li> -->
+    </li>
 
     <!-- <li v-if="users.length > 1" class="w-full flex justify-center items-center shadow-lg">
       <button class=" text-sm h-full rounded-l-lg text-primary"
@@ -75,8 +87,8 @@
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
-// import IconBase from "@/components/IconBase.vue";
-// import IconContact from "@/components/icons/IconContact.vue";
+import IconBase from "@/components/IconBase.vue";
+import IconContact from "@/components/icons/IconContact.vue";
 // import IconTemp from "@/components/icons/IconTemp.vue";
 import utils from "@/mixins/utils";
 import hereMap from "@/mixins/hereMap";
@@ -96,9 +108,9 @@ export default {
     users: Array,
   },
   components: {
-    // IconBase,
+    IconBase,
     // IconTemp,
-    // IconContact,
+    IconContact,
     // Alerts,
   },
   computed: {

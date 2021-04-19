@@ -170,7 +170,7 @@ export const store = new Vuex.Store({
             .where("curentTime", ">=", data.time.start)
             .where("curentTime", "<=", data.time.end)
             .orderBy("curentTime", "desc")
-            .limit(25)
+            .limit(50)
         );
       }
     }),
