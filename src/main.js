@@ -110,5 +110,5 @@ firebase.auth().onAuthStateChanged(user => {
 
 // Utilizing Logic & State for Cypress
 if (window.Cypress) {
-  window.__store__ = store
+  window.__store__ = store;
 }

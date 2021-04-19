@@ -12,31 +12,44 @@
       {{ attend.data.enterTime.slice(8, 10) }}
     </li>
     <li
-    v-if="!$attrs.selectedUser"
+      v-if="!$attrs.selectedUser"
       class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-lg border-none text-primary relative"
       @click="deleteAttendData(attend.id)"
     >
-     
-    <span class="text-secondary">{{userName.split(" ")[0]}}</span> 
-    <div class="flex justify-center items-center rounded-full font-semibold text-xl">{{speakerInitials(userSurname)}}</div> 
+      <span class="text-secondary">{{ userName.split(" ")[0] }}</span>
+      <div
+        class="flex justify-center items-center rounded-full font-semibold text-xl"
+      >
+        {{ speakerInitials(userSurname) }}
+      </div>
     </li>
-    <li v-on:click="$emit('passRowToChange', { attend, gpsData: gpsData[0] })" class="mx-auto h-full flex justify-center items-center p-1 text-green-800 dark:text-green-500">
+    <li
+      v-on:click="$emit('passRowToChange', { attend, gpsData: gpsData[0] })"
+      class="mx-auto h-full flex justify-center items-center p-1 text-green-800 dark:text-green-500"
+    >
       <span class="text-2xl mr-1"> &#8595; </span>
       <span class="text-xl">
-        {{ roundTime(attend.data.enterTime.slice(11, 16), 1) }}</span>
+        {{ roundTime(attend.data.enterTime.slice(11, 16), 1) }}</span
+      >
     </li>
-    <li v-on:click="$emit('passRowToChange', { attend, gpsData: gpsData[0] })" class="mx-auto h-full flex justify-center items-center text-red-700 dark:text-red-500">
+    <li
+      v-on:click="$emit('passRowToChange', { attend, gpsData: gpsData[0] })"
+      class="mx-auto h-full flex justify-center items-center text-red-700 dark:text-red-500"
+    >
       <span v-if="attend.data.leaveTime" class="text-xl">
-        {{ roundTime(attend.data.leaveTime.slice(11, 16), 1) }}</span>
+        {{ roundTime(attend.data.leaveTime.slice(11, 16), 1) }}</span
+      >
       <button v-else class="text-xl">--:--</button>
       <span class="text-2xl">&#8593;</span>
     </li>
-    <li class="mx-auto h-18 w-full flex justify-around items-center p-1 border-gray-600">
+    <li
+      class="mx-auto h-18 w-full flex justify-around items-center p-1 border-gray-600"
+    >
       <div class=" flex flex-col justify-center items-center">
         <i class="gg-time mb-2 text-green-800 dark:text-green-500"></i>
         <span class="text-gray-700 dark:text-gray-300 mr-1 text-center">{{
           workedTime
-          }}</span>
+        }}</span>
       </div>
       <!-- <div class=" flex flex-col justify-center items-center" v-if="extraHors">
         <i class="gg-insert-after text-red-800 dark:text-red-500 mb-2 "></i>
@@ -116,11 +129,11 @@ export default {
   computed: {
     ...mapGetters({ theme: "theme/getTheme" }),
     userName() {
-      return this.users.filter((user) => user.author === this.attend.author)[0]
+      return this.users.filter(user => user.author === this.attend.author)[0]
         .name;
     },
     userSurname() {
-      return this.users.filter((user) => user.author === this.attend.author)[0]
+      return this.users.filter(user => user.author === this.attend.author)[0]
         .surname;
     },
   },
@@ -227,5 +240,4 @@ export default {
   },
 };
 </script>
-<style  scoped>
-</style>
+<style scoped></style>

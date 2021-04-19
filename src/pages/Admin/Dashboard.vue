@@ -48,7 +48,9 @@
       <section class="flex md:mt-4">
         <div
           @click="showSidebar = !showSidebar"
-          :class="`glass-${theme} lg:hidden rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none`"
+          :class="
+            `glass-${theme} lg:hidden rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none`
+          "
         >
           <!-- Please refer: https://github.com/shubhamjain/svg-loader -->
           <!-- Please refer: https://github.com/shubhamjain/svg-loader -->
@@ -83,7 +85,9 @@
         </div>
         <div
           v-if="!selectedUser"
-          :class="`glass-${theme} rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none lg:h-10`"
+          :class="
+            `glass-${theme} rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none lg:h-10`
+          "
         >
           <span
             @click="
@@ -308,7 +312,7 @@ export default {
     attendDaySelector,
     gMaps,
   },
-  data: function () {
+  data: function() {
     return {
       showSidebar: false,
       // ATTEND DATA
@@ -331,12 +335,12 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: (state) => state.attendance,
-      d: (state) => state.d,
-      geolocation: (state) => state.geolocation,
-      loadingMap: (state) => state.loadingMap,
-      users: (state) => state.users,
-      selectedTime: (state) => state.selectedTime,
+      attendList: state => state.attendance,
+      d: state => state.d,
+      geolocation: state => state.geolocation,
+      loadingMap: state => state.loadingMap,
+      users: state => state.users,
+      selectedTime: state => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
     ...mapState(["userData"]),
@@ -355,12 +359,12 @@ export default {
     },
     markers() {
       return [
-        ...this.filtredAttends.map((item) => ({
+        ...this.filtredAttends.map(item => ({
           gps: item["data"]["gpsLoc"],
           time: item["data"]["enterTime"],
           author: this.users.find(({ author }) => author === item["author"]),
         })),
-        ...this.filtredAttends.map((item) => ({
+        ...this.filtredAttends.map(item => ({
           gps: item["data"]["gpsLocLeave"],
           time: item["data"]["leaveTime"],
           author: this.users.find(({ author }) => author === item["author"]),
@@ -376,7 +380,7 @@ export default {
       "selectMonthLimites",
     ]),
     getUniqueListBy(arr, key) {
-      return [...new Map(arr.map((item) => [item[key], item])).values()];
+      return [...new Map(arr.map(item => [item[key], item])).values()];
     },
     getUsersAttends(val) {
       this.filtredAttends = [];
@@ -512,13 +516,13 @@ export default {
     },
   },
   watch: {
-    filtredAttendsDay: function (newValue) {
+    filtredAttendsDay: function(newValue) {
       if (newValue) {
         this.getDaysAttends(newValue);
       }
     },
     // Watch selected user to return Attends of specified User
-    selectedUser: function (newValue) {
+    selectedUser: function(newValue) {
       if (newValue === "Todos") {
         this.selectedUser = null;
         this.getMonthAttend(this.workplace);
@@ -528,7 +532,7 @@ export default {
       }
     },
     //Get all Attends from selected workplace for this day o month
-    showMonthAttends: function (newValue) {
+    showMonthAttends: function(newValue) {
       // if (newValue === false) {
       //   const Data = {
       //     workplace: this.workplace,
@@ -573,16 +577,16 @@ export default {
         this.getMonthAttend(this.workplace);
       }
     },
-    workplace: function (newValue) {
+    workplace: function(newValue) {
       this.getMonthAttend(newValue);
     },
     // Vuex function to get attendList
-    attendList: function (newValue) {
+    attendList: function(newValue) {
       this.filtredAttends = newValue;
-      const data = [...new Set(newValue.map((o) => o.data.email))];
+      const data = [...new Set(newValue.map(o => o.data.email))];
       if (data.length > 0) {
         this.workplaceUsers = [];
-        data.forEach((o) => {
+        data.forEach(o => {
           let user = this.users.find(({ email }) => email === o);
           if (user) {
             this.workplaceUsers.push(user);
@@ -605,5 +609,4 @@ export default {
   },
 };
 </script>
-<style lang="">
-</style>
+<style lang=""></style>

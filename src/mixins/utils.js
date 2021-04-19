@@ -88,6 +88,5 @@ export default {
         .slice(0, 16);
       return roundedDate;
     },
-    
   },
 };

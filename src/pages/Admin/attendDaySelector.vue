@@ -7,7 +7,9 @@
       @click="$emit('sendDay', day)"
       v-for="(day, index) in workedDaysList"
       :key="index"
-      :class="`w-12 h-16 rounded-full flex flex-col justify-center items-center ml-2 text-primary border-none  font-semibold text-xl glass-${theme}`"
+      :class="
+        `w-12 h-16 rounded-full flex flex-col justify-center items-center ml-2 text-primary border-none  font-semibold text-xl glass-${theme}`
+      "
     >
       <span
         class="rounded-full py-1 px-2 w-10 flex justify-center items-center"
@@ -43,7 +45,7 @@ export default {
     },
     filtredAttendsDay: {
       type: Date,
-      default: function () {
+      default: function() {
         return new Date(this.d.setHours(2, 0, 0, 0));
       },
     },
@@ -60,5 +62,4 @@ export default {
   },
 };
 </script>
-<style lang="">
-</style>
+<style lang=""></style>
