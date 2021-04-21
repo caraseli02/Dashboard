@@ -200,6 +200,13 @@ export const store = new Vuex.Store({
       // return the promise returned by `bindFirestoreRef`
       return bindFirestoreRef("users", db.collection("attendanceUsers"));
     }),
+    async changeUserData(state, data) {
+      const docRef = db.collection("attendanceUsers").doc(data.id);
+      return await docRef.update({
+        eatHour: data.eatHour === "True" ? true : false,
+        schedule: data.schedule,
+      });
+    },
     deleteAsist: firestoreAction((context, asistId) => {
       db.collection("attendance")
         .doc(asistId)

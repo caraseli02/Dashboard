@@ -5,7 +5,7 @@
         <!-- PROFILE ICON FOR OPEN/CLOSE SIDEBAR -->
         <div v-if="user" @click="toggleSidebar" class="flex items-center ml-2">
           <button
-            class="flex justify-center items-center p-3 rounded-lg"
+            class="flex justify-center items-center p-3 rounded-lg z-20"
             :class="showSidebar ? 'bg-gray-300' : 'text-primary bg-primary'"
             aria-label="Open Menu"
           >

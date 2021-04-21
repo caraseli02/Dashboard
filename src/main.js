@@ -1,5 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
+Vue.config.productionTip = false;
 // Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
 import { firebase } from "@firebase/app";

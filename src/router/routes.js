@@ -7,6 +7,7 @@ import SignUp from "@/components/auth/SignUp.vue";
 import Error404 from "@/components/Error404.vue";
 // import Dashboard from "@/pages/Dashboard/Dashboard.vue";
 import Dashboard from "@/pages/Admin/Dashboard.vue";
+import Users from "@/pages/Users/Users.vue";
 // import Calendar from "@/pages/Calendar.vue";
 import Datos from "@/pages/Datos/Datos.vue";
 // import ForgotPassword from "@/components/ForgotPassword.vue";
@@ -70,6 +71,14 @@ export const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: Dashboard,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/users",
+    name: "users",
+    component: Users,
     meta: {
       requiresAuth: true,
     },

@@ -34,6 +34,22 @@ export default {
       }
       return `${rhours}h`;
     },
+    timeConvertForEcxel(n) {
+      var num = n;
+      var hours = num / 60;
+      var rhours = Math.floor(hours);
+      var minutes = (hours - rhours) * 60;
+      var rminutes = Math.round(minutes);
+      if (rminutes < 20) {
+        return parseInt(rhours);
+      }
+      if (rminutes > 20 && rminutes <= 40) {
+        return parseInt(rhours) + 0.5;
+      }
+      if (rminutes > 40) {
+        return parseInt(rhours) + 1;
+      }
+    },
     diff_minutes(dt2, dt1) {
       var diff = (dt2.getTime() - dt1.getTime()) / 1000;
       diff /= 60;
@@ -87,6 +103,12 @@ export default {
         .toISOString()
         .slice(0, 16);
       return roundedDate;
+    },
+    getEnterLeaveTotal(Enter, Leave) {
+      let enter = new Date(String(Enter).slice(0, 16));
+      let leave = new Date(String(Leave).slice(0, 16));
+      let workedMin = (leave.getTime() - enter.getTime()) / 60000;
+      return this.timeConvertForEcxel(workedMin);
     },
   },
 };
