@@ -5,11 +5,8 @@ import Home from "@/pages/Home.vue";
 import SignIn from "@/components/auth/SignIn.vue";
 import SignUp from "@/components/auth/SignUp.vue";
 import Error404 from "@/components/Error404.vue";
-// import Dashboard from "@/pages/Dashboard/Dashboard.vue";
 import Dashboard from "@/pages/Admin/Dashboard.vue";
 import Users from "@/pages/Users/Users.vue";
-// import Calendar from "@/pages/Calendar.vue";
-import Datos from "@/pages/Datos/Datos.vue";
 // import ForgotPassword from "@/components/ForgotPassword.vue";
 // LEGAL
 import avisoLegal from "@/pages/Legal/avisoLegal.vue";
@@ -79,22 +76,6 @@ export const routes = [
     path: "/users",
     name: "users",
     component: Users,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  // {
-  //   path: "/calendar",
-  //   name: "calendar",
-  //   component: Calendar,
-  //   meta: {
-  //     requiresAuth: true,
-  //   },
-  // },
-  {
-    path: "/datos",
-    name: "datos",
-    component: Datos,
     meta: {
       requiresAuth: true,
     },

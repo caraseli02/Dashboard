@@ -9,7 +9,7 @@
       ELECTRÓNICO Y TE ENVIAREMOS UN EMAIL CON INSTRUCCIONES DE CÓMO
       RECUPERARLA.
     </h1>
-    <article class="md:w-1/3 p-5 border rounded bg-primary mx-auto">
+    <article class="md:w-3/4 p-5 border rounded bg-primary mx-auto">
       <transition name="fade">
         <p
           class="bg-red-100 p-5 my-5 border border-red-200 rounded text-red-500"

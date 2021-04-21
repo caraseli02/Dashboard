@@ -2,9 +2,6 @@
   <div id="app" :class="`container ${theme}_bg pb-12`">
     <Header />
     <Alerts />
-    <transition name="slide-fade" mode="out-in">
-      <gpsLoad v-if="loadingMap" />
-    </transition>
     <Sidebar />
     <updateAlert v-if="updateExists">
       <button @click="refreshApp"
@@ -18,22 +15,18 @@
       </transition>
     </main>
     <!-- <Footer /> -->
-    <section :class="`glass-blue fixed bottom-0 w-full rounded-none rounded-t-lg
+    <section v-if="user" :class="`glass-blue fixed bottom-0 w-full rounded-none rounded-t-lg
             lg:w-20 lg:h-full lg:rounded-r-lg lg:rounded-t-none
             `">
       <MainNav />
     </section>
-    <a class="text-primary fixed bottom-0 right-0 bg-primary p-2 rounded mr-2 -mb-24" href="http://www.freepik.com">
-      Image Designed by pikisuperstar / Freepik</a>
   </div>
 </template>
 
 <script>
   import Alerts from "@/components/utils/Alerts.vue";
   import updateAlert from "@/components/utils/updateAlert.vue";
-  import gpsLoad from "@/components/utils/gpsLoad.vue";
-  import { mapActions, mapState, mapGetters } from "vuex";
-  // import Footer from "./components/Navigation/Footer.vue";
+  import { mapActions, mapGetters } from "vuex";
   import MainNav from "@/pages/Admin/MainNav.vue";
   import Header from "./components/Navigation/Header.vue";
   import Sidebar from "./components/Sidebar.vue";
@@ -48,17 +41,11 @@
     components: {
       Header,
       MainNav,
-      // Footer,
       Alerts,
       Sidebar,
       updateAlert,
-      gpsLoad,
     },
     computed: {
-      ...mapState({
-        geolocation: state => state.geolocation,
-        loadingMap: state => state.loadingMap,
-      }),
       ...mapGetters({ theme: "theme/getTheme", user: "auth/getUser" }),
     },
     watch: {
@@ -71,6 +58,7 @@
     methods: {
       ...mapActions("notifi", ["showNotification"]),
       ...mapActions("auth", ["setUser"]),
+      ...mapActions("theme", ["initTheme"]),
       ...mapActions(["getUsers"]),
     },
     mounted() {
@@ -84,6 +72,7 @@
       // when the app is created run the set user method
       // this uses Vuex to check if a user is signed in
       // check out mutations in the store.js file
+      await this.initTheme();
       await this.setUser();
       await this.getUsers();
     },

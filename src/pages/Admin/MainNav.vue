@@ -1,9 +1,9 @@
 <template>
   <div
     class="flex lg:flex-col items-center justify-center h-full space-x-4 lg:space-x-0 lg:space-y-4 py-2 lg:py-4 lg:rouded-xl">
-    <router-link to="/dashboard" class="group">
+    <router-link to="/" class="group">
       <div :class="
-          $route.path === '/dashboard'
+          $route.path === '/'
             ? 'transform -translate-y-8 lg:-translate-y-0 lg:translate-x-8 duration-300'
             : 'opacity-50'
         "
@@ -14,9 +14,9 @@
         </svg>
       </div>
     </router-link>
-    <router-link to="/table" class="group">
+    <router-link to="/dashboard" class="group">
       <div :class="
-          $route.path === '/table'
+          $route.path === '/dashboard'
             ? 'transform -translate-y-8 lg:-translate-y-0 lg:translate-x-8 duration-300'
             : 'opacity-50'
         "

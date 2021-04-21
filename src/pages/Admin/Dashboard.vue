@@ -143,15 +143,15 @@
   // import Tools from "@/pages/Admin/Tools.vue";
   // import msgBlog from "@/pages/Admin/msgBlog.vue";
   // Workpace & User selectors
-  import attendAdminUsers from "@/pages/Datos/attendAdminUsers.vue";
-  import attendAdminPlaces from "@/pages/Datos/attendAdminPlaces.vue";
+  import attendAdminUsers from "@/pages/Admin/attendAdminUsers.vue";
+  import attendAdminPlaces from "@/pages/Admin/attendAdminPlaces.vue";
   //Month selector
   import monthSelector from "@/components/utils/monthSelector.vue";
   //mixins
   import utils from "@/mixins/utils";
   // Attend List && change popup
-  import attendChange from "@/pages/Datos/attendChange.vue";
-  import attendRow from "@/pages/Datos/attendRow.vue";
+  import attendChange from "@/pages/Admin/attendChange.vue";
+  import attendRow from "@/pages/Admin/attendRow.vue";
   //gMaps
   import gMaps from "@/components/gMaps.vue";
 
