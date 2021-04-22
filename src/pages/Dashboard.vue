@@ -3,7 +3,7 @@
     <div v-if="users !== null && userData !== null" class="w-full px-4 lg:p-10">
       <monthSelector
         :workplace="userData.workplace"
-        :selectedWorkplace="workplace"
+        :selectedWorkplace="userData.workplace[1]"
         :getAsistFunc="true"
       />
       <section
@@ -333,6 +333,7 @@ export default {
       attendList: (state) => state.attendance,
       d: (state) => state.d,
       users: (state) => state.users,
+      userData: (state) => state.userData,
       selectedTime: (state) => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
@@ -348,9 +349,6 @@ export default {
         if (obj.data.leaveTime) counter += 1;
         return counter;
       }, 0);
-    },
-    userData() {
-      return this.users.find(({ author }) => author === this.user.uid);
     },
     markers() {
       return [
@@ -368,19 +366,17 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      "getAsist",
-      "getUsers",
-      "getUserData",
-      "selectMonthLimites",
-    ]),
+    ...mapActions(["getAsist", "selectMonthLimites"]),
     getUniqueListBy(arr, key) {
       return [...new Map(arr.map((item) => [item[key], item])).values()];
     },
     getUsersAttends(val) {
       this.filtredAttends = [];
 
-      const dataList = this.attendList.filter(({ data }) => data.email === val);
+      const dataList = this.attendList.filter(
+        ({ data }) =>
+          data.email === val && data.email !== "vladwebapp@gmail.com"
+      );
 
       this.filtredAttends = dataList;
     },
@@ -388,7 +384,9 @@ export default {
       this.filtredAttends = [];
 
       const dataList = await this.attendList.filter(
-        ({ curentTime }) => curentTime === new Date(val).getTime()
+        ({ curentTime, data }) =>
+          curentTime === new Date(val).getTime() &&
+          data.email !== "vladwebapp@gmail.com"
       );
 
       this.filtredAttends = dataList;
@@ -540,12 +538,16 @@ export default {
     },
     // Vuex function to get attendList
     attendList: function (newValue) {
-      this.filtredAttends = newValue;
+      this.filtredAttends = newValue.filter(
+        ({ data }) => data.email !== "vladwebapp@gmail.com"
+      );
       const data = [...new Set(newValue.map((o) => o.data.email))];
       if (data.length > 0) {
         this.workplaceUsers = [];
         data.forEach((o) => {
-          let user = this.users.find(({ email }) => email === o);
+          let user = this.users.find(
+            ({ email }) => email === o && email !== "vladwebapp@gmail.com"
+          );
           if (user) {
             this.workplaceUsers.push(user);
           }
@@ -555,15 +557,15 @@ export default {
     },
   },
   async mounted() {
-    await this.getUsers();
     var date = new Date(); // Or the date you'd like converted.
     this.today = new Date(
       date.getTime() - date.getTimezoneOffset() * 60000
     ).toISOString();
     this.selectedMes = date.getMonth();
-    this.selectedUser = this.user.email;
-    this.workplace = this.userData.workplace[1];
     this.isLoading = false;
+  },
+  beforeMount() {
+    this.workplace = this.userData.workplace[1];
   },
 };
 </script>

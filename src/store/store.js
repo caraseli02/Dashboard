@@ -53,6 +53,9 @@ export const store = new Vuex.Store({
     SET_MONTH_LIMITES(state, payload) {
       state.selectedTime = payload;
     },
+    SET_USER_DATA(state, payload) {
+      state.userData = payload;
+    },
     TOGGLE_SIDEBAR(state) {
       state.showSidebar = !state.showSidebar;
     },
@@ -123,16 +126,8 @@ export const store = new Vuex.Store({
             .where("curentTime", ">=", data.time.start)
             .where("curentTime", "<=", data.time.end)
             .orderBy("curentTime", "desc")
-            .limit(50)
         );
       }
-    }),
-    getUserData: firestoreAction(({ bindFirestoreRef }, uid) => {
-      // return the promise returned by `bindFirestoreRef`
-      return bindFirestoreRef(
-        "userData",
-        db.collection("attendanceUsers").where("author", "==", uid)
-      );
     }),
     getUsers: firestoreAction(({ bindFirestoreRef }) => {
       // return the promise returned by `bindFirestoreRef`
@@ -166,6 +161,9 @@ export const store = new Vuex.Store({
     },
     selectMonthLimites(context, userData) {
       context.commit("SET_MONTH_LIMITES", userData);
+    },
+    setUserData(context, userData) {
+      context.commit("SET_USER_DATA", userData);
     },
   },
 
