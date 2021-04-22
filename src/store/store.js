@@ -112,7 +112,6 @@ export const store = new Vuex.Store({
             .orderBy("curentTime", "desc")
         );
       } else {
-        console.log(data);
         return bindFirestoreRef(
           "attendance",
           db
@@ -128,13 +127,11 @@ export const store = new Vuex.Store({
         );
       }
     }),
-    getUserData: firestoreAction(({ state, bindFirestoreRef }) => {
+    getUserData: firestoreAction(({ bindFirestoreRef }, uid) => {
       // return the promise returned by `bindFirestoreRef`
       return bindFirestoreRef(
         "userData",
-        db
-          .collection("attendanceUsers")
-          .where("author", "==", state.auth.user.uid)
+        db.collection("attendanceUsers").where("author", "==", uid)
       );
     }),
     getUsers: firestoreAction(({ bindFirestoreRef }) => {

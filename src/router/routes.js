@@ -5,7 +5,7 @@ import Home from "@/pages/Home.vue";
 import SignIn from "@/components/auth/SignIn.vue";
 import SignUp from "@/components/auth/SignUp.vue";
 import Error404 from "@/components/Error404.vue";
-import Dashboard from "@/pages/Admin/Dashboard.vue";
+import Dashboard from "@/pages/Dashboard.vue";
 import Users from "@/pages/Users/Users.vue";
 // import ForgotPassword from "@/components/ForgotPassword.vue";
 // LEGAL
