@@ -1,8 +1,9 @@
 <template>
-  <section class="mr-8">
+  <section class="sm:mr-8 sm:ml-10">
     <button
+      id="btnExportar"
+      @click="exportExcel()"
       class="w-40 flex items-center justify-center rounded-md bg-secondary p-2 text-primary mb-2"
-      @click="tableToExcel('table', 'Lorem Table')"
     >
       Descargar
       <svg
@@ -22,8 +23,8 @@
         ></path>
       </svg>
     </button>
-    <div :class="`glass-${theme} h-64 overflow-scroll `">
-      <table ref="table">
+    <div :class="`glass-${theme} h-64 sm:h-full overflow-scroll `">
+      <table class="w-full" id="table" ref="table">
         <thead class="bg-secondary text-secondary text-center">
           <tr class="">
             <td class="">Dia:</td>
@@ -66,6 +67,9 @@
 <script>
 import { mapGetters } from "vuex";
 import utils from "@/mixins/utils";
+import { saveAs } from 'file-saver';
+import XLSX from 'xlsx';
+//Excel
 export default {
   name: "Table",
   mixins: [utils],
@@ -74,42 +78,6 @@ export default {
       daysNumber: null,
       month: new Date().getMonth(),
       year: new Date().getFullYear(),
-      uri: "data:application/vnd.ms-excel;base64,",
-      template:
-        '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
-      base64: function (s) {
-        return window.btoa(unescape(encodeURIComponent(s)));
-      },
-      format: function (s, c) {
-        return s.replace(/{(\w+)}/g, function (m, p) {
-          return c[p];
-        });
-      },
-      // thead: {
-      //   "background-color": "#17e9e1",
-      //   color: "#6b7280",
-      //   "text-align": "center",
-      // },
-      // theadTH: {
-      //   "background-color": "#17e9e1",
-      //   color: "#6b7280",
-      //   "text-align": "center",
-      // },
-      //       .dark {
-      //   --color-bg-primary: #17224d;
-      //   --color-bg-secondary: #021e69;
-      //   --color-text-primary: #cccccc;
-      //   --color-text-secondary: #9ca3af;
-      //   --color-text-accent: #475886;
-      // }
-
-      // .light {
-      //   --color-bg-primary: #f5fafa;
-      //   --color-bg-secondary: #17e9e1;
-      //   --color-text-primary: #171718;
-      //   --color-text-secondary: #6b7280;
-      //   --color-text-accent: #1d4ed8;
-      // }
     };
   },
   props: {
@@ -120,6 +88,7 @@ export default {
       type: Array,
     },
   },
+  components: {},
   computed: {
     ...mapGetters({ theme: "theme/getTheme" }),
   },
@@ -151,6 +120,26 @@ export default {
       }
       return attend;
     },
+    exportExcel() {
+      let vb = XLSX.utils.table_to_book(document.getElementById("table"));
+      console.log(vb);
+      let vbout = XLSX.write(vb, {
+        bookType: "xlsx",
+        bookSST: true,
+        type: "array",
+      });
+      try {
+        saveAs(
+          new Blob([vbout], {
+            type: "application/octet-stream",
+          }),
+          "data.xlsx"
+        );
+      } catch (e) {
+        if (typeof console !== "undefined") console.log(e, vbout);
+      }
+      return vbout;
+    },
   },
   async mounted() {
     this.daysNumber = new Date(this.year, this.month, 0).getDate();
@@ -164,29 +153,22 @@ table {
   position: relative;
   border-collapse: collapse;
 }
+
 th,
 td {
   padding: 0.25rem;
 }
-tr.red th {
-  background: red;
-  color: white;
-}
-tr.green th {
-  background: green;
-  color: white;
-}
-tr.purple th {
-  background: purple;
-  color: white;
-}
+
 th {
   position: sticky;
-  top: 0; /* Don't forget this, required for the stickiness */
+  top: 0;
+  /* Don't forget this, required for the stickiness */
 }
+
 .fixUserName {
   position: sticky;
-  left: 0; /* Don't forget this, required for the stickiness */
+  left: 0;
+  /* Don't forget this, required for the stickiness */
 }
 
 tbody:hover td {
@@ -198,4 +180,5 @@ tbody:hover tr:hover td {
   color: rgb(254, 131, 0);
   text-shadow: 0 1px 0 rgb(254, 131, 0);
 }
+
 </style>

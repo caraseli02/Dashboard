@@ -8,14 +8,14 @@
     </label>
     <div class="relative">
       <select
-        v-if="workplaceList"
+        v-if="userData"
         class="block appearance-none w-full bg-gray-200 border border-gray-200 text-primary py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
         id="grid-state"
-        :value="value"
-        @input="$emit('input', $event.target.value)"
+        :value="userData.workplace[1]"
+        @change="$emit('update:workplace', $event.target.value)"
       >
         <option disabled>Seleccionar</option>
-        <option v-for="place in workplaceList" :key="place" :value="place">
+        <option v-for="place in userData.workplace" :key="place" :value="place">
           {{ place }}
         </option>
       </select>
@@ -37,14 +37,19 @@
 </template>
 <script>
 export default {
+  name: "attendAdminFilter",
   props: {
-    workplaceList: {
-      type: Array,
+    userData: {
+      type: Object,
       required: true,
     },
-    value: String,
+    workplace: {
+      type: String,
+    },
   },
-  name: "attendAdminFilter",
+  mounted() {
+    this.$emit("update:workplace", this.userData.workplace[1]);
+  },
 };
 </script>
 <style lang=""></style>

@@ -13,7 +13,7 @@
         :value="value"
         @input="$emit('input', $event.target.value)"
       >
-        <option>Todos</option>
+        <option value="allData">Todos</option>
         <option
           :value="user.email"
           v-for="(user, index) in usersList"

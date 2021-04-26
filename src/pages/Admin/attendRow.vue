@@ -1,7 +1,11 @@
 <template lang="">
-  <ul :class="`w-24 grid grid-flow-row grid-rows-4 glass-${theme}  ml-1`">
+  <ul
+    v-on:mouseover="mouseover"
+    v-on:mouseleave="mouseleave"
+    class="w-24 grid grid-flow-row grid-rows-4 ml-1"
+    :class="hover ? 'bg-primary transfrom translate-x-2' : `glass-${theme}`"
+  >
     <li
-      v-if="attend.data && $attrs.selectedUser"
       class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-2xl border-none bg-gray-200 dark:bg-gray-500 rounded-lg text-primary"
       @click="deleteAttendData(attend.id)"
     >
@@ -114,6 +118,7 @@ export default {
       coords: this.attend.data.gpsLocLeave
         ? [this.attend.data.gpsLoc, this.attend.data.gpsLocLeave]
         : [this.attend.data.gpsLoc],
+      hover: false,
     };
   },
   props: {
@@ -129,11 +134,11 @@ export default {
   computed: {
     ...mapGetters({ theme: "theme/getTheme" }),
     userName() {
-      return this.users.filter(user => user.author === this.attend.author)[0]
+      return this.users.filter((user) => user.author === this.attend.author)[0]
         .name;
     },
     userSurname() {
-      return this.users.filter(user => user.author === this.attend.author)[0]
+      return this.users.filter((user) => user.author === this.attend.author)[0]
         .surname;
     },
   },
@@ -160,6 +165,12 @@ export default {
       var d = new Date(dateString);
       var dayName = this.days[d.getDay()];
       return dayName;
+    },
+    mouseover() {
+      this.hover = true;
+    },
+    mouseleave() {
+      this.hover = false;
     },
   },
   async mounted() {

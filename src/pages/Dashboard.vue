@@ -2,7 +2,7 @@
   <div v-if="!isLoading" class="flex flex-col h-full">
     <div v-if="users !== null && userData !== null" class="w-full px-4 lg:p-10">
       <monthSelector
-        :workplace="userData.workplace"
+        :workplace="workplace"
         :selectedWorkplace="userData.workplace[1]"
         :getAsistFunc="true"
       />
@@ -12,11 +12,11 @@
       >
         <attendAdminPlaces
           v-if="userData && 'workplace' in userData"
-          :workplaceList="userData.workplace"
-          v-model="workplace"
+          :userData="userData"
+          :workplace.sync="workplace"
         />
         <attendAdminUsers
-          v-if="workplace !== null && workplaceUsers"
+          v-if="workplaceUsers"
           :usersList="workplaceUsers"
           v-model="selectedUser"
         />
@@ -24,61 +24,21 @@
       <!-- <Tools /> -->
       <!-- Sidebar Toggler -->
       <section class="flex md:mt-4">
-        <div
-          @click="showSidebar = !showSidebar"
-          :class="`glass-${theme} lg:hidden rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none`"
-        >
-          <!-- Please refer: https://github.com/shubhamjain/svg-loader -->
-          <!-- Please refer: https://github.com/shubhamjain/svg-loader -->
-          <svg
-            width="42px"
-            height="42px"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            class="rounded-lg w-16 p-2 text-primary"
-            :class="!showSidebar ? 'bg-blue-800' : ''"
-          >
-            <path
-              d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"
-            ></path>
-          </svg>
-          <svg
-            width="42px"
-            height="42px"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            class="rounded-lg w-16 p-2 text-primary"
-            :class="showSidebar ? 'bg-blue-800' : ''"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zm14 2L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </div>
-        <div
-          v-if="!selectedUser"
-          :class="`glass-${theme} rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none lg:h-10`"
-        >
-          <span
-            @click="
-              (filtredAttendsDay = new Date(d.setHours(2, 0, 0, 0))),
-                (showMonthAttends = false)
-            "
-            class="w-full h-full rounded-xl flex justify-center items-center text-primary font-semibold text-xl"
-            :class="!showMonthAttends ? 'bg-blue-800' : ''"
-            >{{ filtredAttendsDay ? filtredAttendsDay.getDate() : "Hoy" }}</span
-          >
-          <span
-            @click="(filtredAttendsDay = null), (showMonthAttends = true)"
-            class="w-full h-full rounded-xl flex justify-center items-center text-primary font-semibold text-xl"
-            :class="showMonthAttends ? 'bg-blue-800' : ''"
-            >Mes</span
-          >
-        </div>
+        <sidebarToggler
+          @click.native="showSidebar = !showSidebar"
+          :theme="theme"
+          :showSidebar="showSidebar"
+        />
+        <!-- Month / Day Selector -->
+        <monthDaySelect
+          @click.native="showMonthAttends = !showMonthAttends"
+          v-on:dayClick="resetToDayAttend()"
+          v-on:monthClick="resetToMonthAttend()"
+          :selectedUser="selectedUser"
+          :theme="theme"
+          :filtredAttendsDay="filtredAttendsDay"
+          :showMonthAttends="showMonthAttends"
+        />
       </section>
       <div class="overflow-hidden lg:overflow-visible pb-24 lg:pb-0">
         <div
@@ -190,7 +150,7 @@
                 :workedDaysList="workedDaysList"
                 :theme="theme"
                 :filtredAttendsDay="filtredAttendsDay"
-                v-on:sendDay="filtredAttendsDay = $event"
+                v-on:sendDay="setAttendDay($event)"
               />
               <!-- Attend Rows -->
               <transition-group
@@ -213,8 +173,9 @@
               <!-- AttendChange -->
               <transition name="fade" mode="out-in">
                 <div
-                  class="w-full h-full z-10 absolute top-0 bg-gray-800 dark:bg-gray-600 bg-opacity-75"
+                  class="w-full h-full z-10 absolute top-0 bg-gray-800 dark:bg-gray-600 bg-opacity-75 flex justify-center items-center"
                   v-if="dataToChange && gpsData"
+                  @click.self="(dataToChange = null), (gpsData = null)"
                 >
                   <attendChange
                     v-on:dataChanged="
@@ -226,8 +187,8 @@
                     :gpsData="gpsData"
                   />
                   <button
-                    class="flex justify-center py-2 px-4 border border-transparent text-lg font-medium rounded-md text-primary bg-red-800 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out mt-32 z-10 w-1/2 mx-auto"
-                    @click="(dataToChange = null), (gpsData = null)"
+                    class="py-2 px-4 border border-transparent text-lg font-medium rounded-md text-primary bg-red-800 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out absolute top-0 right-0 z-10 w-16"
+                    @click.self="(dataToChange = null), (gpsData = null)"
                   >
                     X
                   </button>
@@ -266,6 +227,8 @@ import { mapState, mapGetters, mapActions } from "vuex";
 // Page components
 import dataGrid from "@/pages/Admin/dataGrid.vue";
 import infoCard from "@/pages/Admin/infoCard.vue";
+import sidebarToggler from "@/pages/Admin/sidebarToggler.vue";
+import monthDaySelect from "@/pages/Admin/monthDaySelect.vue";
 import attendDaySelector from "@/pages/Admin/attendDaySelector.vue";
 // import Tools from "@/pages/Admin/Tools.vue";
 // import msgBlog from "@/pages/Admin/msgBlog.vue";
@@ -303,6 +266,8 @@ export default {
     gMaps,
     dataGrid,
     Loading,
+    sidebarToggler,
+    monthDaySelect,
   },
   data: function () {
     return {
@@ -367,6 +332,10 @@ export default {
   },
   methods: {
     ...mapActions(["getAsist", "selectMonthLimites"]),
+    setAttendDay(event) {
+      this.filtredAttendsDay = event;
+      this.showMonthAttends = false;
+    },
     getUniqueListBy(arr, key) {
       return [...new Map(arr.map((item) => [item[key], item])).values()];
     },
@@ -494,22 +463,37 @@ export default {
         };
         this.selectedUser = null;
         await this.getAsist(data);
-        this.getWorkedDaysList();
+        // this.getWorkedDaysList();
       }
     },
     roundWithPrecision(value, precision) {
       var multiplier = Math.pow(10, precision || 0);
       return Math.round(value * multiplier) / multiplier;
     },
-    getWorkedDaysList() {
-      this.workedDaysList = this.getUniqueListBy(
-        this.filtredAttends,
-        "curentTime"
-      ).map(({ curentTime }) => new Date(curentTime));
-    },
+    // getWorkedDaysList() {
+    //   this.workedDaysList = this.getUniqueListBy(
+    //     this.filtredAttends,
+    //     "curentTime"
+    //   ).map(({ curentTime }) => new Date(curentTime));
+    // },
     onCancel() {
       console.log("User cancelled the loader.");
     },
+    setWorkplace() {
+      this.workplace = this.userData.workplace[1];
+    },
+    resetToMonthAttend() {
+      (this.filtredAttendsDay = null),
+        (this.showMonthAttends = true),
+        (this.workplace = this.userData.workplace[1]);
+    },
+    resetToDayAttend() {
+      this.filtredAttendsDay = new Date(this.d.setHours(2, 0, 0, 0));
+      this.showMonthAttends = false;
+    },
+    // (filtredAttendsDay = new Date(d.setHours(2, 0, 0, 0))),
+    // (showMonthAttends = false)
+    //(filtredAttendsDay = null), (showMonthAttends = true)"
   },
   watch: {
     filtredAttendsDay: function (newValue) {
@@ -519,11 +503,12 @@ export default {
     },
     // Watch selected user to return Attends of specified User
     selectedUser: function (newValue) {
-      if (newValue === "Todos") {
-        this.selectedUser = null;
+      if (newValue === "allData") {
         this.getMonthAttend(this.workplace);
       } else {
-        this.getUsersAttends(newValue);
+        (this.filtredAttendsDay = null),
+          (this.showMonthAttends = true),
+          this.getUsersAttends(newValue);
         this.generateAttendInfo(this.filtredAttends);
       }
     },
@@ -538,8 +523,16 @@ export default {
     },
     // Vuex function to get attendList
     attendList: function (newValue) {
-      this.filtredAttends = newValue.filter(
+      if (this.selectedUser && this.selectedUser !== "allData") {
+        return;
+      }
+
+      let filtredData = newValue.filter(
         ({ data }) => data.email !== "vladwebapp@gmail.com"
+      );
+      this.filtredAttends = filtredData;
+      this.workedDaysList = this.getUniqueListBy(filtredData, "curentTime").map(
+        ({ curentTime }) => new Date(curentTime)
       );
       const data = [...new Set(newValue.map((o) => o.data.email))];
       if (data.length > 0) {
@@ -556,16 +549,13 @@ export default {
       this.generateAttendInfo(newValue);
     },
   },
-  async mounted() {
+  mounted() {
     var date = new Date(); // Or the date you'd like converted.
     this.today = new Date(
       date.getTime() - date.getTimezoneOffset() * 60000
     ).toISOString();
     this.selectedMes = date.getMonth();
     this.isLoading = false;
-  },
-  beforeMount() {
-    this.workplace = this.userData.workplace[1];
   },
 };
 </script>

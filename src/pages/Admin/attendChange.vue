@@ -1,10 +1,10 @@
 <template>
   <div
     :class="
-      `mx-auto w-full max-w-sm z-10 transform glass-${theme} p-2 self-center my-10 absolute top-0 mt-64`
+      `mx-auto w-full max-w-sm z-10 glass-${theme} p-2 self-center w-full h-64 rouded-lg`
     "
   >
-    <form class="mx-10" @submit.prevent>
+    <form class="" @submit.prevent>
       <div>
         <label
           for="email"

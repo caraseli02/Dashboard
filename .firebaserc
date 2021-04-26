@@ -1,7 +1,17 @@
 {
   "projects": {
-    "default": "apimosa-930ed",
-    "dev": "apimosa-930ed",
-    "staging": "apimosa-staging"
+    "default": "apimosa-930ed"
+  },
+  "targets": {
+    "apimosa-930ed": {
+      "hosting": {
+        "admin": [
+          "apimosa-admin"
+        ],
+        "public": [
+          "apimosa-930ed"
+        ]
+      }
+    }
   }
 }
