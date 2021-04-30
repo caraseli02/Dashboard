@@ -22,7 +22,7 @@ export const store = new Vuex.Store({
     showSidebar: false,
     attendance: [],
     d: new Date(),
-    users: null,
+    users: [],
     selectedMonth: null,
     selectedTime: null,
     userData: null,
@@ -39,6 +39,20 @@ export const store = new Vuex.Store({
         );
       }
       return state.d.getMonth();
+    },
+    filtredWorkers: state => {
+      return state.users.filter(
+        user =>
+          !/@apimosa\.es$/.test(user.email) &&
+          !/vladwebapp@gmail\.com$/.test(user.email)
+      );
+    },
+    filtredStaff: state => {
+      return state.users.filter(
+        user =>
+          /@apimosa\.es$/.test(user.email) &&
+          !/vladwebapp@gmail\.com$/.test(user.email)
+      );
     },
   },
 
@@ -126,7 +140,6 @@ export const store = new Vuex.Store({
             .where("curentTime", ">=", data.time.start)
             .where("curentTime", "<=", data.time.end)
             .orderBy("curentTime", "desc")
-            .limit(50)
         );
       }
     }),
@@ -139,6 +152,7 @@ export const store = new Vuex.Store({
       return await docRef.update({
         eatHour: data.eatHour === "True" ? true : false,
         schedule: data.schedule,
+        workplace: data.workplace,
       });
     },
     deleteAsist: firestoreAction((context, asistId) => {

@@ -1,5 +1,5 @@
 <template>
-  <section class="sm:mr-8 sm:ml-10">
+  <section class="sm:mr-8 sm:ml-10 pb-10">
     <button
       id="btnExportar"
       @click="exportExcel()"
@@ -23,18 +23,37 @@
         ></path>
       </svg>
     </button>
-    <div :class="`glass-${theme} h-64 sm:h-full overflow-scroll `">
-      <table class="w-full" id="table" ref="table">
-        <thead class="bg-secondary text-secondary text-center">
+    <div :class="`glass-${theme} h-full overflow-scroll `">
+      <table
+        :style="tableStyle"
+        class="w-full text-sm sm:text-base"
+        id="table"
+        ref="table"
+      >
+        <thead
+          :style="tHeadStyle"
+          class="bg-secondary text-secondary text-center"
+        >
           <tr class="">
-            <td class="">Dia:</td>
-            <td class="" v-for="(day, index) in daysNumber" :key="`0${index}`">
+            <td style="min-width: 50px">Dia:</td>
+            <td
+              style="min-width: 50px"
+              class=""
+              v-for="(day, index) in daysNumber"
+              :key="`0${index}`"
+            >
               {{ getDayName(day).slice(0, 3) }}
             </td>
           </tr>
           <tr class="">
-            <th class="bg-secondary text-secondary">Fecha:</th>
             <th
+              style="min-width: 50px; z-index: 10"
+              class="bg-secondary text-secondary z-10"
+            >
+              Fecha:
+            </th>
+            <th
+              style="min-width: 50px; z-index: 10"
               class="border-2 border-yellow-600 bg-secondary text-secondary"
               v-for="(day, index) in daysNumber"
               :key="index"
@@ -43,12 +62,16 @@
             </th>
           </tr>
         </thead>
-        <tbody class="bg-primary text-primary text-center">
+        <tbody
+          :style="tBodyStyle"
+          class="bg-primary text-primary text-center z-0"
+        >
           <tr v-for="user in users" :key="user.author" class="">
             <td
-              class="fixUserName bg-primary text-primary border-b-2 border-yellow-600"
+              class="fixUserName bg-primary text-primary border-b-2 border-yellow-600 capitalize"
+              style="min-width: 120px"
             >
-              {{ user.name }}
+              {{ nameTransform(user.name) }} {{ speakerInitials(user.surname) }}
             </td>
             <td
               class="border-2 border-yellow-600"
@@ -67,8 +90,8 @@
 <script>
 import { mapGetters } from "vuex";
 import utils from "@/mixins/utils";
-import { saveAs } from 'file-saver';
-import XLSX from 'xlsx';
+import { saveAs } from "file-saver";
+import XLSX from "xlsx";
 //Excel
 export default {
   name: "Table",
@@ -78,6 +101,25 @@ export default {
       daysNumber: null,
       month: new Date().getMonth(),
       year: new Date().getFullYear(),
+      tableStyle: {
+        fontSize: "1rem",
+        lineHeight: "1.5rem",
+        textAlign: "center",
+      },
+      tHeadStyle: {
+        fontSize: "1rem",
+        lineHeight: "1.5rem",
+        textAlign: "center",
+        paddingLeft: "1rem",
+        paddingRight: "1rem",
+      },
+      tBodyStyle: {
+        fontSize: "1rem",
+        lineHeight: "1.5rem",
+        textAlign: "center",
+        paddingLeft: "1rem",
+        paddingRight: "1rem",
+      },
     };
   },
   props: {
@@ -87,12 +129,30 @@ export default {
     attends: {
       type: Array,
     },
+    workplace: {
+      type: String,
+      default: "data",
+    },
   },
   components: {},
   computed: {
     ...mapGetters({ theme: "theme/getTheme" }),
   },
   methods: {
+    nameTransform(string) {
+      const name = string.split(" ");
+      if (name[1] && name[0].length < name[1].length) {
+        return name[1].toLowerCase();
+      } else {
+        return name[0].toLowerCase();
+      }
+    },
+    speakerInitials(speaker) {
+      const name = speaker.split(" ");
+      return `${name[0].charAt(0)}${
+        name[1] ? name[1].charAt(0).toUpperCase() : ""
+      }`;
+    },
     getDayName(dateString) {
       var d = new Date(`${this.year}-${this.month + 1}-${dateString}`);
       var dayName = this.days[d.getDay()];
@@ -121,7 +181,9 @@ export default {
       return attend;
     },
     exportExcel() {
-      let vb = XLSX.utils.table_to_book(document.getElementById("table"));
+      let vb = XLSX.utils.table_to_book(document.getElementById("table"), {
+        raw: true,
+      });
       console.log(vb);
       let vbout = XLSX.write(vb, {
         bookType: "xlsx",
@@ -133,7 +195,7 @@ export default {
           new Blob([vbout], {
             type: "application/octet-stream",
           }),
-          "data.xlsx"
+          `${this.workplace}.xlsx`
         );
       } catch (e) {
         if (typeof console !== "undefined") console.log(e, vbout);
@@ -157,6 +219,7 @@ table {
 th,
 td {
   padding: 0.25rem;
+  width: 10%;
 }
 
 th {
@@ -180,5 +243,4 @@ tbody:hover tr:hover td {
   color: rgb(254, 131, 0);
   text-shadow: 0 1px 0 rgb(254, 131, 0);
 }
-
 </style>

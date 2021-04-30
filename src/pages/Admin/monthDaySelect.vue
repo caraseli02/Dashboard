@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="!selectedUser"
+    v-show="!selectedUser || selectedUser === 'allData'"
     :class="`glass-${theme} rounded-xl flex justify-around w-32 mx-auto shadow-lg border-none lg:h-10`"
   >
     <span
@@ -19,7 +19,7 @@
 <script>
 import { mapState } from "vuex";
 export default {
-  name: "MonthDaySelect.vue",
+  name: "MonthDaySelect",
   props: {
     selectedUser: {
       type: String,
@@ -47,7 +47,8 @@ export default {
     showMonthAttends: function (val) {
       if (val) {
         this.$emit("monthClick", "monthClick");
-      } else {
+      }
+      if (!val && !this.filtredAttendsDay) {
         this.$emit("dayClick", "dayClick");
       }
     },

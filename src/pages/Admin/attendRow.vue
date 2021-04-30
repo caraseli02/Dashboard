@@ -20,9 +20,9 @@
       class="w-20 h-16 row-span-1 mx-auto flex flex-col justify-center items-center text-lg border-none text-primary relative"
       @click="deleteAttendData(attend.id)"
     >
-      <span class="text-secondary">{{ userName.split(" ")[0] }}</span>
+      <span class="text-secondary capitalize">{{ nameTransform(userName) }}</span>
       <div
-        class="flex justify-center items-center rounded-full font-semibold text-xl"
+        class="flex justify-center items-center rounded-full font-semibold text-xl uppercase"
       >
         {{ speakerInitials(userSurname) }}
       </div>
@@ -146,9 +146,7 @@ export default {
     ...mapActions(["deleteAsist"]),
     speakerInitials(speaker) {
       const name = speaker.split(" ");
-      return `${name[0].charAt(0)}${
-        name[1] ? name[1].charAt(0).toUpperCase() : ""
-      }`;
+      return `${name[0].charAt(0)}${name[1] ? name[1].charAt(0) : ""}`;
     },
     sendMarkers() {
       this.$emit("markersToDisplay", this.coords);
@@ -171,6 +169,14 @@ export default {
     },
     mouseleave() {
       this.hover = false;
+    },
+    nameTransform(string) {
+      const name = string.split(" ");
+      if (name[1] && name[0].length < name[1].length) {
+        return name[1].toLowerCase();
+      } else {
+        return name[0].toLowerCase();
+      }
     },
   },
   async mounted() {
