@@ -93,10 +93,10 @@ export default {
   computed: {
     // mix this into the outer object with the object spread operator
     ...mapState({
-      attendList: state => state.attendance,
-      d: state => state.d,
-      users: state => state.users,
-      selectedTime: state => state.selectedTime,
+      attendList: (state) => state.attendance,
+      d: (state) => state.d,
+      users: (state) => state.users,
+      selectedTime: (state) => state.selectedTime,
     }),
     ...mapState("auth", ["user"]),
     ...mapGetters(["checkCalendarToday"]),
@@ -126,13 +126,10 @@ export default {
     },
   },
   watch: {
-    selectedMes: function(newValue) {
+    selectedMes: function (newValue) {
       // GET CURRENT YEAR
       let time = new Object();
-      time["year"] = new Date()
-        .toISOString()
-        .split("T")[0]
-        .slice(0, 4);
+      time["year"] = new Date().toISOString().split("T")[0].slice(0, 4);
 
       // Month Transform
       if (newValue < 10) {
@@ -171,9 +168,7 @@ export default {
         };
         this.getAsist(data);
       }
-      if (time && this.bindAsistFunc) {
-        this.bindAsist(time);
-      }
+      this.$emit("changeSelectedMonth", newValue);
     },
   },
   async mounted() {

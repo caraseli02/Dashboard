@@ -5,6 +5,7 @@
         :workplace="workplace"
         :selectedWorkplace="userData.workplace[1]"
         :getAsistFunc="true"
+        v-on:changeSelectedMonth="changeSelectedMonth($event)"
       />
       <section
         v-if="users !== null && users.length > 1"
@@ -262,10 +263,12 @@
       </div>
     </div>
     <dataGrid
-      v-if="!isLoading"
+      v-if="!isLoading && filtredAttends"
       :attends="filtredAttends"
       :users="workplaceUsers"
       :workplace="workplace"
+      :selectedMonth="selectedMonth"
+      :key="selectedMonth"
     />
   </div>
 </template>
@@ -322,7 +325,7 @@ export default {
     return {
       showSidebar: false,
       // ATTEND DATA
-      selectedMes: null,
+      selectedMonth: null,
       today: null,
       selectedUser: null,
       workedDays: null,
@@ -381,6 +384,10 @@ export default {
   },
   methods: {
     ...mapActions(["getAsist", "selectMonthLimites"]),
+    changeSelectedMonth(e) {
+      this.selectedMonth = e;
+      this.isLoading = true;
+    },
     setAttendDay(event) {
       this.filtredAttendsDay = event;
       this.showMonthAttends = false;

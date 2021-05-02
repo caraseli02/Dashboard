@@ -23,7 +23,7 @@
         ></path>
       </svg>
     </button>
-    <div :class="`glass-${theme} h-full overflow-scroll `">
+    <div :class="`glass-${theme} h-full overflow-scroll p-2`">
       <table
         :style="tableStyle"
         class="w-full text-sm sm:text-base"
@@ -76,7 +76,7 @@
             <td
               class="border-2 border-yellow-600"
               v-for="(day, index) in daysNumber"
-              :key="index"
+              :key="index + selectedMonth"
             >
               {{ getUsersWorkedHours(day, user.author) }}
             </td>
@@ -99,7 +99,6 @@ export default {
   data() {
     return {
       daysNumber: null,
-      month: new Date().getMonth(),
       year: new Date().getFullYear(),
       tableStyle: {
         fontSize: "1rem",
@@ -133,6 +132,9 @@ export default {
       type: String,
       default: "data",
     },
+    selectedMonth: {
+      type: Number,
+    },
   },
   components: {},
   computed: {
@@ -154,7 +156,7 @@ export default {
       }`;
     },
     getDayName(dateString) {
-      var d = new Date(`${this.year}-${this.month + 1}-${dateString}`);
+      var d = new Date(`${this.year}-${this.selectedMonth + 1}-${dateString}`);
       var dayName = this.days[d.getDay()];
       return dayName;
     },
@@ -165,17 +167,19 @@ export default {
         this.uri + this.base64(this.format(this.template, ctx));
     },
     getUsersWorkedHours(date, uid) {
-      const dayTame = new Date(
-        new Date(this.year, this.month, date).setHours(2, 0, 0, 0)
+      const dayTime = new Date(
+        new Date(this.year, this.selectedMonth, date).setHours(2, 0, 0, 0)
       ).getTime();
       let attend = this.attends.filter(
-        ({ author, curentTime }) => author === uid && curentTime === dayTame
+        ({ author, curentTime }) => author === uid && curentTime === dayTime
       );
+      let userData = this.users.find(({ author }) => author === uid);
       attend = attend[0];
       if (typeof attend !== "undefined") {
         return this.getEnterLeaveTotal(
           attend.data.enterTime,
-          attend.data.leaveTime
+          attend.data.leaveTime,
+          userData.eatHour
         );
       }
       return attend;
@@ -204,7 +208,7 @@ export default {
     },
   },
   async mounted() {
-    this.daysNumber = new Date(this.year, this.month, 0).getDate();
+    this.daysNumber = new Date(this.year, this.selectedMonth, 0).getDate();
   },
 };
 </script>

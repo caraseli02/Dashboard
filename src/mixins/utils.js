@@ -104,10 +104,17 @@ export default {
         .slice(0, 16);
       return roundedDate;
     },
-    getEnterLeaveTotal(Enter, Leave) {
+    getEnterLeaveTotal(Enter, Leave, eatHour) {
       let enter = new Date(String(Enter).slice(0, 16));
       let leave = new Date(String(Leave).slice(0, 16));
+      const isWeekends = enter.getDay() === 0 || enter.getDay() === 6;
       let workedMin = (leave.getTime() - enter.getTime()) / 60000;
+      if (isWeekends) {
+        return this.timeConvertForEcxel(workedMin);
+      }
+      if (eatHour && !isWeekends && workedMin > 540) {
+        return this.timeConvertForEcxel(workedMin - 60);
+      }
       return this.timeConvertForEcxel(workedMin);
     },
   },
